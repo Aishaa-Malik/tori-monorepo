@@ -1,0 +1,144 @@
+
+  
+  
+  .app-inpagetransition p,
+  .app-inpagetransition a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    line-height: 120%;
+  }
+  
+  .app-inpagetransition p.secondary {
+    color: #757677;
+  }
+  
+
+
+
+
+.app-inpagetransition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* .wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 2em;
+} */
+
+/* section {
+  position: relative;
+  width: 100vw;
+  overflow-x: hidden;
+} */
+
+
+/* 
+.site-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 35%;
+  padding: 2em;
+  z-index: 2;
+}
+
+.site-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.site-intro > div {
+  flex: 1;
+}
+
+.site-intro p {
+  transition: 0.3s all;
+}
+
+.site-intro.dark p {
+  color: var(--text);
+}
+
+.site-intro.dark p.secondary {
+  color: var(--text-secondary);
+}
+
+.site-intro.light p {
+  color: var(--text-light);
+} */
+
+.sidebar-inpagetransition {
+  /* Your styles */
+  position: fixed;
+  top: 1em;
+  left: -42%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  z-index: 100;
+}
+
+.nav-item-inpagetransition {
+  position: relative;
+  padding: 0.25rem;
+  border-radius: 0.15rem;
+  overflow: hidden;
+}
+
+.nav-item-inpagetransition .progress-inpagetransition {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #8348ff;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+.nav-item-inpagetransition .link-inpagetransition {
+  position: relative;
+  z-index: 100;
+}
+
+.sidebar-inpagetransition .link-inpagetransition a {
+  transition: color 0.3s;
+}
+
+nav.dark-inpagetransition .link-inpagetransition a {
+  color: #000;
+}
+
+nav.light-inpagetransition .link-inpagetransition a {
+  color: #f3f4ee;
+}
+
+.sidebar-inpagetransition .link-inpagetransition a span {
+  position: relative;
+  top: -0.15rem;
+  padding-right: 0.4rem;
+  padding-left: 0.2rem;
+  font-size: 0.6rem;
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    width: 100%;
+  }
+
+  .site-intro {
+    gap: 2em;
+    flex-direction: column;
+  }
+
+  .site-intro > div {
+    text-align: right;
+  }
+}

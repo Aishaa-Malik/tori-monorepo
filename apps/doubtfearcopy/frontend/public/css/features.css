@@ -1,0 +1,135 @@
+@font-face {
+    font-family: 'Monument-regular';
+    src: url(../MonumentExtended-Regular.otf);
+  }
+  @font-face {
+    font-family: 'Monument-bold';
+    src: url(../MonumentExtended-Ultrabold.otf);
+  }
+  
+.features-sticky{
+    font-family: "Monument-regular";
+    position: relative;
+    z-index: 50; /* LOWER Z-INDEX */
+}
+
+  
+  .features-sticky img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  
+  
+  
+  .features-card-title p {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .features-sticky {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  
+  
+  
+  .features-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .outline-layer, .fill-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150% !important;
+    height: 150% !important;
+  }
+  
+  canvas.outline-layer {
+    z-index: 1;
+  }
+  
+  canvas.fill-layer {
+    z-index: 3;
+  }
+  
+  .features-cards {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300%;
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    will-change: transform;
+    z-index: 2;
+  }
+  
+  .features-card {
+    position: relative;
+    width: 10%;
+    height: 62%;
+    background-color: rgba(255, 255, 255, 0.79);
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1.3em;
+    border-radius: 30px;
+  }
+
+  
+  .features-card-img
+ {
+    border-radius: 15px;
+    flex: 1.8; /* Increase from flex: 1 to make images taller */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .features-card-title {
+    border-radius: 15px;
+    flex: 1; /* Reduce from flex: 1 to give more space to images */
+    overflow: hidden;
+    color: #000000d4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0.8rem 0; /* Reduce from 1rem to 0.8rem */
+  }
+  
+
+
+  
+  .features-card-title h1{
+    font-size: 1.7rem;
+    font-family: "Monument-bold";
+    margin: 0 0 0.8rem 0;
+    line-height: 1.1;
+  }
+  .features-card-title p{
+    color: rgba(0, 0, 0, 0.462);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Lenis-related classes removed */
+  
+  @media (max-width: 900px) {
+    .features-card {
+      width: 25%;
+    }
+  }
+  

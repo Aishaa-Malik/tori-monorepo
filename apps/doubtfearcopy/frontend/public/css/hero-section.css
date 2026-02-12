@@ -1,0 +1,491 @@
+@import url("https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap");
+
+
+
+body {
+  font-family: "Host Grotesk", sans-serif;
+  /* background-color: palegreen; */
+   /* Your desired screen 2 color */
+}
+.hero-section-home {
+  background-color: #141414; /* Screen 1 color (black) */
+}
+
+
+.hero-animated-icons img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+ .hero-animated-text h1, .hero-outro h1 {
+  font-size: 7vw;
+  font-weight: 800;
+  line-height: 1;
+}
+ .hero-animated-text .hero-text-segment-2 {
+
+  font-size: 1.5vw;
+  font-weight: 800;
+  line-height: 1;
+  
+}
+.hero-header-home h1{
+  font-size: 14vw;
+  font-weight: 800;
+  line-height: 0.7;
+}
+
+.hero-section-home p {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.hero-section-home {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e3e3db;
+    overflow: hidden;
+    z-index: 100; /* HIGH Z-INDEX */
+}
+
+/* Add this to your hero-section.css or main CSS file */
+.hero-section-home {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e3e3db;
+    overflow: hidden;
+    z-index: 100;
+    margin-bottom: 300vh; /* CRITICAL: Add space after hero section */
+  }
+  .hero-text-segment-2 {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline !important;
+    color: rgba(255, 255, 255, 0.667) !important; /* or whatever color you want */
+  }
+  
+  /* Add to your hero-section.css */
+.hero-animated-text h2,
+.hero-text-segment-2 {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show subtitle only when parent has 'show' class */
+.hero-animated-text.show h2,
+.hero-animated-text.show .hero-text-segment-2 {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+  .features-sticky {
+    position: relative;
+    z-index: 50;
+    margin-top: 0; /* Reset any existing margins */
+  }
+  
+  /* Ensure proper spacing for all sections after hero */
+  .hero-section-home + * {
+    margin-top: 100vh; /* Push everything down after hero */
+  }
+
+  
+  
+.hero-outro {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #141414;
+  color: #e3e3db;
+  overflow: hidden;
+}
+
+.hero-home {
+  flex-direction: column;
+  transition: background-color 0.3s ease;
+}
+
+.hero-header-home {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  will-change: transform, opacity;
+}
+
+.hero-animated-icons {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  will-change: transform;
+  z-index: 2;
+}
+
+.hero-animated-icon {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  aspect-ratio: 1;
+  will-change: transform;
+}
+
+.hero-animated-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-animated-text {
+  position: relative;
+  max-width: 1000px;
+  text-align: center;
+  color: #ffffffd2;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+
+}
+
+.hero-text-segment {
+  opacity: 0;
+}
+
+.hero-placeholder-icon {
+  margin-top: -10px;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  vertical-align: middle;
+  will-change: transform;
+  visibility: hidden;
+}
+
+@media (max-width: 1000px) {
+  .hero-header-home h1, .hero-animated-text h1, .hero-outro h1 {
+    font-size: 12vw;
+    text-align: center;
+  }
+
+  .hero-section-home p {
+    font-size: 1.1rem;
+  }
+
+  .hero-header-home {
+    top: 45%;
+    width: 100%;
+  }
+
+  .hero-placeholder-icon {
+    margin-top: -4px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+
+
+/* INTRO SECTION -->  */
+
+
+
+/* @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap"); */
+
+
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+body {
+  /* font-family: "DM Sans", sans-serif; */
+
+
+  /* background-color: #141414; */
+}
+
+.about-home {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  padding: 2em;
+  overflow: hidden;
+  background-color: #141414;
+}
+
+.about-copy-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 2rem;
+}
+
+.about-animation .about-copy-container {
+  border: 0.15rem dashed rgb(60, 60, 60);
+}
+
+.about-animated-text {
+  width: 70%;
+  /* padding-top: 25vh; */
+
+}
+
+.about-animated-text p {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.about-animated-text .word {
+  display: inline-block;
+  position: relative;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 2rem;
+  will-change: background-color, opacity;
+  opacity: 0;
+}
+
+.about-animated-text .word.keyword-wrapper {
+  margin: 0 0.4rem 0.2rem 0.2rem;
+}
+
+.about-animated-text .word span {
+  position: relative;
+  opacity: 0;
+}
+
+.about-animated-text .word span.keyword {
+  border-radius: 2rem;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: 0.1rem 0;
+  color: #141414;
+}
+
+.about-animated-text .word span.keyword::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 1rem);
+  height: calc(100% + 0.4rem);
+  background-color: #fff;
+  border-radius: 2rem;
+  z-index: -1;
+}
+
+.about-animated-text .word span.keyword.vibrant::before,
+.about-animated-text .word span.keyword.shape::before,
+.about-animated-text .word span.keyword.interactive::before {
+  background-color: #7a78ff;
+}
+
+.about-animated-text .word span.keyword.living::before,
+.about-animated-text .word span.keyword.expression::before,
+.about-animated-text .word span.keyword.storytelling::before {
+  background-color: #fe6d38;
+}
+
+.about-animated-text .word span.keyword.clarity::before,
+.about-animated-text .word span.keyword.intuitive::before,
+.about-animated-text .word span.keyword.vision::before {
+  background-color: #c6fe69;
+}
+
+@media (max-width: 1000px) {
+  .about-animated-text {
+    width: 90%;
+  }
+
+  .about-animated-text p {
+    font-size: 1.25rem;
+  }
+
+  .about-animated-text .word {
+    margin-right: 0.1rem;
+    margin-bottom: 0.15rem;
+    padding: 0.1rem 0.2rem;
+  }
+
+  .about-animated-text .word.keyword-wrapper {
+    margin: 0 0.2rem 0.1rem 0.1rem;
+  }
+}
+
+
+
+
+/* BTN CSS  */
+
+.btn {
+	display: inline-block;
+	width: 12rem;
+	height: auto;
+	padding: .15rem;
+	outline: none;
+	border: none;
+	font-size: .9rem;
+	background: rgba(255, 255, 255, 0.769);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	cursor: pointer;
+	margin: 2rem 0;
+}
+
+.btn,
+.btn .circle {
+	position: relative;
+	border-radius: 4rem;
+	/* transform: scale(0) */
+}
+
+.btn .circle {
+	display: block;
+	margin: 0;
+	width: 3rem;
+	height: 3rem;
+	background: var(--dark-blue) ;
+	font-size: 1.5rem;
+	overflow: hidden;
+	transition: width .5s cubic-bezier(.65, 0, .076, 1)
+}
+
+.btn .icon {
+	top: .775rem;
+	left: .95rem;
+	color: var(--base-100);
+	font-size: 1.5rem;
+	transform: translateX(0);
+	will-change: transform
+}
+
+.btn .button-text,
+.btn .icon {
+	position: absolute;
+	transition: all .5s cubic-bezier(.65, 0, .076, 1)
+}
+
+.btn .button-text {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0 0 0 1.25rem;
+	text-align: center;
+	color: rgba(0, 0, 0, 0.723);
+	font-family: Manrope, sans-serif;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap
+}
+
+.btn .line {
+	position: relative;
+	transform: translateY(100%);
+	will-change: transform;
+	padding-bottom: .2em;
+	margin-bottom: -.2em
+}
+
+.btn:hover .circle {
+	width: 100%
+}
+
+.btn:hover .icon {
+	transform: translate(.75rem)
+}
+
+.btn:hover .button-text {
+	color: var(--base-100)
+}
+
+:root {
+	--base-100: rgb(242, 237, 230);
+	--base-200: rgb(204, 200, 194);
+	--base-250: rgb(179, 167, 152);
+	--base-300: rgb(153, 143, 130);
+	--base-350: rgb(128, 119, 108);
+	--base-400: rgb(102, 95, 86);
+	--base-450: rgb(31, 29, 29);
+	--base-500: rgb(20, 19, 19);
+    --dark-blue: #121719;
+    --light-blue: #44555C
+}
+
+
+
+
+
+
+
+
+
+
+/* Hide second screen elements during first screen */
+/* Hide second screen elements during first screen */
+h1.hero-animated-text:not(.show),  /* Target h1 with hero-animated-text class */
+.btn:not(.show) {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show them only when needed */
+h1.hero-animated-text.show,
+.btn.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Make sure all text segments inside h1 are visible */
+h1.hero-animated-text.show .hero-text-segment {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block;
+}
+
+
+/* Show them only when needed */
+.hero-animated-text.show,
+.hero-animated-text.show h1,
+.hero-animated-text.show h2,
+.btn.show {
+  opacity: 1;
+  visibility: visible;
+}

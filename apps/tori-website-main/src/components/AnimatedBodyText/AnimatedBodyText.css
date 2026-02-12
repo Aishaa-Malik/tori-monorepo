@@ -1,0 +1,68 @@
+/* AnimatedBodyText.css */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap");
+
+.abt-container {
+  display: block;
+  width: 100%;
+}
+
+.abt-word {
+  display: inline-block;
+  position: relative;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 2rem;
+  will-change: background-color, opacity;
+  opacity: 0;
+}
+
+.abt-word.abt-keyword-wrapper {
+  margin: 0 0.4rem 0.2rem 0.2rem;
+}
+
+.abt-word span {
+  position: relative;
+  opacity: 0;
+}
+
+.abt-word span.abt-keyword {
+  border-radius: 2rem;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: 0.1rem 0;
+  color: #141414; /* Keyword text color */
+}
+
+.abt-word span.abt-keyword::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 1rem);
+  height: calc(100% + 0.4rem);
+  background-color: #fff; /* Default keyword bg */
+  border-radius: 2rem;
+  z-index: -1;
+}
+
+/* Keyword Colors - Exact from original TextAnimation.css */
+.abt-word span.abt-keyword.vibrant::before,
+.abt-word span.abt-keyword.shape::before,
+.abt-word span.abt-keyword.interactive::before {
+  background-color: #7a78ff;
+}
+
+.abt-word span.abt-keyword.living::before,
+.abt-word span.abt-keyword.expression::before,
+.abt-word span.abt-keyword.storytelling::before {
+  background-color: #fe6d38;
+}
+
+.abt-word span.abt-keyword.clarity::before,
+.abt-word span.abt-keyword.intuitive::before,
+.abt-word span.abt-keyword.vision::before {
+  background-color: #c6fe69;
+}

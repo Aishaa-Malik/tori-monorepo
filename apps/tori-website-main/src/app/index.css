@@ -1,0 +1,717 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@200..800&display=swap");
+
+:root {
+  --base-100: rgb(242, 237, 230);
+  --base-200: rgb(204, 200, 194);
+  --base-250: rgb(179, 167, 152);
+  --base-300: rgb(153, 143, 130);
+  --base-350: rgb(128, 119, 108);
+  --base-400: rgb(102, 95, 86);
+  --base-450: rgb(31, 29, 29);
+  --base-500: rgb(20, 19, 19);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  font-family: var(--font-resist-sans), "Manrope", sans-serif;
+  background-color: #0d0c0c;
+}
+
+section,
+.footer {
+  background-color: var(--base-500);
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+h1 {
+  font-size: 5rem;
+  font-weight: 500;
+  letter-spacing: -0.25rem;
+  line-height: 1.05;
+}
+
+h2 {
+  font-size: 3.5rem;
+  font-weight: 550;
+  letter-spacing: -0.15rem;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -0.075rem;
+  line-height: 1.2;
+}
+
+p, .abt-container {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+p.md, .abt-container.md {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+p.lg, .abt-container.lg {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+p.vlg {
+  font-size: 4rem;
+  font-weight: 500;
+  line-height: 1;
+  color: white;
+}
+p.vlg-intro {
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1;
+  color: white;
+}
+
+p.mono {
+  text-transform: uppercase;
+  font-family: "DM Mono";
+  font-size: 0.9rem;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+}
+
+p.md.mono {
+  font-size: 1rem;
+}
+
+p.lg.mono {
+  font-size: 1.1rem;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--base-200);
+  border-radius: 0.35rem;
+}
+
+span.spacer {
+  display: inline-block;
+  width: 20rem;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1000px) {
+  h1 {
+    font-size: 3rem;
+    letter-spacing: -0.1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    letter-spacing: -0.05rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    letter-spacing: -0.025rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+}
+
+::view-transition-group(root) {
+  z-index: auto !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  will-change: transform, opacity, clip-path;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 10000;
+  animation: none !important;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+  animation: none !important;
+}
+
+body.menu-open * {
+  pointer-events: none;
+}
+
+body.menu-open .menu,
+body.menu-open .menu *,
+body.menu-open .menu-toggle {
+  pointer-events: auto;
+}
+
+.itc-garamond {
+  font-family: var(--font-itc-garamond-italic), var(--font-resist-sans), "Manrope", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 155svh; /* Increased from 145svh to reveal cards */
+  overflow: hidden;
+  background-color: #d3cec5;
+}
+
+.hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px; /* slightly over intro to “mix” */
+  height: 160px; /* tweak until it looks like your old effect */
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    #0d0c0c 100%      /* color of the intro/background */
+  );
+  z-index: 10; /* Ensure it is above other elements */
+}
+
+.hero .hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero .hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.hero .hero-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50svh;
+  background: #1a1818;
+  background: linear-gradient(
+    to top,
+    rgba(0, 140, 255, 0.4) 0%, /* Light Blue at bottom */
+    rgba(10, 10, 10, 1) 60%,   /* Black */
+    rgba(20, 19, 19, 0) 100%   /* Transparent */
+  );
+  z-index: 2;
+}
+
+/* Inline logo and emoji styling for hero heading */
+.inline-logo {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 8px;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.hero-header h1 span[style*="font-size"] {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.hero .hero-content {
+  position: absolute;
+  top: 37svh; /* Moved further downwards */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--base-100);
+  text-align: center;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem; /* Decreased gap from 1rem */
+  padding: 1rem;
+}
+
+.hero .hero-status-pill {
+  position: absolute;
+  top: -4vh; /* Changed from 120px to vh for better responsiveness */
+  right: -15vw; /* Changed from 2rem to align more centrally below login button area */
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(15, 19, 23, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Subtle transparency */
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+  margin-bottom: 0; 
+}
+
+@media (max-width: 768px) {
+  .hero .hero-status-pill {
+    position: relative; /* Changed from absolute to relative to prevent clipping */
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0 auto 1rem auto; /* Center and add bottom spacing */
+    width: fit-content;
+    transform: none; /* Reset transform to avoid conflict with animation */
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero .hero-status-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero .hero-status-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.hero .hero-status-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin-left: -0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hero .hero-status-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+}
+
+.hero .hero-status-avatar img[src*="ayush.jpeg"] {
+  object-position: top;
+}
+
+.hero .hero-status-avatar:first-child {
+  margin-left: 0;
+}
+
+.hero .hero-status-text {
+  font-family: "Inter", system-ui, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 13px;
+  font-weight: 400; /* Regular weight */
+  color: #ffffff;
+  white-space: nowrap;
+  letter-spacing: normal;
+  line-height: 1;
+}
+@media (max-width: 768px) {
+  .hero .hero-status-text {
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+.hero-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+}
+
+.hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* Changed from nowrap to wrap for mobile */
+  white-space: normal; /* Changed from nowrap to normal */
+  gap: 0.1rem;
+  text-align: center;
+}
+
+/* Ensure inline-logo scales on mobile */
+@media (max-width: 768px) {
+  .inline-logo {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hero-title-wrapper {
+    display: flex;
+    flex-direction: row; /* Single line on desktop */
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  
+  .hero-title-row {
+    display: contents; /* Flattens structure on desktop so it behaves like one line */
+  }
+}
+
+.hero .hero-content h1 {
+  font-size: 4.5rem; /* Decreased from 6rem */
+  font-weight: 600;
+  letter-spacing: -0.2rem;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-copy {
+  font-family: "Inter", system-ui, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 500;
+  line-height: 1.6;
+  color: #6B7280; /* Darker grey */
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.hero-copy-highlight {
+  color: #D1D5DB; /* Lighter grey/white */
+}
+
+.hero .hero-tagline {
+  width: 50%;
+  color: var(--base-200);
+}
+
+.hero .hero-mockup {
+  position: absolute;
+  bottom: 6svh; /* Moved upwards from 0svh */
+  left: calc(50% + 40px);
+  transform: translateX(-50%);
+  width: 1050px;
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+}
+
+.hero .hero-mockup img {
+  width: 80%;
+  height: auto;
+  object-fit: contain;
+  object-position: 55% center;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+.hero .hero-stats {
+  position: absolute;
+  bottom: 0rem; /* Moved downwards from 4rem */
+  width: 100%;
+  z-index: 2;
+}
+
+.hero .hero-stats .container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hero .hero-stats .stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  aspect-ratio: 16/9;
+  color: var(--base-200);
+  background-color: rgba(242, 237, 230, 0.1);
+  backdrop-filter: blur(1rem);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.hero .hero-stats .stat-count,
+.hero .hero-stats .stat-info {
+  flex: 1;
+}
+
+.hero .hero-stats .stat-divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.hero .hero-stats .stat-info {
+  display: flex;
+  align-items: flex-end;
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    height: 175svh;
+  }
+  .hero .hero-content {
+    width: 100%;
+    top: 45svh; /* Adjusted for mobile */
+  }
+  
+  .hero .hero-content h1 {
+    font-size: 3.5rem; /* Adjusted for tablet */
+  }
+  
+  .hero-copy {
+    font-size: 1.1rem;
+    padding: 0 1rem;
+  }
+  
+  .hero .hero-mockup {
+    width: 860px; /* Increased from 780px */
+    bottom: 2svh; /* Moved lower from 12svh */
+    left: calc(50% + 15px); /* Slightly right */
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+  }
+
+  .hero .hero-tagline {
+    width: 75%;
+  }
+
+  .hero .hero-stats .container {
+    flex-direction: column;
+  }
+
+  .hero .hero-stats .stat {
+    aspect-ratio: 16/6;
+  }
+
+  .hero .hero-stats .stat-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero .hero-content {
+    top: 45svh;
+  }
+  
+  .hero .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-copy {
+    font-size: 1rem;
+  }
+}
+
+/* IMP-----IMP------main hero section starting from Tori */
+@media (max-width: 480px) {
+  .hero {
+    height: auto !important; /* Allow height to grow with content */
+    min-height: 100svh;
+    padding-bottom: 2rem;
+  }
+  .hero .hero-content {
+    position: relative !important; /* Flow naturally */
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 auto;
+    padding-top: 15svh; /* Keep top spacing */
+    padding-bottom: 0;
+  }
+  .hero .hero-stats {
+    position: relative !important; /* Flow after content */
+    bottom: auto !important;
+    margin-top: 2rem; /* Reasonable gap between tagline and stats */
+  }
+}
+
+.bomb-icon {
+  /* Defines the size */
+  width: 90px; 
+  height: auto;
+  
+  /* Keeps it aligned with text */
+  vertical-align: middle;
+  margin: 0 4px;
+  
+  /* ROUNDS THE CORNERS */
+  border-radius: 12px; /* Increase this number (e.g., 20px) for rounder corners */
+  
+  /* Optional: adds a subtle shadow to make it pop */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.what-we-do {
+  width: 100vw;
+  height: max-content;
+  color: var(--base-100);
+}
+
+.what-we-do .container h1 {
+  margin-bottom: 10rem;
+}
+
+/* Mobile Layout Restructuring */
+.hero-mobile-group {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero-mobile-group {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    width: 100%;
+    position: relative;
+    z-index: 20; /* Ensure visibility */
+  }
+
+  .hero-mobile-logo {
+    width: 3.5rem;
+    height: auto;
+  }
+
+  /* Override button margin in group */
+  .hero-mobile-group .btn {
+    margin: 0;
+  }
+
+  .hero-cta {
+    display: none !important; /* Hide original CTA on mobile */
+  }
+
+  .hero .hero-status-pill {
+    position: absolute;
+    top: -1rem; /* Adjusted to be visible and close to text */
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    margin-bottom: 0;
+  }
+
+  .hero .hero-content {
+    display: flex;
+    flex-direction: column;
+    /* Use relative flow layout to prevent alignment issues */
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 auto;
+    padding-top: 10svh; /* Reduced from 15svh to move content upwards */
+    height: auto;
+    padding-bottom: 2rem;
+    width: 90%; /* Slightly wider on mobile for better fit */
+    z-index: 10; /* Ensure content is above background/gradient */
+  }
+  
+  .hero-header {
+    order: 1;
+    width: 100%;
+  }
+  
+  .hero-cta {
+    order: 2;
+    margin: 1.5rem 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* Reset absolute positioning to enforce flex order */
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+  
+  .hero-tagline {
+    order: 3;
+    margin-top: 1rem; /* Increased from 1rem to prevent overlap */
+    padding: 0 1rem; /* Added padding for better readability */
+  }
+
+  .hero .hero-mockup {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin: -2rem auto 0 auto !important;
+    width: 80% !important;
+    max-width: 300px;
+    height: auto !important;
+    mask-image: none !important; /* Remove mask for clear view if needed, or keep it */
+    -webkit-mask-image: none !important;
+  }
+  
+  /* Ensure header allows content flow */
+  .hero-header h1 {
+    height: auto;
+  }
+}

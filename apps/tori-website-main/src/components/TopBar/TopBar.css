@@ -1,0 +1,197 @@
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none; /* Allow clicking through the empty space */
+}
+
+.top-bar > * {
+  pointer-events: auto; /* Re-enable pointer events for children */
+}
+
+.top-bar .top-bar-nav {
+  /* Middle section stays naturally in flow (flex centered) but we can fix it if needed */
+  /* If we want it strictly fixed independent of the bar, we can keep position:fixed.
+     But if the bar is fixed, this is redundant unless we want to break it out of flex.
+     User wanted it "fixed" (visible). If parent is fixed, it is fixed. */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-bar .top-bar-logo {
+  width: 4rem;
+}
+
+.top-bar .top-bar-cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.top-bar .top-bar-cta .btn {
+  margin: 0;
+}
+
+/* Book ANY SERVICE IN 10 SEC Button Specific Override */
+@media (max-width: 768px) {
+  .top-bar-logo,
+  .top-bar-cta {
+    display: none !important;
+  }
+}
+
+.top-bar .get-started-btn {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.top-bar .get-started-btn .circle {
+  background: #ffffff !important;
+}
+
+.top-bar .get-started-btn .button-text {
+  color: #ffffff !important;
+}
+
+/* Login Button Customization */
+.top-bar .login-btn .circle {
+  background: var(--base-100) !important;
+}
+
+.top-bar .login-btn .icon {
+  color: black !important;
+}
+
+.top-bar .nav-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Reduced gap */
+  padding: 0.4rem 0.5rem; /* Reduced padding */
+  background: rgba(255, 255, 255, 0.1); /* Glassmorphism transparent bg */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.top-bar .nav-link {
+  position: relative;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.5rem 0.8rem; /* Reduced horizontal padding */
+  border-radius: 2rem;  /* Pill shape */
+  white-space: nowrap;
+  
+  /* Background Fill Effect */
+  /* Left side: Whit'ish (Filled), Right side: Transparent (Unfilled) */
+  /* Using exact 50% with -1px shift to hide the line */
+  background-image: linear-gradient(to right, var(--base-100) 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: 100.5% 0; /* Shift slightly more than 100% to push the edge off-screen initially */
+  
+  /* Remove text clip from here, moved to .nav-text */
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: inherit; /* Allow text color to be controlled by child */
+}
+
+.top-bar .nav-text {
+  /* Text Color Fill Effect */
+  /* Left side: Black (Filled bg), Right side: Whit'ish (Unfilled bg) */
+  background-image: linear-gradient(to right, #000000 50%, var(--base-100) 50%);
+  background-size: 200% 100%;
+  background-position: 100.5% 0; /* Match the background shift */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  
+  display: inline-block; /* Ensure transforms/gradients work well */
+}
+
+.top-bar .nav-link:hover {
+  /* Optional: Hover effect */
+}
+
+/* Remove active class styling as GSAP handles it */
+/* .top-bar .nav-link.active { ... } */
+
+.mobile-founder-text {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .top-bar {
+    padding: 0.5rem 1.5rem;
+  }
+  
+  .top-bar .nav-pill {
+    gap: 1rem;
+    padding: 0.4rem 1rem;
+  }
+  
+  .top-bar .nav-link {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-bar .top-bar-nav {
+    display: none;
+  }
+  
+  .top-bar .top-bar-cta {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+  }
+  
+  .top-bar .login-btn {
+    display: none;
+  }
+
+  .mobile-founder-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48%;
+    font-size: 0.65rem;
+    color: var(--base-100);
+    line-height: 1.2;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    font-weight: 500;
+    
+    /* Glassy styles matching button */
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 2rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Target the Book ANY SERVICE IN 10 SEC button container/link */
+  .top-bar .top-bar-cta > a.btn,
+  .top-bar .top-bar-cta > button.btn {
+    width: 48% !important; /* Slightly less than 50% to account for gaps/padding */
+    margin: 0 !important;
+    font-size: 0.8rem;
+  }
+  
+  /* Also target the button text if needed to prevent overflow */
+  .top-bar .top-bar-cta .btn .button-text {
+    font-size: 0.8rem;
+    left: 55%; /* Adjust centering if needed */
+  }
+}
