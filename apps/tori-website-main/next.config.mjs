@@ -4,16 +4,14 @@ const nextConfig = {
     return [
       {
         source: '/services/:path*',
-        // Replace this with your actual dashboard URL once it's deployed
-        destination: 'https://vercel-frontend2-taupe.vercel.app/services/:path*', 
+        destination: 'https://tori-dashboard.vercel.app/:path*', 
       },
       {
         source: '/dashboard/:path*',
-        destination: 'https://vercel-frontend2-taupe.vercel.app/dashboard/:path*',
+        destination: 'https://tori-dashboard.vercel.app/:path*',
       },
     ]
   },
 };
 
-// Use "export default" instead of "module.exports"
 export default nextConfig;
