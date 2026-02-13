@@ -22,7 +22,11 @@ const nextConfig = {
       {
         source: '/services/:path*',
         destination: 'https://tori-dashboard.vercel.app/services/:path*',
-      }
+      },
+      {
+        source: '/static/:path*',
+        destination: 'https://tori-dashboard.vercel.app/static/:path*',
+      },
     ]
   },
 };
