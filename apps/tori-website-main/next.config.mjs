@@ -14,7 +14,7 @@ const nextConfig = {
       // 2. Folder Mappings (Assets)
       { source: '/js/:path*', destination: `${DASHBOARD_URL}/js/:path*` },
       { source: '/css/:path*', destination: `${DASHBOARD_URL}/css/:path*` },
-      { source: '/public/images/:path*', destination: `${DASHBOARD_URL}/public/images/:path*` },
+      { source: '/images/:path*', destination: `${DASHBOARD_URL}/images/:path*` },
       { source: '/static/:path*', destination: `${DASHBOARD_URL}/static/:path*` },
 
       // 3. Root File Mappings (Scripts & Images)
