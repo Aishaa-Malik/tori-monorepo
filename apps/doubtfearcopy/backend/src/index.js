@@ -8,7 +8,7 @@ const userRoutes = require('./routes/user');
 const app = express();
 
 // Middleware
-// Configure CORS with specific options
+// Configure CORS with specalloweific options
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:3001', 'https://toriate.com'],
   credentials: true,

@@ -1,32 +1,29 @@
 /** @type {import('next').NextConfig} */
+
+// Use local port for development, Vercel URL for production
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://tori-dashboard.vercel.app';
+
 const nextConfig = {
   async rewrites() {
     return [
-      {
-        source: '/login',
-        destination: 'https://tori-dashboard.vercel.app/login',
-      },
-      {
-        source: '/dashboard/:path*',
-        destination: 'https://tori-dashboard.vercel.app/dashboard/:path*',
-      },
-      {
-        source: '/onboarding',
-        destination: 'https://tori-dashboard.vercel.app/onboarding',
-      },
-      {
-        source: '/healthwellness-dashboard/:path*',
-        destination: 'https://tori-dashboard.vercel.app/healthwellness-dashboard/:path*',
-      },
-      // Keep your services directory if it's also in the dashboard
-      {
-        source: '/services/:path*',
-        destination: 'https://tori-dashboard.vercel.app/services/:path*',
-      },
-      {
-        source: '/static/:path*',
-        destination: 'https://tori-dashboard.vercel.app/static/:path*',
-      },
+      // 1. Pages
+      { source: '/login', destination: `${DASHBOARD_URL}/login` },
+      { source: '/dashboard/:path*', destination: `${DASHBOARD_URL}/dashboard/:path*` },
+      { source: '/services/:path*', destination: `${DASHBOARD_URL}/services/:path*` },
+      
+      // 2. Folder Mappings (Assets)
+      { source: '/js/:path*', destination: `${DASHBOARD_URL}/js/:path*` },
+      { source: '/css/:path*', destination: `${DASHBOARD_URL}/css/:path*` },
+      { source: '/public/images/:path*', destination: `${DASHBOARD_URL}/public/images/:path*` },
+      { source: '/static/:path*', destination: `${DASHBOARD_URL}/static/:path*` },
+
+      // 3. Root File Mappings (Scripts & Images)
+      { source: '/features.js', destination: `${DASHBOARD_URL}/features.js` },
+      { source: '/hero.js', destination: `${DASHBOARD_URL}/hero.js` },
+      { source: '/hero-intro.js', destination: `${DASHBOARD_URL}/hero-intro.js` },
+      { source: '/hero-intro-text.js', destination: `${DASHBOARD_URL}/hero-intro-text.js` },
+      // { source: '/images/parkyoga.png', destination: `${DASHBOARD_URL}/images/parkyoga.png` },
+      { source: '/COMINGSOON.png', destination: `${DASHBOARD_URL}/COMINGSOON.png` },
     ]
   },
 };
