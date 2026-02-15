@@ -264,10 +264,9 @@ export default function Home() {
     <div className="hero-title-row">
       Tori 
       <img src="/images/logo.png" alt="Tori" className="inline-logo" style={{width: '70px', height: '70px', display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} />
-      lets
     </div>
     <div className="hero-title-row">
-       book Sessions 
+       lets book Sessions 
     </div>
   </div>
   <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem'}}>
@@ -342,7 +341,7 @@ export default function Home() {
             <div className="stat">
               <div className="stat-count">
                 <Copy delay={0.1} animateOnScroll={false}>
-                  <h2 style={{fontSize: '7rem'}}>10 Sec</h2>
+                  <h2 className="stat-value">10 Sec</h2>
                 </Copy>
               </div>
               {/* <div className="stat-divider"></div> */}
@@ -355,7 +354,7 @@ export default function Home() {
             <div className="stat">
               <div className="stat-count">
                 <Copy delay={0.2} animateOnScroll={false}>
-                  <h2 style={{fontSize: '7rem'}}>24/7</h2>
+                  <h2 className="stat-value">24/7</h2>
                 </Copy>
               </div>
               {/* <div className="stat-divider"></div> */}
@@ -368,7 +367,7 @@ export default function Home() {
             <div className="stat">
               <div className="stat-count">
                 <Copy delay={0.3} animateOnScroll={false}>
-                  <h2 style={{fontSize: '7rem'}}>Zero</h2>
+                  <h2 className="stat-value">Zero</h2>
                 </Copy>
 
 
@@ -384,7 +383,7 @@ export default function Home() {
             <div className="stat">
               <div className="stat-count">
                 <Copy delay={0.4} animateOnScroll={false}>
-                  <h2 style={{fontSize: '7rem'}}>100%</h2>
+                  <h2 className="stat-value">100%</h2>
                 </Copy>
               </div>
               {/* <div className="stat-divider"></div> */}
