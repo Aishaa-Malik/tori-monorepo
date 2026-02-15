@@ -3,7 +3,7 @@
 /* Main Container - Acts as the spacer in the document flow */
 .testimonials-spacer {
   width: 100%;
-  height: 400vh; /* Determines the duration of the scroll */
+  height: 1400vh; /* Determines the duration of the scroll */
   position: relative;
   background-color: #000;
   z-index: 10;
@@ -12,7 +12,7 @@
 /* Sticky Container - The viewport window */
 .testimonials-sticky-viewport {
   width: 100%;
-  height: 100vh;
+  height: 150vh;
   position: sticky;
   top: 0;
   overflow: hidden;
@@ -178,12 +178,36 @@
 }
 
 /* Responsive */
+/* Responsive Fix for Mobile */
 @media (max-width: 768px) {
   .t-card {
-    width: 300px;
-    height: 500px;
+    /* Define a strict width so text wraps correctly */
+    width: 85vw; 
+    height: 650px; /* Reduced height for better mobile fit */
+    padding: 1rem;
+    overflow: hidden; /* Prevents internal elements from leaking out */
   }
-  .testimonials-rail {
-    gap: 2rem;
+
+  .t-card-video-wrap {
+    height: 65%; /* Limits the image area to half the card */
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+
+  .t-card-video {
+    /* object-fit: cover is fine now that the width is controlled */
+    object-fit: cover; 
+    width: 100%;
+    height: 60%;
+  }
+
+  .t-card-quote {
+    font-size: 14px; /* Smaller text for mobile */
+    line-height: 1.4;
+    /* Limits the quote height so it doesn't push the author off-card */
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }

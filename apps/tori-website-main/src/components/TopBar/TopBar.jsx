@@ -151,7 +151,7 @@ const TopBar = () => {
         <div className="nav-pill">
           <a href="#features" className="nav-link"><span className="nav-text">Features</span></a>
           <a href="#process" className="nav-link"><span className="nav-text">Process</span></a>
-          <a href="#pricing" className="nav-link"><span className="nav-text">Pricing</span></a>
+          <a href="#pricing-card" className="nav-link"><span className="nav-text">Pricing</span></a>
           <a href="#testimonials" className="nav-link"><span className="nav-text">Testimonials</span></a>
           <a href="#faq" className="nav-link"><span className="nav-text">FAQ</span></a>
           <a href="#about-us" className="nav-link"><span className="nav-text">About us</span></a>

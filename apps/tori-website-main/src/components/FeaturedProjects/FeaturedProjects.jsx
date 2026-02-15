@@ -65,7 +65,7 @@ const FeaturedProjects = () => {
     <>
       <div className="featured-projects">
         {featuredProjectsContent.map((project, index) => (
-          <div key={index} className="featured-project-card">
+          <div key={index} id={project.id} className="featured-project-card">
             <div className="featured-project-card-inner">
               <div className="featured-project-card-content">
                 <div className="featured-project-card-info">

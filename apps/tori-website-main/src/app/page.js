@@ -325,8 +325,8 @@ export default function Home() {
             </div>
             <div className="hero-cta">
               <AnimatedButton
-                label="Get Started"
-                route="/studio"
+                label="Claim Your Whatsapp AI Bot"
+                route="/contact"
                 animateOnScroll={false}
                 delay={showPreloader ? 10.3 : 1.15}
               />

@@ -9,31 +9,39 @@ const testimonials = [
   {
     id: 1,
     image: "/images/rev-1.png",
-    quote: "I have saved so much time and it’s made a huge impact on my life",
-    name: "Sarah Baderna",
-    studio: "Sarah Baderna Studio"
+    quote: "Tori takes bookings 24/7, so even if I'm not present in the clinic, I never miss a patient.",
+    name: "Patients get instant confirmation and automatic reminders.",
+    studio: "Navneet Grover - Physiotherapist"
   },
   {
     id: 2,
-    image: "/images/rev-2.png",
-    quote: "The efficiency is unmatched. I can't imagine going back to the old way.",
-    name: "Michael Chen",
-    studio: "Chen Design Co."
+    image: "/images/rev-4-4.png",
+    quote: "Patients can EASILY BOOK their APPOINTMENTS, SURGERIES, and MEDICAL PURCHASES.",
+    name: "",
+    studio: "Hitesh"
   },
   {
     id: 3,
-    image: "/images/rev-3.png",
-    quote: "A game changer for our daily workflow and client communications.",
-    name: "Emma Davis",
-    studio: "Davis Interiors"
+    image: "/images/rev-2-2.png",
+    quote: "From INSTANT PATIENT RESPONSES to CONFIRMED APPOINTMENTS -everything happens DIRECTLY ON WHATSAPP." ,
+    name: "saves my patients' time and helps my clinic GROW EFFORTLESSLY.",
+    studio: "Tanvi Nagpal - Physiotherapist"
   },
   {
     id: 4,
-    image: "/images/rev-4.png",
-    quote: "Simply brilliant. It handles the heavy lifting while we focus on design.",
-    name: "James Wilson",
-    studio: "JW Architects"
-  }
+    image: "/images/rev-3-3-3.png",
+    quote: "A SOLID feature is its seamless integration with WHATSAPP, for those who don't want to download apps like fit pass, cult, dont have that much tech knowledge like people in 50s they can book workouts" ,
+    name: "represents a revolutionary advancement in the Health and wellness domain, offering",
+    studio: "Mamata Gujrati - Yoga Instructor"
+  },
+  {
+    id: 5,
+    image: "/images/rev-5-5-5.png",
+    quote: "With TORI, customers book instantly while businesses grow" ,
+    name: "",
+    studio: "Dhruv Sharma - Turf Owner"
+  },
+  
 ];
 
 const TestimonialCard = ({ data }) => {

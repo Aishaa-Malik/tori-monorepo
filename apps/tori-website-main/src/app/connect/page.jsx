@@ -41,9 +41,9 @@ const page = () => {
                 </div>
                 <div className="contact-info-block">
                   <Copy delay={1.15}>
-                    <p>Studio Address</p>
-                    <p>18 Cordova Lane</p>
-                    <p>Seattle, WA 98101</p>
+                    <p>Address</p>
+                    <p>BITS PILANI, Rajasthan</p>
+                    <p>Delware, The US</p>
                   </Copy>
                 </div>
                 <div className="contact-info-block">

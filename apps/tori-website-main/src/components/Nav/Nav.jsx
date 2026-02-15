@@ -195,6 +195,21 @@ const Nav = () => {
     (e, href) => {
       e.preventDefault();
 
+      if (href.startsWith("#")) {
+        setIsOpen(false);
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+        return;
+      }
+
+      if (href === "/contact") {
+         setIsOpen(false);
+         router.push("/contact");
+         return;
+      }
+
       const currentPath = window.location.pathname;
       if (currentPath === href) {
         if (isOpen) {
@@ -230,12 +245,12 @@ const Nav = () => {
         <div className="menu-wrapper">
           <div className="col col-1">
             <div className="links">
-              <div className="link">
+              {/* <div className="link">
                 <a href="compet/" onClick={(e) => handleLinkClick(e, "/")}>
                   <h2>Index</h2>
                 </a>
-              </div>
-              <div className="link">
+              </div> */}
+              {/* <div className="link">
                 <a
                   href="/studio"
                   onClick={(e) => handleLinkClick(e, "/studio")}
@@ -250,11 +265,27 @@ const Nav = () => {
                 >
                   <h2>Our Spaces</h2>
                 </a>
+              </div> */}
+              <div className="link">
+                <a
+                  href="#features"
+                  onClick={(e) => handleLinkClick(e, "#features")}
+                >
+                  <h2>Features</h2>
+                </a>
               </div>
               <div className="link">
                 <a
-                  href="#pricing"
-                  onClick={(e) => handleLinkClick(e, "#pricing")}
+                  href="#process"
+                  onClick={(e) => handleLinkClick(e, "#process")}
+                >
+                  <h2>Process</h2>
+                </a>
+              </div>
+                   <div className="link">
+                <a
+                  href="#pricing-card"
+                  onClick={(e) => handleLinkClick(e, "#pricing-card")}
                 >
                   <h2>Pricing</h2>
                 </a>
@@ -285,8 +316,8 @@ const Nav = () => {
               </div>
               <div className="link">
                 <a
-                  href="#contact-us"
-                  onClick={(e) => handleLinkClick(e, "#contact-us")}
+                  href="/contact"
+                  onClick={(e) => handleLinkClick(e, "/contact")}
                 >
                   <h2>Contact Us</h2>
                 </a>
@@ -302,9 +333,9 @@ const Nav = () => {
                   <p>+1 (872) 441‑2086</p>
                 </div>
                 <div className="menu-meta">
-                  <p>Studio Address</p>
-                  <p>18 Cordova Lane</p>
-                  <p>Seattle, WA 98101</p>
+                  <p>Address</p>
+                   <p>BITS PILANI, Rajasthan</p>
+                    <p>Delware, The US</p>
                 </div>
               </div>
               <div className="sub-col">

@@ -71,6 +71,7 @@ const featuredProjectsContent = [
     image: "/images/scale.png",
   },
   {
+    id: "pricing-card", // Add this unique ID here
     info: "RISK-FREE START",
     title: "30-Days Free-Trial",
     description:

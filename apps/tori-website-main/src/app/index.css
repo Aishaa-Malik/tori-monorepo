@@ -276,6 +276,7 @@ body.menu-open .menu-toggle {
   align-items: center;
   gap: 2.5rem; /* Increased gap from 0.5rem to fix overlap */
   padding: 1rem;
+  z-index: 10; /* Ensure content is above mockup */
 }
 
 .hero .hero-status-pill {
@@ -585,7 +586,7 @@ body.menu-open .menu-toggle {
   }
 
   .hero .hero-stats .stat-value {
-    font-size: 4rem;
+    font-size: 4rem !important; /* Force mobile font size */
   }
 }
 
@@ -631,7 +632,7 @@ body.menu-open .menu-toggle {
   }
 
   .hero .hero-stats .stat-value {
-    font-size: 3.5rem;
+    font-size: 3.5rem !important; /* Force mobile font size */
   }
 }
 
@@ -688,17 +689,24 @@ body.menu-open .menu-toggle {
   }
 
   .hero-cta {
-    display: none !important; /* Hide original CTA on mobile */
+    display: flex !important;
+    justify-content: center;
+    margin: 1.5rem 0;
+    width: 100%;
+    position: relative;
+    z-index: 20;
   }
 
   .hero .hero-status-pill {
-    position: absolute;
-    top: -1rem; /* Adjusted to be visible and close to text */
-    left: 0;
-    right: 0;
-    margin: 0 auto;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0 auto 1rem auto;
     width: fit-content;
     margin-bottom: 0;
+    order: 0;
+    z-index: 20;
   }
 
   .hero .hero-content {
@@ -713,7 +721,7 @@ body.menu-open .menu-toggle {
     padding-top: 10svh; /* Reduced from 15svh to move content upwards */
     height: auto;
     padding-bottom: 2rem;
-    width: 90%; /* Slightly wider on mobile for better fit */
+    width: 95%; /* Increased from 90% for wider content */
     z-index: 10; /* Ensure content is above background/gradient */
   }
   
@@ -749,18 +757,20 @@ body.menu-open .menu-toggle {
     left: auto !important;
     bottom: auto !important;
     transform: none !important;
-    margin: -4.5rem auto 0 auto !important; /* Increased from -3rem to pull image higher */
+    margin: -4rem auto 0 auto !important; /* Adjusted margin */
     width: 80% !important;
     max-width: 300px;
     height: auto !important;
     mask-image: none !important; 
     -webkit-mask-image: none !important;
-    z-index: 1; /* Ensure it stays behind the text if they overlap, or use higher if intended to be on top */
+    z-index: 1; /* Keep it behind text */
   }
   
   .hero-tagline {
     position: relative;
-    z-index: 10; /* Ensure text stays on top of the image */
+    z-index: 10;
+    margin-top: -2rem !important; /* Pull text up over image */
+    background: transparent;
   }
   
   /* Ensure header allows content flow */

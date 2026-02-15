@@ -14,8 +14,7 @@ const Spotlight = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(false);
-  const vimeoSrc =
-    "https://player.vimeo.com/video/980402765?autoplay=1&muted=1&loop=1&controls=0&autopause=0&playsinline=1";
+const vimeoSrc = "https://www.youtube.com/embed/6jca6cMROy8?autoplay=1&mute=1&loop=1&playlist=6jca6cMROy8&controls=0&modestbranding=1&rel=0";
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
