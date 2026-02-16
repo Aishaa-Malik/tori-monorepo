@@ -16,7 +16,7 @@ const ImageCarousel: React.FC<Props> = ({ images }) => {
           src={images[current]}
           alt={`Image ${current + 1}`}
           className="h-full w-full object-cover"
-          loading="lazy"
+          loading="eager"
         />
       </div>
       <button aria-label="Previous" onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-3 py-1 text-sm">‹</button>
