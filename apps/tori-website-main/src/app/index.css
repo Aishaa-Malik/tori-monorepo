@@ -762,15 +762,38 @@ body.menu-open .menu-toggle {
 
   /* --- 4. THE MOCKUP & TAGLINE --- */
   .hero .hero-mockup {
-    order: 4; /* Keeps image at the bottom */
     position: relative !important;
-    margin: 0 auto !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin: -4rem auto 0 auto !important; /* Adjusted margin */
     width: 80% !important;
-    max-width: 300px !important;
-    height: 168px !important;
-    z-index: 1 !important;
+    max-width: 300px;
+    height: auto !important;
+    mask-image: none !important; 
+    -webkit-mask-image: none !important;
+    z-index: 1; /* Keep it behind text */
   }
 
+  /* This targets the 'ghost' container GSAP creates with higher specificity */
+  body .pin-spacer,
+  .spotlight .pin-spacer {
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .hero {
+    height: 100vh !important;
+    top: 0 !important;
+    position: relative !important;
+  }
+  
   .hero-tagline {
     order: 3; /* Appears between button and mockup */
     margin-top: 1rem !important;

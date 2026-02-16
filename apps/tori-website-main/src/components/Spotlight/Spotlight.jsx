@@ -36,12 +36,19 @@ const vimeoSrc = "https://www.youtube.com/embed/6jca6cMROy8?autoplay=1&mute=1&lo
     scrollTriggerRef.current = ScrollTrigger.create({
       trigger: ".spotlight",
       start: window.innerWidth < 768 ? "0% 0%" : "top top", // Force 0% for mobile
-      end: window.innerWidth < 768 ? "+=200%" : "+=100%", // Limit mobile height
+      end: window.innerWidth < 768 ? "+=100%" : "+=100%", // Limit mobile height
       pin: true,
-      pinSpacing: true,
+      pinSpacing: window.innerWidth < 768 ? false : true, // Disable pin spacing on mobile to prevent jump
       immediateRender: true, // Prevent layout jump
       refreshPriority: 1, // Ensures this calculates after other elements
-      onRefresh: () => console.log("GSAP Recalculated"),
+      onRefresh: (self) => {
+        if (window.innerWidth < 768 && self.spacer) {
+          // Forcefully wipe out the height GSAP just calculated 
+          self.spacer.style.setProperty('height', '100vh', 'important');
+          self.spacer.style.setProperty('padding-bottom', '0', 'important');
+          self.spacer.style.setProperty('margin-bottom', '0', 'important');
+        }
+      },
       scrub: 1,
       anticipatePin: 1,
       onUpdate: (self) => {
