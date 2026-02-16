@@ -64,11 +64,11 @@ body {
 
 .hero-header {
   position: absolute;
-  top: 35%;
+  top: 5%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 60%;
-  text-align: center;
+  text-align: top;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -260,21 +260,23 @@ body {
 }
 
 @media (max-width: 1000px) {
-  .about-animated-text {
+  /* Move the header much higher up the screen */
+  .hero-header {
+    top: 55% !important; /* Changed from 45% to reduce the top gap */
+    transform: translate(-50%, 0); /* Stops it from centering vertically */
     width: 90%;
   }
 
-  .about-animated-text p {
-    font-size: 1.25rem;
+  /* Ensure the parent doesn't force extra empty space */
+  .hero-section {
+    height: auto;
+    min-height: 80vh;
+    padding-top: 1rem; /* Adds a small, controlled gap instead of a huge one */
   }
 
-  .about-animated-text .word {
-    margin-right: 0.1rem;
-    margin-bottom: 0.15rem;
-    padding: 0.1rem 0.2rem;
-  }
-
-  .about-animated-text .word.keyword-wrapper {
-    margin: 0 0.2rem 0.1rem 0.1rem;
+  /* Tighten the text spacing */
+  .hero-header h1 {
+    font-size: 10vw; /* Slightly smaller for better mobile fit */
+    line-height: 0.9; /* Keeps lines closer together */
   }
 }

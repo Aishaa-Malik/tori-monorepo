@@ -317,6 +317,9 @@ body.menu-open .menu-toggle {
     text-align: center;
     font-size: 11px; /* Slightly reduce font size for better fit */
   }
+}
+
+@keyframes fadeInUp {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -541,7 +544,8 @@ body.menu-open .menu-toggle {
   }
   .hero .hero-content {
     width: 100%;
-    top: 45svh; /* Adjusted for mobile */
+    top: 15svh !important; /* Adjusted from 45svh to reduce top gap */
+    transform: translate(-50%, 0) !important; /* Changed from -50%, -50% to align top */
   }
   
   .hero .hero-content h1 {
@@ -592,7 +596,7 @@ body.menu-open .menu-toggle {
 
 @media (max-width: 768px) {
   .hero .hero-content {
-    top: 45svh;
+    /* top: 45svh; REMOVED to avoid conflict */
   }
   
   .hero .hero-content h1 {
@@ -718,7 +722,7 @@ body.menu-open .menu-toggle {
     left: auto !important;
     transform: none !important;
     margin: 0 auto;
-    padding-top: 10svh; /* Reduced from 15svh to move content upwards */
+    padding-top: 4rem; /* Adjusted based on user suggestion */
     height: auto;
     padding-bottom: 2rem;
     width: 95%; /* Increased from 90% for wider content */

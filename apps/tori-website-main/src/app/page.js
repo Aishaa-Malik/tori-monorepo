@@ -244,7 +244,7 @@ export default function Home() {
         <div className="hero-gradient"></div>
         <div className="container">
           <div className="hero-content">
-            <Copy animateOnScroll={false} delay={showPreloader ? 9.5 : 0.5}>
+            {/* <Copy animateOnScroll={false} delay={showPreloader ? 9.5 : 0.5}> */}
               <div className="hero-status-pill">
                 <div className="hero-status-content">
                   <div className="hero-status-avatars">
@@ -255,7 +255,7 @@ export default function Home() {
                   <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
                 </div>
               </div>
-            </Copy>
+            {/* </Copy> */}
             <div className="hero-header">
               <Copy animateOnScroll={false} delay={showPreloader ? 10 : 0.85}>
                 
