@@ -245,47 +245,47 @@ export default function Home() {
         <div className="container">
           <div className="hero-content">
             {/* <Copy animateOnScroll={false} delay={showPreloader ? 9.5 : 0.5}> */}
-              <div className="hero-status-pill">
-                <div className="hero-status-content">
-                  <div className="hero-status-avatars">
-                    <div className="hero-status-avatar"><img src="/images/aisha-1.jpg" alt="" /></div>
-                    <div className="hero-status-avatar"><img src="/images/ayush-2.png" alt="" /></div>
-                    
-                  </div>
-                  <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
+            <div className="hero-status-pill">
+              <div className="hero-status-content">
+                <div className="hero-status-avatars">
+                  <div className="hero-status-avatar"><img src="/images/aisha-1.jpg" alt="" /></div>
+                  <div className="hero-status-avatar"><img src="/images/ayush-2.png" alt="" /></div>
+
                 </div>
+                <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
               </div>
+            </div>
             {/* </Copy> */}
             <div className="hero-header">
               <Copy animateOnScroll={false} delay={showPreloader ? 10 : 0.85}>
-                
-<h1>
-  <div className="hero-title-wrapper">
-    <div className="hero-title-row">
-      Tori 
-      <img src="/images/logo.png" alt="Tori" className="inline-logo" style={{width: '70px', height: '70px', display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} />
-    </div>
-    <div className="hero-title-row">
-       lets book Sessions 
-    </div>
-  </div>
-  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem'}}>
-    <span className="itc-garamond"> 
-     over "WHATSAPP" in JUST "10 sec"
-     <img 
-        src="/images/bomb10s.png" 
-        alt="Tori" 
-        className="bomb-icon"   
-     />
-    </span>
-    
-  </div>
-   
-</h1>
 
-<div className="hero-mockup">
-          <img src="/images/phns4.png" alt="Phone mockup" />
- </div>
+                <h1>
+                  <div className="hero-title-wrapper">
+                    <div className="hero-title-row">
+                      Tori
+                      <img src="/images/logo.png" alt="Tori" className="inline-logo" style={{ width: '70px', height: '70px', display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px' }} />
+                    </div>
+                    <div className="hero-title-row">
+                      lets book Sessions
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem' }}>
+                    <span className="itc-garamond">
+                      over "WHATSAPP" in JUST "10 sec"
+                      <img
+                        src="/images/bomb10s.png"
+                        alt="Tori"
+                        className="bomb-icon"
+                      />
+                    </span>
+
+                  </div>
+
+                </h1>
+
+                <div className="hero-mockup">
+                  <img src="/images/phns4.png" alt="Phone mockup" />
+                </div>
 
               </Copy>
             </div>
@@ -295,32 +295,32 @@ export default function Home() {
                   At Terrene, we shape environments that elevate daily life,
                   invite pause, and speak through texture and light.
                 </p> */}
-        
-        
-        
-        <div className="hero-tagline-text">
-  <p className="hero-copy" style={{ lineHeight: '1.5' }}>
-    Your clients live on  
-    <img 
-      src="/images/whatsapp logo.png" 
-      alt="WhatsApp" 
-      style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-    />
-    WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
-    <img 
-      src="/images/gmail logo.png" 
-      alt="Gmail" 
-      style={{ width: '24px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-    />
-    mail they’ll never open? Tori is THE 10-SEC 
-    <img 
-      src="/images/whatsapp logo.png" 
-      alt="WhatsApp" 
-      style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-    />
-    booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
-  </p>
-</div>
+
+
+
+                <div className="hero-tagline-text">
+                  <p className="hero-copy" style={{ lineHeight: '1.5' }}>
+                    Your clients live on
+                    <img
+                      src="/images/whatsapp logo.png"
+                      alt="WhatsApp"
+                      style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }}
+                    />
+                    WhatsApp! Why are you forcing them to use clunky forms 📝 & check
+                    <img
+                      src="/images/gmail logo.png"
+                      alt="Gmail"
+                      style={{ width: '24px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }}
+                    />
+                    mail they’ll never open? Tori is THE 10-SEC
+                    <img
+                      src="/images/whatsapp logo.png"
+                      alt="WhatsApp"
+                      style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }}
+                    />
+                    booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
+                  </p>
+                </div>
               </Copy>
             </div>
             <div className="hero-cta">
@@ -333,10 +333,10 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
-        
-        
-          <div className="hero-stats">
+
+
+
+        <div className="hero-stats">
           <div className="container">
             <div className="stat">
               <div className="stat-count">
@@ -399,7 +399,7 @@ export default function Home() {
       </section>
       <ProcessAnimation />
 
-      
+
       <section className="featured-projects-container" id="features">
         <div className="container">
           <div className="featured-projects-header-callout">
@@ -436,15 +436,15 @@ export default function Home() {
         </div>
       </section>
 
-      
-      
+
+
       {/* Process in focus section */}
       <section className="how-we-work-container" id="process">
         <div className="container">
           <HowWeWork />
         </div>
       </section>
-      
+
       {/* Testimonials Section removed for re-implementation */}
       <div id="testimonials">
         <ScrollSection />

@@ -18,6 +18,11 @@ const vimeoSrc = "https://www.youtube.com/embed/6jca6cMROy8?autoplay=1&mute=1&lo
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    
+    // Add initialized class after mount
+    if (spotlightRef.current) {
+      spotlightRef.current.classList.add("is-initialized");
+    }
 
     const introTextElements = introTextElementsRef.current;
 
@@ -30,10 +35,13 @@ const vimeoSrc = "https://www.youtube.com/embed/6jca6cMROy8?autoplay=1&mute=1&lo
     
     scrollTriggerRef.current = ScrollTrigger.create({
       trigger: ".spotlight",
-      start: "top top",
-      end: "+=100%",
+      start: window.innerWidth < 768 ? "0% 0%" : "top top", // Force 0% for mobile
+      end: window.innerWidth < 768 ? "+=200%" : "+=100%", // Limit mobile height
       pin: true,
       pinSpacing: true,
+      immediateRender: true, // Prevent layout jump
+      refreshPriority: 1, // Ensures this calculates after other elements
+      onRefresh: () => console.log("GSAP Recalculated"),
       scrub: 1,
       anticipatePin: 1,
       onUpdate: (self) => {
