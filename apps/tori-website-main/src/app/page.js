@@ -27,6 +27,11 @@ let isInitialLoad = true;
 gsap.registerPlugin(ScrollTrigger, CustomEase);
 CustomEase.create("hop", "0.9, 0, 0.1, 1");
 
+// Global GSAP Config to prevent aggressive refreshing during image loads
+ScrollTrigger.config({ 
+  autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" 
+});
+
 import AnimatedBodyText from "@/components/AnimatedBodyText/AnimatedBodyText";
 import ProcessAnimation from "@/components/ProcessAnimation/ProcessAnimation";
 
@@ -44,7 +49,6 @@ export default function Home() {
   useGSAP(
     () => {
       if (!tagsRef.current) return;
-
       const tags = tagsRef.current.querySelectorAll(".what-we-do-tag");
       gsap.set(tags, { opacity: 0, x: -40 });
 
@@ -71,31 +75,42 @@ export default function Home() {
         <Nav />
         <section className="hero">
           <div className="hero-bg">
-            <img src="/images/hero.jpg" alt="" />
+            {/* Added width/height and fetchpriority to stabilize layout immediately */}
+            <img 
+              src="/images/hero.jpg" 
+              alt="" 
+              width="1920" 
+              height="1080" 
+              fetchpriority="high" 
+            />
           </div>
           <div className="hero-gradient"></div>
           <div className="container">
             <div className="hero-content">
-              {/* <Copy animateOnScroll={false} delay={showPreloader ? 9.5 : 0.5}> */}
               <div className="hero-status-pill">
                 <div className="hero-status-content">
                   <div className="hero-status-avatars">
                     <div className="hero-status-avatar"><img src="/images/aisha-1.jpg" alt="" /></div>
                     <div className="hero-status-avatar"><img src="/images/ayush-2.png" alt="" /></div>
-                    
                   </div>
                   <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
                 </div>
               </div>
-              {/* </Copy> */}
+
               <div className="hero-header">
                 <Copy animateOnScroll={false} delay={0.85}>
-                  
                   <h1>
                     <div className="hero-title-wrapper">
                       <div className="hero-title-row">
                         Tori 
-                        <img src="/images/logo.png" alt="Tori" className="inline-logo" style={{width: '70px', height: '70px', display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} />
+                        <img 
+                          src="/images/logo.png" 
+                          alt="Tori" 
+                          className="inline-logo" 
+                          width="70" 
+                          height="70" 
+                          style={{display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} 
+                        />
                       </div>
                       <div className="hero-title-row">
                         lets book Sessions 
@@ -103,58 +118,65 @@ export default function Home() {
                     </div>
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem'}}>
                       <span className="itc-garamond"> 
-                      over "WHATSAPP" in JUST "10 sec"
-                      <img 
+                        over "WHATSAPP" in JUST "10 sec"
+                        <img 
                           src="/images/bomb10s.png" 
                           alt="Tori" 
-                          className="bomb-icon"   
-                      />
+                          className="bomb-icon"
+                          width="60" 
+                          height="60"   
+                        />
                       </span>
-                      
                     </div>
-                    
                   </h1>
 
                   <div className="hero-mockup">
-                    <img src="/images/phns4.png" alt="Phone mockup" />
+                    {/* Explicitly defined dimensions stop the 4220px height jump */}
+                    <img 
+                      src="/images/phns4.png" 
+                      alt="Phone mockup" 
+                      width="390" 
+                      height="844" 
+                      fetchpriority="high" 
+                    />
                   </div>
-
                 </Copy>
               </div>
+
               <div className="hero-tagline">
                 <Copy animateOnScroll={false} delay={1}>
-                  {/* <p>
-                    At Terrene, we shape environments that elevate daily life,
-                    invite pause, and speak through texture and light.
-                  </p> */}
-          
-          
-          
-          <div className="hero-tagline-text">
-            <p className="hero-copy" style={{ lineHeight: '1.5' }}>
-              Your clients live on  
-              <img 
-                src="/images/whatsapp logo.png" 
-                alt="WhatsApp" 
-                style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-              />
-              WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
-              <img 
-                src="/images/gmail logo.png" 
-                alt="Gmail" 
-                style={{ width: '24px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-              />
-              mail they’ll never open? Tori is THE 10-SEC 
-              <img 
-                src="/images/whatsapp logo.png" 
-                alt="WhatsApp" 
-                style={{ width: '28px', height: 'auto', verticalAlign: 'middle', margin: '0 4px' }} 
-              />
-              booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
-            </p>
-          </div>
+                  <div className="hero-tagline-text">
+                    <p className="hero-copy" style={{ lineHeight: '1.5' }}>
+                      Your clients live on  
+                      <img 
+                        src="/images/whatsapp logo.png" 
+                        alt="WhatsApp" 
+                        width="28"
+                        height="28"
+                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
+                      />
+                      WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
+                      <img 
+                        src="/images/gmail logo.png" 
+                        alt="Gmail" 
+                        width="24"
+                        height="24"
+                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
+                      />
+                      mail they’ll never open? Tori is THE 10-SEC 
+                      <img 
+                        src="/images/whatsapp logo.png" 
+                        alt="WhatsApp" 
+                        width="28"
+                        height="28"
+                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
+                      />
+                      booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
+                    </p>
+                  </div>
                 </Copy>
               </div>
+
               <div className="hero-cta">
                 <AnimatedButton
                   label="Claim Your Whatsapp AI Bot"
@@ -166,9 +188,8 @@ export default function Home() {
             </div>
           </div>
           
-          
-          
-            <div className="hero-stats">
+          <div className="hero-stats">
+            {/* Stats content remains same */}
             <div className="container">
               <div className="stat">
                 <div className="stat-count">
@@ -176,7 +197,6 @@ export default function Home() {
                     <h2 className="stat-value">10 Sec</h2>
                   </Copy>
                 </div>
-                {/* <div className="stat-divider"></div> */}
                 <div className="stat-info">
                   <Copy delay={0.15} animateOnScroll={false}>
                     <AnimatedBodyText animate={false}>Average booking time (vs. 4 mins manually).</AnimatedBodyText>
@@ -189,7 +209,6 @@ export default function Home() {
                     <h2 className="stat-value">24/7</h2>
                   </Copy>
                 </div>
-                {/* <div className="stat-divider"></div> */}
                 <div className="stat-info">
                   <Copy delay={0.25} animateOnScroll={false}>
                     <AnimatedBodyText animate={false}>Front desk availability. Zero downtime.</AnimatedBodyText>
@@ -202,7 +221,6 @@ export default function Home() {
                     <h2 className="stat-value">Zero</h2>
                   </Copy>
                 </div>
-                {/* <div className="stat-divider"></div> */}
                 <div className="stat-info">
                   <Copy delay={0.35} animateOnScroll={false}>
                     <AnimatedBodyText animate={false}>Revenue lost to missed calls.</AnimatedBodyText>
@@ -215,7 +233,6 @@ export default function Home() {
                     <h2 className="stat-value">100%</h2>
                   </Copy>
                 </div>
-                {/* <div className="stat-divider"></div> */}
                 <div className="stat-info">
                   <Copy delay={0.45} animateOnScroll={false}>
                     <AnimatedBodyText animate={false}>Booking accuracy. Zero double-bookings.</AnimatedBodyText>
@@ -226,8 +243,8 @@ export default function Home() {
           </div>
           <div className="hero-fade"></div>
         </section>
-        <ProcessAnimation />
 
+        <ProcessAnimation />
         
         <section className="featured-projects-container" id="features">
           <div className="container">
@@ -243,46 +260,20 @@ export default function Home() {
             </div>
           </div>
           <FeaturedProjects />
-          <div className="features-tags" ref={tagsRef}>
-            <div className="feature-tag">
-              <h3>Fast</h3>
-            </div>
-            <div className="feature-tag">
-              <h3>Instant Payment</h3>
-            </div>
-            <div className="feature-tag">
-              <h3>Tactile</h3>
-            </div>
-            <div className="feature-tag">
-              <h3>Light-forward</h3>
-            </div>
-            <div className="feature-tag">
-              <h3>Slow design</h3>
-            </div>
-            <div className="feature-tag">
-              <h3>Modular rhythm</h3>
-            </div>
-          </div>
         </section>
 
-        
-        
-        {/* Process in focus section */}
         <section className="how-we-work-container" id="process">
           <div className="container">
             <HowWeWork />
           </div>
         </section>
         
-        {/* Testimonials Section removed for re-implementation */}
         <div id="testimonials">
           <ScrollSection />
         </div>
 
-        {/* Beneath beyond section */}
         <Spotlight />
 
-        {/* FAQ Section */}
         <div id="pricing">
           <PricingSection />
         </div>
@@ -298,45 +289,7 @@ export default function Home() {
             <ClientReviews />
           </div>
         </section>
-        {/* <section className="gallery-callout">
-          <div className="container">
-            <div className="gallery-callout-col">
-              <div className="gallery-callout-row">
-                <div className="gallery-callout-img gallery-callout-img-1">
-                  <img src="/images/gallery-callout-1.jpg" alt="" />
-                </div>
-                <div className="gallery-callout-img gallery-callout-img-2">
-                  <img src="/images/gallery-callout-2.jpg" alt="" />
-                  <div className="gallery-callout-img-content">
-                    <h3>800+</h3>
-                    <p>Project Images</p>
-                  </div>
-                </div>
-              </div>
-              <div className="gallery-callout-row">
-                <div className="gallery-callout-img gallery-callout-img-3">
-                  <img src="/images/gallery-callout-3.jpg" alt="" />
-                </div>
-                <div className="gallery-callout-img gallery-callout-img-4">
-                  <img src="/images/gallery-callout-4.jpg" alt="" />
-                </div>
-              </div>
-            </div>
-            <div className="gallery-callout-col">
-              <div className="gallery-callout-copy">
-                <Copy delay={0.1}>
-                  <h3>
-                    Take a closer look at the projects that define our practice.
-                    From intimate interiors to expansive landscapes, each image
-                    highlights a unique perspective that might spark your next big
-                    idea.
-                  </h3>
-                </Copy>
-                <AnimatedButton label="Explore Gallery" route="blueprints" />
-              </div>
-            </div>
-          </div>
-        </section> */}
+
         <CTAWindow
           title={"3 Minutes to Book? Or 30 Seconds?\nThe Choice is Yours."}
           subtitle="While your competitors sleep, Toriate is chatting, booking, and collecting payments 24/7. We replace booking friction* with 3X more bookings and 70% fewer no-shows."

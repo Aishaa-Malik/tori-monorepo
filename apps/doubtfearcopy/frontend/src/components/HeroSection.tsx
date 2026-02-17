@@ -110,7 +110,7 @@ const HeroSection: React.FC = () => {
       start: "top top",
       end: `+=${window.innerHeight * 4}px`,
       pin: true,
-      pinSpacing: true,
+      pinSpacing: false,
       pinType: "fixed", // Ensures proper pin-spacer creation
       anticipatePin: 1, // Improves pin performance
       markers: false, // Set to true for debugging

@@ -32,7 +32,7 @@ const PricingSection = () => {
         end: `+=${totalScrollHeight}`,
         pin: true,
         scrub: 1,
-        pinSpacing: true,
+        pinSpacing: false,
       }
     });
 

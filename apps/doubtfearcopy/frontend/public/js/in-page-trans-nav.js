@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
     start: "top bottom",
     end: `+=${portraitsSectionPinnedHeight}`,
     pin: true,
-    pinSpacing: true,
+    pinSpacing: false,
   });
 
   window.ScrollTrigger.create({
@@ -373,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
     start: "top top",
     end: `+=${carouselSectionPinnedHeight}`,
     pin: true,
-    pinSpacing: true,
+    pinSpacing: false,
   });
 
 

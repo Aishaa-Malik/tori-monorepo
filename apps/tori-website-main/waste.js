@@ -26,7 +26,7 @@ export default function Home() {
         start: "top top",
         end: () => `+=${totalScrollHeight}`,
         pin: true,
-        pinSpacing: true,
+        pinSpacing: false,
       });
 
       cards.forEach((card, index) => {

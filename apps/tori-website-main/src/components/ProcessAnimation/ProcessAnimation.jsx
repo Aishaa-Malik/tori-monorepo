@@ -54,7 +54,7 @@ const ProcessAnimation = () => {
       pin: container, 
       start: "top top", 
       end: `+=${window.innerHeight * 4}`, 
-      pinSpacing: true, 
+      pinSpacing: false, 
       onUpdate: (self) => { 
         const progress = self.progress; 
 

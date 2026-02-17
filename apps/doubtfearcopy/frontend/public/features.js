@@ -115,7 +115,7 @@ function initializeFeatures() {
     start: "top top",
     end: () => `+=${window.innerHeight * 4}px`, // Adjust scroll distance
     pin: true,
-    pinSpacing: true,
+    pinSpacing: false,
     scrub: 1,
     markers: false, // Remove markers for production
     onEnter: () => {
