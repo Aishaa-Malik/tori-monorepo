@@ -24,13 +24,26 @@ import ScrollSection from "@/components/ScrollSection/ScrollSection";
 import Preloader from "@/components/Preloader/Preloader";
 
 let isInitialLoad = true;
-gsap.registerPlugin(ScrollTrigger, CustomEase);
-CustomEase.create("hop", "0.9, 0, 0.1, 1");
 
-// Global GSAP Config to prevent aggressive refreshing during image loads
-ScrollTrigger.config({ 
-  autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" 
-});
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, CustomEase);
+  CustomEase.create("hop", "0.9, 0, 0.1, 1");
+
+  ScrollTrigger.config({ 
+    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+    limitCallbacks: true, // ADD THIS
+  });
+  
+  // ADD: Disable during resize to prevent layout thrashing
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+  });
+}
+
 
 import AnimatedBodyText from "@/components/AnimatedBodyText/AnimatedBodyText";
 import ProcessAnimation from "@/components/ProcessAnimation/ProcessAnimation";
@@ -45,6 +58,36 @@ export default function Home() {
       isInitialLoad = false;
     };
   }, []);
+
+  useEffect(() => {
+  // Refresh ScrollTrigger after all images load
+  const images = document.querySelectorAll('img');
+  let loadedImages = 0;
+  
+  const checkAllImagesLoaded = () => {
+    loadedImages++;
+    if (loadedImages === images.length) {
+      ScrollTrigger.refresh();
+    }
+  };
+  
+  images.forEach(img => {
+    if (img.complete) {
+      checkAllImagesLoaded();
+    } else {
+      img.addEventListener('load', checkAllImagesLoaded);
+      img.addEventListener('error', checkAllImagesLoaded);
+    }
+  });
+  
+  return () => {
+    images.forEach(img => {
+      img.removeEventListener('load', checkAllImagesLoaded);
+      img.removeEventListener('error', checkAllImagesLoaded);
+    });
+  };
+}, [isReady]);
+
 
   useGSAP(
     () => {
@@ -130,16 +173,6 @@ export default function Home() {
                     </div>
                   </h1>
 
-                  <div className="hero-mockup">
-                    {/* Explicitly defined dimensions stop the 4220px height jump */}
-                    <img 
-                      src="/images/phns4.png" 
-                      alt="Phone mockup" 
-                      width="390" 
-                      height="844" 
-                      fetchpriority="high" 
-                    />
-                  </div>
                 </Copy>
               </div>
 
@@ -183,6 +216,17 @@ export default function Home() {
                   route="/contact"
                   animateOnScroll={false}
                   delay={1.15}
+                />
+              </div>
+
+              <div className="hero-mockup">
+                {/* Explicitly defined dimensions stop the 4220px height jump */}
+                <img 
+                  src="/images/phns4.png" 
+                  alt="Phone mockup" 
+                  width="390" 
+                  height="844" 
+                  fetchpriority="high" 
                 />
               </div>
             </div>

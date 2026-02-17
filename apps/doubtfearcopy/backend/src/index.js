@@ -19,7 +19,7 @@ app.use(cors({
     'Cache-Control',
     'X-Requested-With',
     'Accept',
-    'pragma'
+  'pragma'
   ]
 }));
 

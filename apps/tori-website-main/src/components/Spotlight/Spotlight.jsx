@@ -38,7 +38,7 @@ const Spotlight = () => {
     let hasReachedFullScreen = false;
     
     scrollTriggerRef.current = ScrollTrigger.create({
-      trigger: ".hero", // Ensure this matches your Hero section class
+      trigger: ".spotlight", // Changed from .hero to .spotlight to only pin this section
       start: window.innerWidth < 768 ? "0% 0%" : "top top", // Force 0% for mobile
       end: window.innerWidth < 768 ? "+=100%" : "+=100%", // Limit mobile height
       pin: true,

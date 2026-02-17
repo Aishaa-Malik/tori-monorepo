@@ -275,7 +275,7 @@ body.menu-open .menu-toggle {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2.5rem; /* Increased gap from 0.5rem to fix overlap */
+  gap: 1.5rem; /* Increased gap from 0.5rem to fix overlap */
   padding: 1rem;
   z-index: 10; /* Ensure content is above mockup */
 }
@@ -291,6 +291,8 @@ body.menu-open .menu-toggle {
   }
 
 @media (max-width: 768px) {
+
+
   .hero .hero-status-pill {
     position: relative; /* Changed from absolute to relative to prevent clipping */
     top: auto;
@@ -586,12 +588,15 @@ body.menu-open .menu-toggle {
 
 @media (max-width: 768px) {
   .hero .hero-content {
+    gap: 1rem !important; /* TIGHTER ON MOBILE */
+
     /* top: 45svh; REMOVED to avoid conflict */
   }
   
   .hero .hero-content h1 {
     font-size: 2.5rem;
     gap: 0.1rem; /* Reduce gap significantly */
+    line-height: 1.1; /* CHANGED FROM 0.85 */
     flex-direction: column; /* Keep column direction but adjust children */
     align-items: center;
   }
@@ -626,17 +631,17 @@ body.menu-open .menu-toggle {
   .hero {
     height: auto !important; /* Allow height to grow with content */
     min-height: 100svh;
-    padding-bottom: 2rem;
+    padding-bottom: 40vh; /* SPACE FOR MOCKUP */
   }
   .hero .hero-content {
-    position: relative !important; /* Flow naturally */
+    position: relative !important;
     top: auto !important;
     left: auto !important;
     transform: none !important;
     margin: 0 auto;
-    padding-top: 15svh; /* Keep top spacing */
-    padding-bottom: 0;
-    gap: 1.5rem; /* Reduced gap between header and copy */
+    padding-top: 12vh; /* ADJUSTED */
+    padding-bottom: 2rem;
+    gap: 2rem; /* INCREASED FROM 1.5rem */
   }
   .hero .hero-stats {
     position: relative !important; /* Flow after content */
@@ -646,6 +651,14 @@ body.menu-open .menu-toggle {
 
   .hero .hero-stats .stat-value {
     font-size: 3.5rem !important; /* Force mobile font size */
+  }
+  .hero .hero-mockup {
+    position: absolute !important; /* BACK TO ABSOLUTE */
+    bottom: -10vh !important; /* OVERLAP SLIGHTLY */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 85% !important;
+    max-width: 320px !important;
   }
 }
 
@@ -682,7 +695,7 @@ body.menu-open .menu-toggle {
 @media (max-width: 768px) {
   /* --- 1. THE CONTENT WRAPPER --- */
 /* Update this specific block in your code */
-@media (max-width: 768px) {
+
   .hero .hero-content {
     display: flex !important;
     flex-direction: column !important;
@@ -701,7 +714,7 @@ body.menu-open .menu-toggle {
     width: 100% !important;
     z-index: 10;
   }
-}
+
 
   /* --- 2. THE HEADER & H1 SNAPPER --- */
 .hero-header {
@@ -727,8 +740,8 @@ body.menu-open .menu-toggle {
   /* Remove any padding/height from the internal GSAP/animation masks */
   .line1-mask, .line2-mask {
     height: auto !important;
-    max-height: 900px !important;
-    padding: 0 !important;
+    max-height: none !important;
+    padding: 0.5rem !important;
     margin: 0 !important;
   }
 
@@ -763,12 +776,11 @@ body.menu-open .menu-toggle {
   section.hero + .pin-spacer,
   .spotlight .pin-spacer {
     height: auto !important;
-    min-height: 70vh !important;
-    padding: 0 !important; /* Forces out the injected 2624px padding */
+    min-height: unset !important; /* CHANGED FROM 70vh */
+    padding: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
-    overflow: hidden !important;
   }
 
   .hero {
