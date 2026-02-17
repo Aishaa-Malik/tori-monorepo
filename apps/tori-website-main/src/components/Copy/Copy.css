@@ -4,4 +4,18 @@
   will-change: transform;
   padding-bottom: 0.2em;
   margin-bottom: -0.2em;
+  overflow: visible !important; /* ✅ Prevent clipping */
+}
+
+/* ✅ Ensure parent doesn't clip */
+[data-copy-wrapper="true"] {
+  overflow: visible !important;
+}
+
+/* ✅ Mobile: Disable SplitText artifacts */
+@media (max-width: 768px) {
+  .line {
+    overflow: visible !important;
+    clip-path: none !important;
+  }
 }

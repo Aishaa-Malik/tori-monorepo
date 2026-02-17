@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import gsap from 'gsap'; 
 import { ScrollTrigger } from 'gsap/ScrollTrigger'; 
 import { useGSAP } from '@gsap/react'; 
-import Lenis from 'lenis'; 
 import './ProcessAnimation.css'; 
 
 const ProcessAnimation = () => { 
@@ -49,12 +48,13 @@ const ProcessAnimation = () => {
     const allWords = Array.from(container.querySelectorAll(".word")); 
     const totalWords = allWords.length; 
 
-    ScrollTrigger.create({ 
+    const st = ScrollTrigger.create({ 
       trigger: container, 
       pin: container, 
-      start: "top top", 
+      start: "top 80%", 
       end: `+=${window.innerHeight * 4}`, 
       pinSpacing: false, 
+      anticipatePin: 1,
       onUpdate: (self) => { 
         const progress = self.progress; 
 
@@ -62,7 +62,7 @@ const ProcessAnimation = () => {
           const wordText = word.querySelector("span"); 
 
           if (progress <= 0.7) { 
-            const progressTarget = 0.7; 
+            const progressTarget = 0.55; 
             const revealProgress = Math.min(1, progress / progressTarget); 
             const overlapWords = 15; 
             const totalAnimationLength = 1 + overlapWords / totalWords; 
@@ -81,9 +81,9 @@ const ProcessAnimation = () => {
             const backgroundOpacity = Math.max(0, 1 - backgroundFadeStart); 
             word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`; 
 
-            const textRevealThreshold = 0.9; 
-            const textRevealProgress = wordProgress >= textRevealThreshold ? (wordProgress - textRevealThreshold) / (1 - textRevealThreshold) : 0; 
-            wordText.style.opacity = Math.pow(textRevealProgress, 0.5); 
+            const textRevealThreshold = 0.2; 
+            const textRevealProgress = wordProgress <= textRevealThreshold ? 0 : (wordProgress - textRevealThreshold) / (1 - textRevealThreshold); 
+            wordText.style.opacity = textRevealProgress; 
           } else { 
             const reverseProgress = (progress - 0.7) / 0.3; 
             word.style.opacity = 1; 
@@ -110,7 +110,9 @@ const ProcessAnimation = () => {
       }, 
     }); 
 
-    return () => lenis.destroy(); 
+    return () => {
+      st.kill();
+    }; 
   }, { scope: containerRef }); 
 
   return ( 

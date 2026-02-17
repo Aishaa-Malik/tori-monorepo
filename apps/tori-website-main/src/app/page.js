@@ -166,8 +166,8 @@ export default function Home() {
                           src="/images/bomb10s.png" 
                           alt="Tori" 
                           className="bomb-icon"
-                          width="60" 
-                          height="60"   
+                          width="30" 
+                          height="30"   
                         />
                       </span>
                     </div>
@@ -176,48 +176,72 @@ export default function Home() {
                 </Copy>
               </div>
 
-              <div className="hero-tagline">
-                <Copy animateOnScroll={false} delay={1}>
-                  <div className="hero-tagline-text">
-                    <p className="hero-copy" style={{ lineHeight: '1.5' }}>
-                      Your clients live on  
-                      <img 
-                        src="/images/whatsapp logo.png" 
-                        alt="WhatsApp" 
-                        width="28"
-                        height="28"
-                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
-                      />
-                      WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
-                      <img 
-                        src="/images/gmail logo.png" 
-                        alt="Gmail" 
-                        width="24"
-                        height="24"
-                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
-                      />
-                      mail they’ll never open? Tori is THE 10-SEC 
-                      <img 
-                        src="/images/whatsapp logo.png" 
-                        alt="WhatsApp" 
-                        width="28"
-                        height="28"
-                        style={{ verticalAlign: 'middle', margin: '0 4px' }} 
-                      />
-                      booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
-                    </p>
-                  </div>
-                </Copy>
-              </div>
+            <div className="hero-tagline">
+  <Copy animateOnScroll={false} delay={1}>
+    <div className="hero-tagline-text">
+      <p className="hero-copy" style={{ lineHeight: '1.2' }}>
+        Your clients live on  
+        <img 
+          src="/images/whatsapp logo.png" 
+          alt="WhatsApp" 
+          width="18"  // ✅ CHANGE THIS
+          height="18" // ✅ CHANGE THIS
+          style={{ 
+            verticalAlign: 'middle', 
+            margin: '0 4px',
+            width: '18px',  // ✅ ADD THIS to force size
+            height: '18px'  // ✅ ADD THIS to force size
+          }} 
+        />
+        WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
+        <img 
+          src="/images/gmail logo.png" 
+          alt="Gmail" 
+          width="16"  // ✅ CHANGE THIS
+          height="16" // ✅ CHANGE THIS
+          style={{ 
+            verticalAlign: 'middle', 
+            margin: '0 4px',
+            width: '16px',  // ✅ ADD THIS to force size
+            height: '16px'  // ✅ ADD THIS to force size
+          }} 
+        />
+        mail they'll never open? Tori is THE 10-SEC 
+        <img 
+          src="/images/whatsapp logo.png" 
+          alt="WhatsApp" 
+          width="18"  // ✅ CHANGE THIS
+          height="18" // ✅ CHANGE THIS
+          style={{ 
+            verticalAlign: 'middle', 
+            margin: '0 4px',
+            width: '18px',  // ✅ ADD THIS to force size
+            height: '18px'  // ✅ ADD THIS to force size
+          }} 
+        />
+        booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
+      </p>
+    </div>
+  </Copy>
+</div>
 
-              <div className="hero-cta">
-                <AnimatedButton
-                  label="Claim Your Whatsapp AI Bot"
-                  route="/contact"
-                  animateOnScroll={false}
-                  delay={1.15}
-                />
-              </div>
+
+
+             <div className="hero-cta">
+  <AnimatedButton
+    label={
+      <>
+        GET YOUR 24/7 AI RECEPTIONIST &<br />
+        REIMAGINE BOOKING EXPERIENCE <br />of CUSTOMERS 
+      </>
+    }
+    // route="/contact"
+    animateOnScroll={false}
+    delay={1.15}
+  />
+</div>
+
+
 
               <div className="hero-mockup">
                 {/* Explicitly defined dimensions stop the 4220px height jump */}

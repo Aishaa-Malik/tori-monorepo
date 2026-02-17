@@ -43,6 +43,40 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
 
         if (!containerRef.current) return;
 
+        // ✅ CHECK IF MOBILE
+        const isMobile = window.innerWidth <= 768;
+
+        // ✅ MOBILE: Skip SplitText, use simple fade animation
+        if (isMobile) {
+          gsap.set(containerRef.current, { opacity: 0, y: 20 });
+          
+          if (animateOnScroll) {
+            gsap.to(containerRef.current, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              delay: delay,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 90%",
+                once: true,
+              },
+            });
+          } else {
+            gsap.to(containerRef.current, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              delay: delay,
+              ease: "power2.out",
+            });
+          }
+          
+          return; // ✅ EXIT - Don't run SplitText on mobile
+        }
+
+        // ✅ DESKTOP: Use SplitText as normal
         splitRefs.current = [];
         lines.current = [];
         elementRefs.current = [];
@@ -59,7 +93,7 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
 
           const split = SplitText.create(element, {
             type: "lines",
-            mask: "lines",
+            mask: false, // ✅ Changed from "lines" to false
             linesClass: "line++",
             lineThreshold: 0.1,
           });
@@ -87,6 +121,10 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
           stagger: 0.1,
           ease: "power4.out",
           delay: delay,
+          onComplete: () => {
+            // ✅ Ensure visibility after animation
+            gsap.set(lines.current, { clearProps: "transform" });
+          }
         };
 
         if (animateOnScroll) {
@@ -96,10 +134,28 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
               trigger: containerRef.current,
               start: "top 90%",
               once: true,
+              onEnter: () => {
+                // ✅ Fallback: Make visible if animation fails
+                setTimeout(() => {
+                  if (lines.current.length > 0) {
+                    const firstLine = lines.current[0];
+                    const transform = window.getComputedStyle(firstLine).transform;
+                    if (!transform || transform === 'none' || !transform.includes('matrix')) {
+                      // Fallback: Force visible
+                      gsap.set(lines.current, { y: "0%" });
+                    }
+                  }
+                }, 2000);
+              }
             },
           });
         } else {
           gsap.to(lines.current, animationProps);
+          
+          // ✅ Desktop fallback: Ensure animation completes
+          setTimeout(() => {
+            gsap.set(lines.current, { y: "0%" });
+          }, delay * 1000 + 1500);
         }
       };
 
