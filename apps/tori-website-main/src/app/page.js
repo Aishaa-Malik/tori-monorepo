@@ -23,6 +23,7 @@ import PricingSection from "@/components/PricingSection";
 import ScrollSection from "@/components/ScrollSection/ScrollSection";
 import Preloader from "@/components/Preloader/Preloader";
 
+
 let isInitialLoad = true;
 
 if (typeof window !== "undefined") {
@@ -31,10 +32,9 @@ if (typeof window !== "undefined") {
 
   ScrollTrigger.config({ 
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
-    limitCallbacks: true, // ADD THIS
+    limitCallbacks: true,
   });
   
-  // ADD: Disable during resize to prevent layout thrashing
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -43,7 +43,6 @@ if (typeof window !== "undefined") {
     }, 250);
   });
 }
-
 
 import AnimatedBodyText from "@/components/AnimatedBodyText/AnimatedBodyText";
 import ProcessAnimation from "@/components/ProcessAnimation/ProcessAnimation";
@@ -60,34 +59,32 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-  // Refresh ScrollTrigger after all images load
-  const images = document.querySelectorAll('img');
-  let loadedImages = 0;
-  
-  const checkAllImagesLoaded = () => {
-    loadedImages++;
-    if (loadedImages === images.length) {
-      ScrollTrigger.refresh();
-    }
-  };
-  
-  images.forEach(img => {
-    if (img.complete) {
-      checkAllImagesLoaded();
-    } else {
-      img.addEventListener('load', checkAllImagesLoaded);
-      img.addEventListener('error', checkAllImagesLoaded);
-    }
-  });
-  
-  return () => {
+    const images = document.querySelectorAll('img');
+    let loadedImages = 0;
+    
+    const checkAllImagesLoaded = () => {
+      loadedImages++;
+      if (loadedImages === images.length) {
+        ScrollTrigger.refresh();
+      }
+    };
+    
     images.forEach(img => {
-      img.removeEventListener('load', checkAllImagesLoaded);
-      img.removeEventListener('error', checkAllImagesLoaded);
+      if (img.complete) {
+        checkAllImagesLoaded();
+      } else {
+        img.addEventListener('load', checkAllImagesLoaded);
+        img.addEventListener('error', checkAllImagesLoaded);
+      }
     });
-  };
-}, [isReady]);
-
+    
+    return () => {
+      images.forEach(img => {
+        img.removeEventListener('load', checkAllImagesLoaded);
+        img.removeEventListener('error', checkAllImagesLoaded);
+      });
+    };
+  }, [isReady]);
 
   useGSAP(
     () => {
@@ -118,7 +115,6 @@ export default function Home() {
         <Nav />
         <section className="hero">
           <div className="hero-bg">
-            {/* Added width/height and fetchpriority to stabilize layout immediately */}
             <img 
               src="/images/hero.jpg" 
               alt="" 
@@ -129,94 +125,113 @@ export default function Home() {
           </div>
           <div className="hero-gradient"></div>
           <div className="container">
-            <div className="hero-content">
-              <div className="hero-status-pill">
-                <div className="hero-status-content">
-                  <div className="hero-status-avatars">
-                    <div className="hero-status-avatar"><img src="/images/aisha-1.jpg" alt="" /></div>
-                    <div className="hero-status-avatar"><img src="/images/ayush-2.png" alt="" /></div>
-                  </div>
-                  <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
-                </div>
-              </div>
+           <div className="hero-content">
+  <div className="hero-status-pill">
+    <div className="hero-status-content">
+      <div className="hero-status-avatars">
+        <div className="hero-status-avatar"><img src="/images/aisha-1.jpg" alt="" /></div>
+        <div className="hero-status-avatar"><img src="/images/ayush-2.png" alt="" /></div>
+      </div>
+      <span className="hero-status-text">Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur</span>
+    </div>
+  </div>
 
-              <div className="hero-header">
-                <Copy animateOnScroll={false} delay={0.85}>
-                  <h1>
-                    <div className="hero-title-wrapper">
-                      <div className="hero-title-row">
-                        Tori 
-                        <img 
-                          src="/images/logo.png" 
-                          alt="Tori" 
-                          className="inline-logo" 
-                          width="70" 
-                          height="70" 
-                          style={{display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} 
-                        />
-                      </div>
-                      <div className="hero-title-row">
-                        lets book Sessions 
-                      </div>
-                    </div>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem'}}>
-                      <span className="itc-garamond"> 
-                        over "WHATSAPP" in JUST "10 sec"
-                        <img 
-                          src="/images/bomb10s.png" 
-                          alt="Tori" 
-                          className="bomb-icon"
-                          width="30" 
-                          height="30"   
-                        />
-                      </span>
-                    </div>
-                  </h1>
+  {/* ✅ NEW: Wrapper for header + tagline ONLY */}
+  <div className="hero-text-section">
+    {/* ✅ Overlay positioned here - covers only this section */}
+    <div className="hero-content-overlay"></div>
 
-                </Copy>
-              </div>
+    <div className="hero-header">
+      <Copy animateOnScroll={false} delay={0.85}>
+        <h1>
+          <div className="hero-title-wrapper">
+            <div className="hero-title-row">
+              Tori 
+              <img 
+                src="/images/logo.png" 
+                alt="Tori" 
+                className="inline-logo" 
+                width="70" 
+                height="70" 
+                style={{display: 'inline-block', verticalAlign: 'middle', margin: '0 -2px'}} 
+              />
+            </div>
+            <div className="hero-title-row">
+              lets book Sessions 
+            </div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.3rem'}}>
+            <span className="itc-garamond"> 
+              over "WHATSAPP" in JUST "10 sec"
+              <img 
+                src="/images/bomb10s.png" 
+                alt="Tori" 
+                className="bomb-icon"
+                width="30" 
+                height="30"   
+              />
+            </span>
+                <div className="hero-cta">
+    <AnimatedButton
+          className="holiday-style"
+      label={
+        <>
+         Book any service in 10 sec
+        </>
+      }
+      animateOnScroll={false}
+      delay={1.15}
+    />
+  </div>
+          </div>
+        </h1>
+      </Copy>
+    </div>
 
-            <div className="hero-tagline">
+
+
+
+   <div className="hero-tagline">
   <Copy animateOnScroll={false} delay={1}>
     <div className="hero-tagline-text">
-      <p className="hero-copy" style={{ lineHeight: '1.2' }}>
-        Your clients live on  
+      <p className="hero-copy">
+        Your clients live on{' '}
         <img 
           src="/images/whatsapp logo.png" 
           alt="WhatsApp" 
-          width="18"  // ✅ CHANGE THIS
-          height="18" // ✅ CHANGE THIS
+          width="18"
+          height="18"
           style={{ 
             verticalAlign: 'middle', 
             margin: '0 4px',
-            width: '18px',  // ✅ ADD THIS to force size
-            height: '18px'  // ✅ ADD THIS to force size
+            width: '18px',
+            height: '18px'
           }} 
         />
-        WhatsApp! Why are you forcing them to use clunky forms 📝 & check  
+        WhatsApp! Why are you forcing them to use clunky forms 📝 & check{' '}
         <img 
           src="/images/gmail logo.png" 
           alt="Gmail" 
-          width="16"  // ✅ CHANGE THIS
-          height="16" // ✅ CHANGE THIS
+          width="16"
+          height="16"
           style={{ 
             verticalAlign: 'middle', 
             margin: '0 4px',
-            width: '16px',  // ✅ ADD THIS to force size
-            height: '16px'  // ✅ ADD THIS to force size
+            width: '16px',
+            height: '16px'
           }} 
         />
-        mail they'll never open? Tori is THE 10-SEC 
+        mail they'll never open? Tori is THE 10-SEC{' '}
         <img 
           src="/images/whatsapp logo.png" 
           alt="WhatsApp" 
-          width="18"  // ✅ CHANGE THIS
-          height="18" // ✅ CHANGE THIS
+          width="18"
+          height="18"
           style={{ 
             verticalAlign: 'middle', 
             margin: '0 4px',
-            width: '18px',  // ✅ ADD THIS to force size
-            height: '18px'  // ✅ ADD THIS to force size
+            width: '18px',
+            height: '18px'
           }} 
         />
         booking engine that <span className="hero-copy-highlight">"CAPTURES the CLIENTS" YOUR "COMPETITORS are LOSING"</span>
@@ -226,38 +241,38 @@ export default function Home() {
 </div>
 
 
+  </div>
+  {/* ✅ Wrapper ends here - gradient stops before CTA */}
 
-             <div className="hero-cta">
-  <AnimatedButton
-    label={
-      <>
-        GET YOUR 24/7 AI RECEPTIONIST &<br />
-        REIMAGINE BOOKING EXPERIENCE <br />of CUSTOMERS 
-      </>
-    }
-    // route="/contact"
-    animateOnScroll={false}
-    delay={1.15}
-  />
+  <div className="hero-cta">
+    <AnimatedButton
+        className="wedges-style"
+      label={
+        <>
+          GET YOUR 24/7 AI RECEPTIONIST &<br />
+          "REIMAGINE" the <br /> "ULTIMATE BOOKING EXPERIENCE" <br />of your CUSTOMERS 
+        </>
+      }
+      animateOnScroll={false}
+      delay={1.15}
+      route={"/contact"}
+    />
+  </div>
+
+  <div className="hero-mockup">
+    <img 
+      src="/images/phns4.png" 
+      alt="Phone mockup" 
+      width="390" 
+      height="944" 
+      fetchpriority="high" 
+    />
+  </div>
 </div>
 
-
-
-              <div className="hero-mockup">
-                {/* Explicitly defined dimensions stop the 4220px height jump */}
-                <img 
-                  src="/images/phns4.png" 
-                  alt="Phone mockup" 
-                  width="390" 
-                  height="844" 
-                  fetchpriority="high" 
-                />
-              </div>
-            </div>
           </div>
           
           <div className="hero-stats">
-            {/* Stats content remains same */}
             <div className="container">
               <div className="stat">
                 <div className="stat-count">
@@ -313,6 +328,9 @@ export default function Home() {
         </section>
 
         <ProcessAnimation />
+
+        {/* ✅ ADD CLEAR SEPARATION */}
+<div style={{ height: '5vh', background: '#0d0c0c' }}></div>
         
         <section className="featured-projects-container" id="features">
           <div className="container">

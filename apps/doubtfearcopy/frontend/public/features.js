@@ -1,191 +1,107 @@
-console.log("=== FEATURES.JS STARTING ===");
+"use client";
+import React, { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import './features.css';
 
-let isInitialized = false; // Prevent multiple initializations
-let retryCount = 0;
-const maxRetries = 10;
+const FeaturedProjects = () => {
+  const stickyRef = useRef(null);
+  const cardsRef = useRef(null);
 
-function initializeFeatures() {
-  if (isInitialized) {
-    console.log("⚠️ Features already initialized, skipping...");
-    return;
-  }
-  
-  console.log(`🚀 Initializing features (attempt ${retryCount + 1}/${maxRetries})`);
-  
-  // Debug: Check what's available
-  console.log("window.gsap available:", !!window.gsap);
-  console.log("window.ScrollTrigger available:", !!window.ScrollTrigger);
-  console.log("Document ready state:", document.readyState);
-  
-  // Wait for GSAP to be fully loaded and check global access
-  if (typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') {
-    console.error("❌ GSAP or ScrollTrigger not loaded. Check CDN links in HTML.");
-    console.log("Available on window:", Object.keys(window).filter(key => key.toLowerCase().includes('gsap') || key.toLowerCase().includes('scroll')));
-    
-    if (retryCount < maxRetries) {
-      retryCount++;
-      setTimeout(initializeFeatures, 1000);
+  useGSAP(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const stickySection = stickyRef.current;
+    const cards = cardsRef.current;
+
+    if (!stickySection || !cards) {
+      console.error("❌ Elements not found");
+      return;
     }
-    return;
-  }
-  
-  // Use global variables directly like other working files
-  const gsap = window.gsap;
-  const ScrollTrigger = window.ScrollTrigger;
-  
-  console.log("Direct gsap access:", !!gsap);
-  console.log("Direct ScrollTrigger access:", !!ScrollTrigger);
-  
-  // Register ScrollTrigger
-  gsap.registerPlugin(ScrollTrigger);
-  console.log("✅ ScrollTrigger registered successfully");
-  
-  // Find elements with detailed logging
-  console.log("🔍 Looking for elements...");
-  const stickySection = document.querySelector(".features-sticky");
-  const cards = document.querySelector(".features-cards");
-  
-  console.log("Sticky section found:", !!stickySection);
-  console.log("Cards found:", !!cards);
-  
-  if (stickySection) {
-    console.log("Sticky section dimensions:", {
-      width: stickySection.offsetWidth,
-      height: stickySection.offsetHeight,
-      top: stickySection.offsetTop
-    });
-  }
-  
-  if (cards) {
-    console.log("Cards dimensions:", {
-      width: cards.offsetWidth,
-      height: cards.offsetHeight,
-      childCount: cards.children.length
-    });
-  }
-  
-  if (!stickySection || !cards) {
-    console.error("❌ Required elements not found:", 
-      !stickySection ? "features-sticky missing" : "", 
-      !cards ? "features-cards missing" : "");
-    
-    // Try again with exponential backoff if elements not found
-    if (retryCount < maxRetries) {
-      retryCount++;
-      const delay = Math.min(1000 * Math.pow(1.5, retryCount), 5000);
-      console.log(`⏳ Retrying in ${delay}ms...`);
-      setTimeout(initializeFeatures, delay);
-    } else {
-      console.error("❌ Max retries reached. Features animation will not work.");
-    }
-    return;
-  }
-  
-  console.log("✅ Found required elements");
-  
-  // Clean up any existing ScrollTriggers for this section
-  ScrollTrigger.getAll().forEach(trigger => {
-    if (trigger.trigger === stickySection) {
-      console.log("🧹 Cleaning up existing ScrollTrigger");
-      trigger.kill();
-    }
-  });
-  
-  // Remove any inline styles that might be interfering
-  cards.removeAttribute("style");
-  console.log("🧹 Removed inline styles from cards");
-  
-  // Set initial position
-  gsap.set(cards, { x: 0 });
-  
-  // Calculate the total scroll distance needed
-  const cardWidth = cards.scrollWidth;
-  const containerWidth = stickySection.offsetWidth;
-  const maxTranslateX = -(cardWidth - containerWidth);
-  
-  console.log("Animation setup:", {
-    cardWidth,
-    containerWidth,
-    maxTranslateX
-  });
-  
-  // Create ScrollTrigger with proper bounds
-  const trigger = ScrollTrigger.create({
-    trigger: stickySection,
-    start: "top top",
-    end: () => `+=${window.innerHeight * 4}px`, // Adjust scroll distance
-    pin: true,
-    pinSpacing: false,
-    scrub: 1,
-    markers: false, // Remove markers for production
-    onEnter: () => {
-      console.log("📍 ScrollTrigger entered");
-    },
-    onLeave: () => {
-      console.log("📍 ScrollTrigger left");
-    },
-    onUpdate: (self) => {
-      // Ensure progress is between 0 and 1
-      const progress = Math.max(0, Math.min(1, self.progress));
-      
-      // Calculate translateX with proper bounds
-      const translateX = Math.max(maxTranslateX, progress * maxTranslateX);
-      
-      // Use GSAP for smooth animation
-      gsap.set(cards, { x: translateX });
-      
-      // Only log occasionally to avoid spam
-      if (Math.floor(progress * 100) % 10 === 0) {
-        console.log(`📊 Progress: ${progress.toFixed(3)}, TranslateX: ${translateX.toFixed(2)}px`);
+
+    // Calculate scroll distance
+    const cardWidth = cards.scrollWidth;
+    const containerWidth = stickySection.offsetWidth;
+    const maxTranslateX = -(cardWidth - containerWidth);
+
+    console.log("✅ Features animation setup:", { cardWidth, containerWidth, maxTranslateX });
+
+    // Create animation
+    const tween = gsap.to(cards, {
+      x: maxTranslateX,
+      ease: "none",
+      scrollTrigger: {
+        trigger: stickySection,
+        start: "top top",
+        end: () => `+=${window.innerHeight * 4}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        markers: false,
+        invalidateOnRefresh: true,
+        onEnter: () => console.log("📍 Features entered"),
+        onLeave: () => console.log("📍 Features left"),
       }
-    }
-  });
-  
-  console.log("✅ ScrollTrigger created:", trigger);
-  isInitialized = true;
-  console.log("=== FEATURES.JS SETUP COMPLETE ===");
-}
+    });
 
-// Use MutationObserver to watch for DOM changes
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      // Check if features elements were added
-      const addedNodes = Array.from(mutation.addedNodes);
-      const hasFeatures = addedNodes.some(node => 
-        node.nodeType === Node.ELEMENT_NODE && 
-        (node.querySelector?.('.features-sticky') || node.classList?.contains('features-sticky'))
-      );
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, { scope: stickyRef, dependencies: [] });
+
+  return (
+    <div className="features-sticky" ref={stickyRef}>
+      <div className="features-bg-img">
+        <canvas className="outline-layer"></canvas>
+        <canvas className="fill-layer"></canvas>
+      </div>
       
-      if (hasFeatures && !isInitialized) {
-        console.log("🔍 Features elements detected via MutationObserver");
-        // Small delay to ensure elements are fully rendered
-        setTimeout(initializeFeatures, 100);
-      }
-    }
-  });
-});
+      <div className="features-cards" ref={cardsRef}>
+        {/* Your feature cards here */}
+        <div className="features-card">
+          <div className="features-card-img">
+            <img src="/images/2ndpara.png" alt="Feature 1" />
+          </div>
+          <div className="features-card-title">
+            <p>THE PROBLEM SOLVER</p>
+            <h1>Book Appointments In 10 Seconds</h1>
+          </div>
+        </div>
 
-// Start observing
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
+        <div className="features-card">
+          <div className="features-card-img">
+            <img src="/images/Nobody Deletes.png" alt="Feature 2" />
+          </div>
+          <div className="features-card-title">
+            <p>CUSTOMERS ALREADY HAVE IT</p>
+            <h1>Built For WhatsApp</h1>
+          </div>
+        </div>
 
-// Fallback initialization strategies
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initializeFeatures, 500);
-  });
-} else {
-  // Try immediately
-  setTimeout(initializeFeatures, 100);
-}
+        <div className="features-card">
+          <div className="features-card-img">
+            <img src="/images/24-7 Support.png" alt="Feature 3" />
+          </div>
+          <div className="features-card-title">
+            <p>CUSTOMER SATISFACTION GUARANTEED</p>
+            <h1>99.9% Uptime + 24/7 Support</h1>
+          </div>
+        </div>
 
-// Additional fallback for when window loads
-window.addEventListener('load', () => {
-  if (!isInitialized) {
-    console.log("🔄 Window load event - trying features initialization");
-    setTimeout(initializeFeatures, 1000);
-  }
-});
+        <div className="features-card">
+          <div className="features-card-img">
+            <img src="/images/INSTANT CONFIRMATION & REMINDER.png" alt="Feature 4" />
+          </div>
+          <div className="features-card-title">
+            <p>INSTANT CONFIRMATION & REMINDER</p>
+            <h1>Automatic Payment + Updates</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FeaturedProjects;

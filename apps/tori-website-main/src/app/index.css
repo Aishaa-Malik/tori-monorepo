@@ -1,4 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@200..800&display=swap");
+
+/* ✅ ADD THESE FONT IMPORTS */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap'); /* Holiday style */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); /* Wedges style */
 
 /* ============================================
    CSS VARIABLES
@@ -196,6 +201,8 @@ body.menu-open .menu-toggle {
   height: 155svh;
   overflow: hidden;
   background-color: #d3cec5;
+    z-index: 2; /* Added */
+
 }
 
 .hero-fade {
@@ -246,6 +253,33 @@ body.menu-open .menu-toggle {
   z-index: 2;
 }
 
+/* ============================================
+   HERO CONTENT OVERLAY - For text readability
+   ============================================ */
+
+/* Desktop */
+.hero-content-overlay {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  height: 60vh;
+  
+  /* Subtle dark gradient for text readability */
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.4) 30%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 100%
+  );
+  
+  z-index: 3;
+  pointer-events: none;
+}
+
 .hero .hero-content {
   position: absolute;
   top: 37svh;
@@ -277,7 +311,6 @@ body.menu-open .menu-toggle {
 }
 
 /* Hero Status Pill */
-/* Status pill styling - Desktop */
 .hero .hero-status-pill {
   position: relative;
   top: auto;
@@ -287,7 +320,6 @@ body.menu-open .menu-toggle {
   width: fit-content;
   z-index: 20;
   
-  /* ✅ Glassy background box */
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -396,21 +428,42 @@ body.menu-open .menu-toggle {
   width: 100%;
 }
 
+/* Hero Copy - IMPROVED */
 .hero-copy {
-  font-family: "Inter", system-ui, "Helvetica Neue", Arial, sans-serif !important;
-  font-size: clamp(15px, 1.6vw, 18px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif !important;
+  font-size: clamp(16px, 1.7vw, 19px);
   font-weight: 500;
-  line-height: 1.6;
-  color: #6B7280;
-  max-width: 600px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  color: rgba(209, 213, 217, 0.95); /* Lighter, more readable */
+  max-width: 650px;
   margin: 0 auto;
   text-align: center;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
+  
+  /* Better text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .hero-copy-highlight {
-  color: #D1D5DB;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-copy {
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 0 1rem;
+    letter-spacing: -0.005em;
+  }
+}
+
 
 .hero .hero-tagline {
   width: 50%;
@@ -418,11 +471,12 @@ body.menu-open .menu-toggle {
 }
 
 /* Hero Mockup */
+/* Hero Mockup */
 .hero .hero-mockup {
   position: absolute;
   bottom: 6svh;
-  left: calc(50% + 40px);
-  transform: translateX(-50%);
+  left: 50%;
+  transform: translateX(-60%); /* ✅ Shifts container left to compensate for 145% width */
   width: 1050px;
   height: auto;
   z-index: 3;
@@ -432,11 +486,12 @@ body.menu-open .menu-toggle {
 }
 
 .hero .hero-mockup img {
-  width: 80%;
+  width: 145%;
   height: auto;
   object-fit: contain;
-  object-position: 55% center;
+  object-position: left center; /* ✅ Aligns image to left */
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+  display: block;
 }
 
 /* Hero Stats */
@@ -602,7 +657,7 @@ body.menu-open .menu-toggle {
 }
 
 /* ============================================
-   MOBILE BREAKPOINT (768px) - CONSOLIDATED
+   MOBILE BREAKPOINT (768px)
    ============================================ */
 /* ============================================
    MOBILE BREAKPOINT (768px)
@@ -614,6 +669,9 @@ body.menu-open .menu-toggle {
     padding-bottom: 30vh !important;
     overflow: visible !important;
   }
+
+  /* ✅ REMOVED: Don't hide all overlays globally */
+  /* Old: .hero-content-overlay { display: none !important; } */
 
   .hero .hero-content {
     position: relative !important;
@@ -693,6 +751,51 @@ body.menu-open .menu-toggle {
     gap: 0.5rem;
   }
 
+  /* ✅ Mobile wrapper */
+  .hero-text-section {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+  }
+
+  /* ✅ FIXED: Red gradient overlay - now will show */
+  .hero-text-section .hero-content-overlay {
+    position: absolute !important;
+    top: -1rem !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    height: calc(100% + 2rem) !important;
+    
+ /* Blue gradient */
+background: radial-gradient(
+  ellipse at center,
+   rgba(100, 170, 210, 1) 0%,
+  rgba(70, 150, 200, 1) 30%,
+  rgba(50, 135, 190, 1) 35%,
+    rgb(2, 25, 55) 70%,
+  transparent 100%
+) !important;
+
+
+
+    
+    z-index: 1 !important;
+    pointer-events: none !important;
+    display: block !important; /* ✅ Force display */
+  }
+
+  /* ✅ Ensure text is above overlay */
+  .hero-text-section .hero-header,
+  .hero-text-section .hero-tagline {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
   .inline-logo {
     width: 40px !important;
     height: 40px !important;
@@ -707,16 +810,16 @@ body.menu-open .menu-toggle {
     padding: 0 1.0rem !important;
     margin-top: 0 !important;
     position: relative !important;
-    z-index: 10 !important;
+    z-index: 2 !important;
     opacity: 1 !important;
     display: block !important;
   }
 
-  .hero-copy {
-    font-size: 1rem;
-    width: 100%;
-    max-width: none;
-    padding: 0 0.5rem;
+ .hero-copy {
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 0 1rem;
+    letter-spacing: -0.005em;
   }
 
   .hero-copy img {
@@ -733,41 +836,25 @@ body.menu-open .menu-toggle {
     max-height: 16px !important;
   }
 
-  /* ✅ FIXED: Button container */
- /* ✅ FIXED: Button container - Remove weird dimensions */
-.hero .hero-cta {
-  width: 100% !important;
-  max-width: 95vw !important;
-  height: auto !important; /* ✅ Changed from 35vw */
-  max-height: none !important; /* ✅ Removed constraint */
-  margin: 1rem auto !important;
-  position: relative !important;
-  z-index: 10 !important; /* ✅ Changed from 100 */
-  opacity: 1 !important; /* ✅ Changed from 100 */
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
+  .hero .hero-cta {
+    width: 100% !important;
+    max-width: 95vw !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 1rem auto !important;
+    position: relative !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
 
-/* Remove conflicting styles */
-.hero .hero-cta button,
-.hero .hero-cta a {
-  /* Let AnimatedButton.css handle everything */
-}
-
-/* Don't override text width */
-.hero .hero-cta .button-text {
-  /* Let AnimatedButton.css handle text */
-}
-
-
-  /* ✅ FIXED: Remove conflicting styles */
   .hero .hero-cta button,
   .hero .hero-cta a {
     /* Let AnimatedButton.css handle everything */
   }
 
-  /* ✅ REMOVED: Don't override text width */
   .hero .hero-cta .button-text {
     /* Let AnimatedButton.css handle text */
   }
@@ -787,6 +874,7 @@ body.menu-open .menu-toggle {
     -webkit-mask-image: none !important;
   }
 
+  /* Blue/Red gradient at bottom */
   section.hero .hero-gradient,
   .hero .hero-gradient {
     position: absolute !important;
@@ -794,38 +882,24 @@ body.menu-open .menu-toggle {
     bottom: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 85svh !important;
-    background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 40, 80, 0.3) 10%,
-      rgba(0, 60, 110, 0.5) 25%,
-      rgba(0, 80, 140, 0.7) 40%,
-      rgba(0, 60, 120, 0.85) 60%,
-      rgba(0, 40, 80, 0.95) 80%,
-      #0d0c0c 100%
-    ) !important;
-    background-color: transparent !important;
+    height: 90svh !important;
+background: linear-gradient(
+  180deg,
+  rgba(0, 0, 0, 0) 0%,
+  rgba(0, 100, 220, 0.2) 15%,
+  rgba(0, 90, 200, 0.4) 30%,
+  rgba(0, 80, 180, 0.6) 45%,
+  rgba(0, 70, 160, 0.75) 60%,
+  rgba(0, 60, 140, 0.9) 80%,
+  #0d0c0c 100%
+) !important;
+
+
     z-index: 6 !important;
     pointer-events: none !important;
   }
 
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 70svh;
-    background: radial-gradient(
-      ellipse at bottom center,
-      rgba(0, 120, 200, 0.4) 0%,
-      rgba(0, 80, 140, 0.2) 30%,
-      transparent 70%
-    );
-    z-index: 7;
-    pointer-events: none;
-  }
+
 
   .hero .hero-stats {
     position: relative !important;
@@ -875,13 +949,6 @@ body.menu-open .menu-toggle {
     opacity: 1 !important;
   }
 }
-
-
-
-
-
-
-
 
 
 
