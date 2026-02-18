@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-const DASHBOARD_URL = 'http://localhost:3001/';
+//const DASHBOARD_URL = 'http://localhost:3001/';
 // Use local port for development, Vercel URL for production
 //const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://tori-dashboard.vercel.app';
+const DASHBOARD_URL = 'https://tori-dashboard.vercel.app' || 'http://localhost:3001/';
 
 const nextConfig = {
   async rewrites() {

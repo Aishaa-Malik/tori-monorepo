@@ -12,7 +12,6 @@ const ProcessAnimation = () => {
   useGSAP(() => { 
     gsap.registerPlugin(ScrollTrigger); 
 
-    // Constants & Processing 
     const wordHighlightBgColor = "60, 60, 60"; 
     const keywords = ["for", "clunky"];
 
@@ -41,7 +40,6 @@ const ProcessAnimation = () => {
       }); 
     }); 
 
-    // Animation Setup
     const container = containerRef.current; 
     const allWords = Array.from(container.querySelectorAll(".word")); 
     const totalWords = allWords.length; 
@@ -50,76 +48,83 @@ const ProcessAnimation = () => {
       trigger: container, 
       pin: true,
       start: "top top",
-      end: `+=${window.innerHeight * 2.5}`,
+      end: `+=${window.innerHeight * 1.8}`, // ✅ Reduced from 2.5 to 1.8
       scrub: true,
       pinSpacing: true,
       anticipatePin: 1,
       markers: false,
+      id: "process-animation",
       invalidateOnRefresh: true,
       
       onUpdate: (self) => { 
-  const progress = self.progress; 
+        const progress = self.progress; 
 
-  allWords.forEach((word, index) => { 
-    const wordText = word.querySelector("span"); 
+        allWords.forEach((word, index) => { 
+          const wordText = word.querySelector("span"); 
 
-    if (progress <= 0.7) { 
-      // REVEAL PHASE (0% → 70%)
-      const progressTarget = 0.55; 
-      const revealProgress = Math.min(1, progress / progressTarget); 
-      const overlapWords = 15; 
-      const totalAnimationLength = 1 + overlapWords / totalWords; 
-      const wordStart = index / totalWords; 
-      const wordEnd = wordStart + overlapWords / totalWords; 
+          if (progress <= 0.7) { 
+            const progressTarget = 0.55; 
+            const revealProgress = Math.min(1, progress / progressTarget); 
+            const overlapWords = 15; 
+            const totalAnimationLength = 1 + overlapWords / totalWords; 
+            const wordStart = index / totalWords; 
+            const wordEnd = wordStart + overlapWords / totalWords; 
 
-      const timelineScale = 1 / Math.min(totalAnimationLength, 1 + (totalWords - 1) / totalWords + overlapWords / totalWords); 
-      const adjustedStart = wordStart * timelineScale; 
-      const adjustedEnd = wordEnd * timelineScale; 
-      const duration = adjustedEnd - adjustedStart; 
+            const timelineScale = 1 / Math.min(totalAnimationLength, 1 + (totalWords - 1) / totalWords + overlapWords / totalWords); 
+            const adjustedStart = wordStart * timelineScale; 
+            const adjustedEnd = wordEnd * timelineScale; 
+            const duration = adjustedEnd - adjustedStart; 
 
-      const wordProgress = revealProgress <= adjustedStart ? 0 : revealProgress >= adjustedEnd ? 1 : (revealProgress - adjustedStart) / duration; 
+            const wordProgress = revealProgress <= adjustedStart ? 0 : revealProgress >= adjustedEnd ? 1 : (revealProgress - adjustedStart) / duration; 
 
-      // ✅ Keep visible by default, highlight on progress
-      word.style.opacity = 0.3 + (wordProgress * 0.7); // Fade from 30% to 100%
-      
-      // Background highlight
-      const backgroundOpacity = wordProgress < 0.9 ? wordProgress * 0.3 : (1 - (wordProgress - 0.9) / 0.1) * 0.3;
-      word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`; 
+            word.style.opacity = 0.3 + (wordProgress * 0.7);
+            
+            const backgroundOpacity = wordProgress < 0.9 ? wordProgress * 0.3 : (1 - (wordProgress - 0.9) / 0.1) * 0.3;
+            word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`; 
 
-      // Text fully visible
-      wordText.style.opacity = 1;
-      
-    } else { 
-      // REVERSE PHASE (70% → 100%)
-      const reverseProgress = (progress - 0.7) / 0.3; 
-      
-      const reverseOverlapWords = 5; 
-      const reverseWordStart = index / totalWords; 
-      const reverseWordEnd = reverseWordStart + reverseOverlapWords / totalWords; 
+            wordText.style.opacity = 1;
+            
+          } else { 
+            const reverseProgress = (progress - 0.7) / 0.3; 
+            
+            const reverseOverlapWords = 5; 
+            const reverseWordStart = index / totalWords; 
+            const reverseWordEnd = reverseWordStart + reverseOverlapWords / totalWords; 
 
-      const reverseTimelineScale = 1 / Math.max(1, (totalWords - 1) / totalWords + reverseOverlapWords / totalWords); 
-      const reverseAdjustedStart = reverseWordStart * reverseTimelineScale; 
-      const reverseAdjustedEnd = reverseWordEnd * reverseTimelineScale; 
-      const reverseDuration = reverseAdjustedEnd - reverseAdjustedStart; 
+            const reverseTimelineScale = 1 / Math.max(1, (totalWords - 1) / totalWords + reverseOverlapWords / totalWords); 
+            const reverseAdjustedStart = reverseWordStart * reverseTimelineScale; 
+            const reverseAdjustedEnd = reverseWordEnd * reverseTimelineScale; 
+            const reverseDuration = reverseAdjustedEnd - reverseAdjustedStart; 
 
-      const reverseWordProgress = reverseProgress <= reverseAdjustedStart ? 0 : reverseProgress >= reverseAdjustedEnd ? 1 : (reverseProgress - reverseAdjustedStart) / reverseDuration; 
+            const reverseWordProgress = reverseProgress <= reverseAdjustedStart ? 0 : reverseProgress >= reverseAdjustedEnd ? 1 : (reverseProgress - reverseAdjustedStart) / reverseDuration; 
 
-      if (reverseWordProgress > 0) { 
-        word.style.opacity = 1 - (reverseWordProgress * 0.7); // Fade from 100% to 30%
-        wordText.style.opacity = 1 - reverseWordProgress; 
-        word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${reverseWordProgress * 0.3})`; 
-      } else { 
-        word.style.opacity = 1; 
-        wordText.style.opacity = 1; 
-        word.style.backgroundColor = `rgba(${wordHighlightBgColor}, 0)`; 
-      } 
-    } 
-  }); 
-},
-
+            if (reverseWordProgress > 0) { 
+              word.style.opacity = 1 - (reverseWordProgress * 0.7);
+              wordText.style.opacity = 1 - reverseWordProgress; 
+              word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${reverseWordProgress * 0.3})`; 
+            } else { 
+              word.style.opacity = 1; 
+              wordText.style.opacity = 1; 
+              word.style.backgroundColor = `rgba(${wordHighlightBgColor}, 0)`; 
+            } 
+          } 
+        }); 
+      },
       
       onLeave: () => {
-        ScrollTrigger.refresh();
+        console.log("✅ Process animation complete - refreshing triggers");
+        // ✅ Small delay before refresh to ensure proper cleanup
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+        });
+      },
+      
+      onLeaveBack: () => {
+        // Reset on scroll up
+        allWords.forEach((word) => {
+          word.style.opacity = 0.3;
+          word.querySelector("span").style.opacity = 1;
+        });
       }
     }); 
 

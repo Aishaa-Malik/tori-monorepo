@@ -14,6 +14,8 @@ import AnimatedButton from "@/components/AnimatedButton/AnimatedButton";
 import FeaturedProjects from "@/components/FeaturedProjects/FeaturedProjects";
 import HowWeWork from "@/components/HowWeWork/HowWeWork";
 import Spotlight from "@/components/Spotlight/Spotlight";
+import FeaturesScroll from "@/components/FeaturedProjects/FeaturesScroll";
+
 
 import FAQ from "@/components/FAQ/FAQ";
 import ClientReviews from "@/components/ClientReviews/ClientReviews";
@@ -332,21 +334,24 @@ export default function Home() {
         {/* ✅ ADD CLEAR SEPARATION */}
 <div style={{ height: '5vh', background: '#0d0c0c' }}></div>
         
-        <section className="featured-projects-container" id="features">
-          <div className="container">
-            <div className="featured-projects-header-callout">
-              <Copy delay={0.1}>
-                <p>Features</p>
-              </Copy>
-            </div>
-            <div className="featured-projects-header">
-              <Copy delay={0.15}>
-                <h2>Why Choose Tori Ate?</h2>
-              </Copy>
-            </div>
-          </div>
-          <FeaturedProjects />
-        </section>
+        {/* ✅ Remove this spacer - not needed anymore */}
+{/* <div style={{ height: '5vh', background: '#0d0c0c' }}></div> */}
+
+<section className="featured-projects-container" id="features">
+  <div className="container">
+    <div className="featured-projects-header-callout">
+      <Copy delay={0.1}>
+        <p>Features</p>
+      </Copy>
+    </div>
+    <div className="featured-projects-header">
+      <Copy delay={0.15}>
+        <h2>Why Choose Tori Ate?</h2>
+      </Copy>
+    </div>
+  </div>
+  <FeaturesScroll /> {/* ✅ Use new component */}
+</section>
 
         <section className="how-we-work-container" id="process">
           <div className="container">
