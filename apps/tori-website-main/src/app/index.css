@@ -765,28 +765,27 @@ body.menu-open .menu-toggle {
   /* ✅ FIXED: Red gradient overlay - now will show */
   .hero-text-section .hero-content-overlay {
     position: absolute !important;
-    top: -1rem !important;
-    left: 0 !important;
-    transform: none !important;
-    width: 100% !important;
-    height: calc(100% + 2rem) !important;
+    top: -20vh !important; /* Move higher to start from screen top */
+    left: 50% !important; /* Center horizontally */
+    transform: translateX(-50%) !important; /* Center horizontally */
+    width: 100vw !important; /* Full viewport width */
+    height: 120% !important; /* Cover top area and extend down */
+    margin: 0 !important;
+    padding: 0 !important;
     
- /* Blue gradient */
-background: radial-gradient(
-   ellipse at center top,
-   rgba(100, 170, 210, 1) 0%,
-  rgba(70, 150, 200, 1) 30%,
-  rgba(50, 135, 190, 1) 35%,
-    rgb(2, 25, 55) 70%,
-  transparent 100%
-) !important;
-
-
-
+    /* Blue gradient */
+    background: radial-gradient(
+       ellipse at center top,
+       rgba(100, 170, 210, 1) 0%,
+       rgba(70, 150, 200, 1) 30%,
+       rgba(50, 135, 190, 1) 35%,
+       rgb(2, 25, 55) 70%,
+       transparent 95%
+    ) !important;
     
-    z-index: 1 !important;
+    z-index: 0 !important; /* Lower z-index to sit behind content */
     pointer-events: none !important;
-    display: block !important; /* ✅ Force display */
+    display: block !important;
   }
 
   /* ✅ Ensure text is above overlay */
@@ -985,6 +984,12 @@ background: linear-gradient(
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.preloader-overlay.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
 }
 
 .main-content.is-hidden {

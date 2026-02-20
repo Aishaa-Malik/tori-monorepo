@@ -276,6 +276,14 @@ const Nav = () => {
               </div>
               <div className="link">
                 <a
+                  href="/services"
+                  onClick={(e) => handleLinkClick(e, "/services")}
+                >
+                  <h2>Services</h2>
+                </a>
+              </div>
+              <div className="link">
+                <a
                   href="#process"
                   onClick={(e) => handleLinkClick(e, "#process")}
                 >

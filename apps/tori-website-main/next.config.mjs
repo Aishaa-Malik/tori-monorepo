@@ -6,6 +6,8 @@
 const DASHBOARD_URL = 'https://tori-dashboard.vercel.app' || 'http://localhost:3001/';
 
 const nextConfig = {
+    reactStrictMode: false, // ← disable during development
+
   async rewrites() {
     return [
       // 1. Pages

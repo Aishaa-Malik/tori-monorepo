@@ -1,3 +1,18 @@
+.client-reviews-container {
+  position: relative;
+  width: 100%;
+  height: 125svh;
+  background-color: var(--base-500);
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 19, 19, 1) 0%,
+    rgba(10, 10, 10, 1) 50%,
+    rgba(20, 19, 19, 1) 100%
+  );
+  display: flex;
+  flex-direction: column;
+}
+
 .client-reviews {
   width: 100%;
   height: 100%;
@@ -56,11 +71,27 @@
   will-change: opacity;
 }
 
+.client-reviews .client-review-img img.fade-in-overlay {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Highlight text style */
+.highlight-text {
+  background-color: #F8E71C; /* Bright yellow */
+  color: black;
+  font-weight: bold;
+  padding: 0 4px;
+  border-radius: 2px;
+  display: inline-block; /* Ensure background respects padding */
+  line-height: 1.2;
+}
+
 .client-reviews .client-review-copy h3 {
   text-align: center;
   font-size: 1.75rem;
-  color: var(--base-300);
-  line-height: 1.25;
+  color: white; /* Changed from base-300 to white as requested */
+  line-height: 1.5; /* Increased line height for better readability with highlights */
   white-space: pre-line;
   max-width: var(--text-width);
   margin: 0 auto;

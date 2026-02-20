@@ -8,61 +8,72 @@ import './FeaturesScroll.css';
 const FeaturesScroll = () => {
   const stickyRef = useRef(null);
   const cardsRef = useRef(null);
+  const tweenRef = useRef(null);
 
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const stickySection = stickyRef.current;
     const cards = cardsRef.current;
+    if (!stickySection || !cards) return;
 
-    if (!stickySection || !cards) {
-      console.error("❌ Features elements not found");
+    // Kill any existing trigger with this ID (Strict Mode guard)
+    ScrollTrigger.getById("features-horizontal-scroll")?.kill();
+
+    // ✅ MOBILE: Skip pin + horizontal scroll entirely — CSS handles vertical stacking
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Simple fade-in for each card on mobile
+      const cardEls = cards.querySelectorAll(".features-card");
+      gsap.set(cardEls, { opacity: 0, y: 30 });
+      cardEls.forEach((card, i) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top 85%",
+          once: true,
+          onEnter: () => {
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              delay: i * 0.08,
+              ease: "power2.out",
+            });
+          },
+        });
+      });
       return;
     }
 
-    // ✅ Set initial position
+    // ✅ DESKTOP: Full horizontal pin scroll
     gsap.set(cards, { x: 0 });
 
-    // Calculate scroll distance
-    const cardWidth = cards.scrollWidth;
-    const containerWidth = stickySection.offsetWidth;
-    const maxTranslateX = -(cardWidth - containerWidth);
+    tweenRef.current = gsap.to(cards, {
+      x: () => -(cards.scrollWidth - stickySection.offsetWidth),
+      ease: "none",
+      scrollTrigger: {
+        trigger: stickySection,
+        start: "top top",
+        end: () => `+=${(cards.scrollWidth - stickySection.offsetWidth) * 2}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        markers: false,
+        id: "features-horizontal-scroll",
+        invalidateOnRefresh: true,
+        onLeave: () => {
+          // Wait for pin release + Lenis to settle before refreshing HowWeWork
+          setTimeout(() => {
+            ScrollTrigger.refresh();
+          }, 50);
+        },
+      }
+    });
 
-    console.log("✅ Features setup:", { cardWidth, containerWidth, maxTranslateX });
-
-    // ✅ Wait for page to be ready before creating ScrollTrigger
-    setTimeout(() => {
-      const tween = gsap.to(cards, {
-        x: maxTranslateX,
-        ease: "none",
-        scrollTrigger: {
-          trigger: stickySection,
-          start: "top top", // ✅ Only starts when section is at top
-          end: () => `+=${Math.abs(maxTranslateX) * 2}`, // Dynamic based on content width
-          pin: true,
-          pinSpacing: true,
-          scrub: 1,
-          markers: false,
-          id: "features-horizontal-scroll",
-          invalidateOnRefresh: true,
-          onEnter: () => {
-            console.log("📍 Features scroll started");
-            gsap.set(cards, { x: 0 }); // ✅ Ensure reset on enter
-          },
-          onLeave: () => {
-            console.log("📍 Features scroll ended");
-          },
-          onEnterBack: () => {
-            console.log("📍 Features scroll re-entered (scrolling up)");
-          }
-        }
-      });
-
-      return () => {
-        tween.scrollTrigger?.kill();
-        tween.kill();
-      };
-    }, 100); // ✅ Small delay to ensure ProcessAnimation is complete
+    return () => {
+      tweenRef.current?.scrollTrigger?.kill();
+      tweenRef.current?.kill();
+    };
 
   }, { scope: stickyRef });
 
@@ -72,7 +83,6 @@ const FeaturesScroll = () => {
         <canvas className="outline-layer"></canvas>
         <canvas className="fill-layer"></canvas>
       </div>
-      
       <div className="features-cards" ref={cardsRef}>
         <div className="features-card">
           <div className="features-card-img">
@@ -83,7 +93,6 @@ const FeaturesScroll = () => {
             <h1>Book Appointments In 10 Seconds</h1>
           </div>
         </div>
-
         <div className="features-card">
           <div className="features-card-img">
             <img src="/images/Nobody Deletes.png" alt="Built for WhatsApp" />
@@ -93,7 +102,6 @@ const FeaturesScroll = () => {
             <h1>Built For WhatsApp</h1>
           </div>
         </div>
-
         <div className="features-card">
           <div className="features-card-img">
             <img src="/images/24-7 Support.png" alt="24/7 Support" />
@@ -103,7 +111,6 @@ const FeaturesScroll = () => {
             <h1>99.9% Uptime + 24/7 Support</h1>
           </div>
         </div>
-
         <div className="features-card">
           <div className="features-card-img">
             <img src="/images/INSTANT CONFIRMATION & REMINDER.png" alt="Instant confirmation" />

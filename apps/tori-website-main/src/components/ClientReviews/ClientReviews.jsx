@@ -5,16 +5,15 @@ import clientReviewsContent from "./client-reviews-content";
 import { useState, useEffect, useRef } from "react";
 
 import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText";
 
 const ClientReviews = () => {
   const [activeClient, setActiveClient] = useState(0);
   const [visualClient, setVisualClient] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [nextImage, setNextImage] = useState(null);
   const clientRefs = useRef([]);
   const containerRef = useRef(null);
-  const reviewTextRef = useRef(null);
-  const splitTextRef = useRef(null);
+  const lineRefs = useRef([]);
   const clientInfoRefs = useRef([]);
   const imageContainerRef = useRef(null);
   const masterTimelineRef = useRef(null);
@@ -37,28 +36,14 @@ const ClientReviews = () => {
     return `${remainingSpace}px`;
   };
 
-  const animateImageChange = (newImageSrc) => {
-    if (!imageContainerRef.current) return;
-
-    const newImg = document.createElement("img");
-    newImg.src = newImageSrc;
-    newImg.alt = "";
-    newImg.style.opacity = "0";
-
-    imageContainerRef.current.appendChild(newImg);
-
-    return gsap.to(newImg, {
+  const handleNextImageLoad = (event) => {
+    gsap.to(event.currentTarget, {
       opacity: 1,
       duration: 1,
       delay: 0.5,
       ease: "power2.out",
       onComplete: () => {
-        const allImages = imageContainerRef.current.querySelectorAll("img");
-        allImages.forEach((img) => {
-          if (img !== newImg) {
-            img.remove();
-          }
-        });
+        setNextImage(null);
       },
     });
   };
@@ -89,84 +74,21 @@ const ClientReviews = () => {
       });
     }
 
-    const initTimer = setTimeout(() => {
-      if (reviewTextRef.current) {
-        splitTextRef.current = SplitText.create(reviewTextRef.current, {
-          type: "lines",
-          mask: "lines",
-        });
-
-        if (splitTextRef.current && splitTextRef.current.lines) {
-          gsap.set(splitTextRef.current.lines, { y: "110%" });
-          gsap.to(splitTextRef.current.lines, {
-            y: "0%",
-            duration: 0.5,
-            stagger: 0.05,
-            ease: "power4.out",
-          });
-        }
-      }
-    }, 100);
-
     return () => {
-      clearTimeout(initTimer);
-      if (splitTextRef.current) {
-        splitTextRef.current.revert();
-        splitTextRef.current = null;
-      }
     };
   }, []);
 
   useEffect(() => {
-    if (!splitTextRef.current) return;
-
-    if (reviewTextRef.current) {
-      if (splitTextRef.current) {
-        splitTextRef.current.revert();
-      }
-
-      splitTextRef.current = SplitText.create(reviewTextRef.current, {
-        type: "lines",
-        mask: "lines",
-      });
-
-      if (splitTextRef.current.lines) {
-        gsap.set(splitTextRef.current.lines, { y: "110%" });
-
-        gsap.to(splitTextRef.current.lines, {
-          y: "0%",
-          duration: 0.5,
-          stagger: 0.05,
-          ease: "power4.out",
-        });
-      }
-    }
+    const lines = lineRefs.current.filter(Boolean);
+    if (lines.length === 0) return;
+    gsap.set(lines, { y: "110%" });
+    gsap.to(lines, {
+      y: "0%",
+      duration: 0.5,
+      stagger: 0.05,
+      ease: "power4.out",
+    });
   }, [activeClient]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (reviewTextRef.current) {
-        if (!splitTextRef.current) {
-          splitTextRef.current = SplitText.create(reviewTextRef.current, {
-            type: "lines",
-            mask: "lines",
-          });
-        }
-
-        if (splitTextRef.current && splitTextRef.current.lines) {
-          gsap.set(splitTextRef.current.lines, { y: "110%" });
-          gsap.to(splitTextRef.current.lines, {
-            y: "0%",
-            duration: 0.5,
-            stagger: 0.05,
-            ease: "power4.out",
-          });
-        }
-      }
-    }, 150);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleClientClick = (index) => {
     if (index === activeClient || isAnimating) return;
@@ -245,13 +167,11 @@ const ClientReviews = () => {
       0.5
     );
 
-    const imageAnimation = animateImageChange(
-      clientReviewsContent[index].image
-    );
-    tl.add(imageAnimation, 0);
+    setNextImage(clientReviewsContent[index].image);
 
-    if (splitTextRef.current && splitTextRef.current.lines) {
-      const textOutAnim = gsap.to(splitTextRef.current.lines, {
+    const lines = lineRefs.current.filter(Boolean);
+    if (lines.length > 0) {
+      const textOutAnim = gsap.to(lines, {
         y: "-110%",
         duration: 0.5,
         stagger: 0.05,
@@ -280,19 +200,80 @@ const ClientReviews = () => {
           <div className="client-review-content">
             <div className="client-review-img" ref={imageContainerRef}>
               <img src={clientReviewsContent[activeClient].image} alt="" />
+              {nextImage && (
+                <img
+                  src={nextImage}
+                  alt=""
+                  className="fade-in-overlay"
+                  onLoad={handleNextImageLoad}
+                />
+              )}
             </div>
             <div className="client-review-copy">
-              <h3 ref={reviewTextRef} key={activeClient}>
-                {String(clientReviewsContent[activeClient].review)
-                  .replace(/\\n/g, "\n")
-                  .split(/\r?\n/)
-                  .map((line, i, arr) => (
-                    <span key={i}>
-                      {line}
-                      {i < arr.length - 1 && <br />}
-                    </span>
-                  ))}
-              </h3>
+              <div className="text-wrapper">
+                <h3>
+                  {String(clientReviewsContent[activeClient].review)
+                    .replace(/\\n/g, "\n")
+                    .split(/\r?\n/)
+                    .map((line, i, arr) => {
+                      const processLine = (text, lineIndex) => {
+                        if (clientReviewsContent[activeClient].name !== "Ayush")
+                          return text;
+
+                        const keywords = [
+                          "Engineering",
+                          "BITS Pilani",
+                          "Won Smart India Hackathon",
+                          "among 0.7M people",
+                          "Won Inspire Manak Awards",
+                          "Govt of India",
+                        ];
+
+                        let parts = [text];
+
+                        keywords.forEach((keyword) => {
+                          const newParts = [];
+                          parts.forEach((part) => {
+                            if (typeof part !== "string") {
+                              newParts.push(part);
+                              return;
+                            }
+
+                            const regex = new RegExp(`(${keyword})`, "gi");
+                            const split = part.split(regex);
+
+                            split.forEach((s, splitIndex) => {
+                              if (s.toLowerCase() === keyword.toLowerCase()) {
+                                newParts.push(
+                                  <span
+                                    className="highlight-text"
+                                    key={`${keyword}-${lineIndex}-${splitIndex}`}
+                                  >
+                                    {s}
+                                  </span>
+                                );
+                              } else if (s) {
+                                newParts.push(s);
+                              }
+                            });
+                          });
+                          parts = newParts;
+                        });
+
+                        return parts;
+                      };
+
+                      return (
+                        <span key={i}>
+                        <span ref={(el) => (lineRefs.current[i] = el)}>
+                          {processLine(line, i)}
+                        </span>
+                          {i < arr.length - 1 && <br />}
+                        </span>
+                      );
+                    })}
+                </h3>
+              </div>
             </div>
           </div>
           <div className="clients-list" ref={containerRef}>

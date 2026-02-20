@@ -1,151 +1,186 @@
-"use client"; 
-import React, { useRef } from 'react'; 
-import gsap from 'gsap'; 
-import { ScrollTrigger } from 'gsap/ScrollTrigger'; 
-import { useGSAP } from '@gsap/react'; 
-import './ProcessAnimation.css'; 
+"use client";
+import React, { useMemo, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import "./ProcessAnimation.css";
 
-const ProcessAnimation = () => { 
-  const containerRef = useRef(null); 
-  const textRef = useRef(null); 
+const ProcessAnimation = () => {
+  const containerRef = useRef(null);
 
-  useGSAP(() => { 
-    gsap.registerPlugin(ScrollTrigger); 
+  const textContent =
+    "Tori is 'YOUR 24/7 RECEPTIONIST'—an AI WHATSAPP SESSION BOOKING & front-desk AUTOMATION platform that replaces for clunky Forms with an Instant Chat Experience, allowing businesses to lock in Bookings in 10 seconds flat.";
 
-    const wordHighlightBgColor = "60, 60, 60"; 
-    const keywords = ["for", "clunky"];
+  const keywords = useMemo(() => ["for", "clunky"], []);
+  const words = useMemo(
+    () => textContent.split(/\s+/).filter(Boolean),
+    [textContent]
+  );
 
-    const paragraphs = textRef.current.querySelectorAll("p"); 
-    paragraphs.forEach((paragraph) => { 
-      const text = paragraph.textContent; 
-      const words = text.split(/\s+/); 
-      paragraph.innerHTML = ""; 
+  useGSAP(
+    () => {
+      gsap.registerPlugin(ScrollTrigger);
 
-      words.forEach((word) => { 
-        if (word.trim()) { 
-          const wordContainer = document.createElement("div"); 
-          wordContainer.className = "word"; 
-          const wordText = document.createElement("span"); 
-          wordText.textContent = word; 
+      const wordHighlightBgColor = "60, 60, 60";
+      const overlapWords = 15;
+      const container = containerRef.current;
+      if (!container) return;
 
-          const normalizedWord = word.toLowerCase().replace(/[.,!?;:"]/g, ""); 
-          if (keywords.includes(normalizedWord)) { 
-            wordContainer.classList.add("keyword-wrapper"); 
-            wordText.classList.add("keyword", normalizedWord); 
-          } 
+      const allWords = Array.from(container.querySelectorAll(".word"));
+      const totalWords = allWords.length;
 
-          wordContainer.appendChild(wordText); 
-          paragraph.appendChild(wordContainer); 
-        } 
-      }); 
-    }); 
+      ScrollTrigger.getById("process-animation")?.kill();
 
-    const container = containerRef.current; 
-    const allWords = Array.from(container.querySelectorAll(".word")); 
-    const totalWords = allWords.length; 
+      const isMobile = window.innerWidth <= 768;
 
-    const st = ScrollTrigger.create({ 
-      trigger: container, 
-      pin: true,
-      start: "top top",
-      end: `+=${window.innerHeight * 1.8}`, // ✅ Reduced from 2.5 to 1.8
-      scrub: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-      markers: false,
-      id: "process-animation",
-      invalidateOnRefresh: true,
-      
-      onUpdate: (self) => { 
-        const progress = self.progress; 
-
-        allWords.forEach((word, index) => { 
-          const wordText = word.querySelector("span"); 
-
-          if (progress <= 0.7) { 
-            const progressTarget = 0.55; 
-            const revealProgress = Math.min(1, progress / progressTarget); 
-            const overlapWords = 15; 
-            const totalAnimationLength = 1 + overlapWords / totalWords; 
-            const wordStart = index / totalWords; 
-            const wordEnd = wordStart + overlapWords / totalWords; 
-
-            const timelineScale = 1 / Math.min(totalAnimationLength, 1 + (totalWords - 1) / totalWords + overlapWords / totalWords); 
-            const adjustedStart = wordStart * timelineScale; 
-            const adjustedEnd = wordEnd * timelineScale; 
-            const duration = adjustedEnd - adjustedStart; 
-
-            const wordProgress = revealProgress <= adjustedStart ? 0 : revealProgress >= adjustedEnd ? 1 : (revealProgress - adjustedStart) / duration; 
-
-            word.style.opacity = 0.3 + (wordProgress * 0.7);
-            
-            const backgroundOpacity = wordProgress < 0.9 ? wordProgress * 0.3 : (1 - (wordProgress - 0.9) / 0.1) * 0.3;
-            word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`; 
-
-            wordText.style.opacity = 1;
-            
-          } else { 
-            const reverseProgress = (progress - 0.7) / 0.3; 
-            
-            const reverseOverlapWords = 5; 
-            const reverseWordStart = index / totalWords; 
-            const reverseWordEnd = reverseWordStart + reverseOverlapWords / totalWords; 
-
-            const reverseTimelineScale = 1 / Math.max(1, (totalWords - 1) / totalWords + reverseOverlapWords / totalWords); 
-            const reverseAdjustedStart = reverseWordStart * reverseTimelineScale; 
-            const reverseAdjustedEnd = reverseWordEnd * reverseTimelineScale; 
-            const reverseDuration = reverseAdjustedEnd - reverseAdjustedStart; 
-
-            const reverseWordProgress = reverseProgress <= reverseAdjustedStart ? 0 : reverseProgress >= reverseAdjustedEnd ? 1 : (reverseProgress - reverseAdjustedStart) / reverseDuration; 
-
-            if (reverseWordProgress > 0) { 
-              word.style.opacity = 1 - (reverseWordProgress * 0.7);
-              wordText.style.opacity = 1 - reverseWordProgress; 
-              word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${reverseWordProgress * 0.3})`; 
-            } else { 
-              word.style.opacity = 1; 
-              wordText.style.opacity = 1; 
-              word.style.backgroundColor = `rgba(${wordHighlightBgColor}, 0)`; 
-            } 
-          } 
-        }); 
-      },
-      
-      onLeave: () => {
-        console.log("✅ Process animation complete - refreshing triggers");
-        // ✅ Small delay before refresh to ensure proper cleanup
-        requestAnimationFrame(() => {
-          ScrollTrigger.refresh();
+      if (isMobile) {
+        gsap.set(allWords, { opacity: 0.15 });
+        const st = ScrollTrigger.create({
+          id: "process-animation",
+          trigger: container,
+          start: "top 80%",
+          once: true,
+          onEnter: () => {
+            gsap.to(allWords, {
+              opacity: 1,
+              duration: 0.35,
+              stagger: 0.04,
+              ease: "power2.out",
+            });
+          },
         });
-      },
-      
-      onLeaveBack: () => {
-        // Reset on scroll up
-        allWords.forEach((word) => {
-          word.style.opacity = 0.3;
-          word.querySelector("span").style.opacity = 1;
-        });
+        return () => st.kill();
       }
-    }); 
 
-    return () => {
-      st.kill();
-    }; 
-  }, { scope: containerRef }); 
+      const timelineScale = totalWords / (totalWords + overlapWords);
 
-  return ( 
-    <section className="process-section process-animation-container" ref={containerRef}> 
-      <div className="process-copy-wrapper"> 
-        <div className="process-text-content" ref={textRef}> 
-          <p> 
-            Tori is 'YOUR 24/7 RECEPTIONIST'—an AI WHATSAPP SESSION BOOKING &
-            front-desk AUTOMATION platform that replaces for clunky Forms with an Instant 
-            Chat Experience, allowing businesses to lock in Bookings in 10 seconds flat.
-          </p> 
-        </div> 
-      </div> 
-    </section> 
-  ); 
-}; 
+      const st = ScrollTrigger.create({
+        trigger: container,
+        pin: true,
+        start: "top top",
+        end: () => `+=${window.innerHeight * 1.8}`,
+        scrub: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        markers: false,
+        id: "process-animation",
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          allWords.forEach((word, index) => {
+            const wordText = word.querySelector("span");
+            if (!wordText) return;
+
+            if (progress <= 0.7) {
+              const revealProgress = Math.min(1, progress / 0.55);
+              const wordStart = (index / totalWords) * timelineScale;
+              const wordEnd =
+                ((index + overlapWords) / totalWords) * timelineScale;
+              const duration = wordEnd - wordStart;
+
+              const wordProgress =
+                revealProgress <= wordStart
+                  ? 0
+                  : revealProgress >= wordEnd
+                  ? 1
+                  : (revealProgress - wordStart) / duration;
+
+              gsap.set(word, {
+                opacity: 0.3 + wordProgress * 0.7,
+                backgroundColor: `rgba(${wordHighlightBgColor}, ${
+                  wordProgress < 0.9
+                    ? wordProgress * 0.3
+                    : (1 - (wordProgress - 0.9) / 0.1) * 0.3
+                })`,
+              });
+              gsap.set(wordText, { opacity: 1 });
+            } else {
+              const reverseProgress = (progress - 0.7) / 0.3;
+              const reverseOverlapWords = 5;
+              const reverseScale =
+                totalWords / (totalWords + reverseOverlapWords);
+              const reverseStart = (index / totalWords) * reverseScale;
+              const reverseEnd =
+                ((index + reverseOverlapWords) / totalWords) * reverseScale;
+              const reverseDuration = reverseEnd - reverseStart;
+
+              const reverseWordProgress =
+                reverseProgress <= reverseStart
+                  ? 0
+                  : reverseProgress >= reverseEnd
+                  ? 1
+                  : (reverseProgress - reverseStart) / reverseDuration;
+
+              if (reverseWordProgress > 0) {
+                gsap.set(word, {
+                  opacity: 1 - reverseWordProgress * 0.7,
+                  backgroundColor: `rgba(${wordHighlightBgColor}, ${
+                    reverseWordProgress * 0.3
+                  })`,
+                });
+                gsap.set(wordText, { opacity: 1 - reverseWordProgress });
+              } else {
+                gsap.set(word, {
+                  opacity: 1,
+                  backgroundColor: `rgba(${wordHighlightBgColor}, 0)`,
+                });
+                gsap.set(wordText, { opacity: 1 });
+              }
+            }
+          });
+        },
+        onLeaveBack: () => {
+          allWords.forEach((word) => {
+            gsap.set(word, {
+              opacity: 1,
+              backgroundColor: `rgba(${wordHighlightBgColor}, 0)`,
+            });
+            gsap.set(word.querySelector("span"), { opacity: 1 });
+          });
+        },
+      });
+
+      return () => {
+        st.kill();
+        const spacer = document.querySelector(
+          '[data-gsap-spacer-id="process-animation"]'
+        );
+        spacer?.remove();
+      };
+    },
+    { scope: containerRef }
+  );
+
+  return (
+    <section
+      className="process-section process-animation-container"
+      ref={containerRef}
+    >
+      <div className="process-copy-wrapper">
+        <div className="process-text-content">
+          <p>
+            {words.map((word, index) => {
+              const normalizedWord = word
+                .toLowerCase()
+                .replace(/[.,!?;:"]/g, "");
+              const isKeyword = keywords.includes(normalizedWord);
+              return (
+                <span
+                  key={`${normalizedWord}-${index}`}
+                  className={`word${isKeyword ? " keyword-wrapper" : ""}`}
+                >
+                  <span className={isKeyword ? `keyword ${normalizedWord}` : ""}>
+                    {word}
+                  </span>
+                </span>
+              );
+            })}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default ProcessAnimation;

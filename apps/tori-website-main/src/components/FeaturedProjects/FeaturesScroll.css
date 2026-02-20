@@ -1,21 +1,11 @@
-/* @font-face {
-  font-family: 'Monument-regular';
-  src: url(../../MonumentExtended-Regular.otf);
-}
-
-@font-face {
-  font-family: 'Monument-bold';
-  src: url(../../MonumentExtended-Ultrabold.otf);
-} */
-
 .features-sticky {
   font-family: "Monument-regular";
   position: relative;
   width: 100vw;
   min-height: 100vh;
-  overflow: hidden; /* ✅ Changed back to hidden */
+  overflow: hidden;
   background-color: #0d0c0c;
-  z-index: 5; /* ✅ Lower than nav but higher than process */
+  z-index: 5;
   margin-top: 0;
 }
 
@@ -36,33 +26,26 @@
   height: 100%;
 }
 
-canvas.outline-layer {
-  z-index: 1;
-}
-
-canvas.fill-layer {
-  z-index: 2;
-}
+canvas.outline-layer { z-index: 1; }
+canvas.fill-layer    { z-index: 2; }
 
 .features-cards {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 400%; /* ✅ Increased to accommodate 4 cards */
-  height: 100vh;
+  position: relative;
   display: flex;
-  justify-content: flex-start; /* ✅ Changed from space-around */
   align-items: center;
-  gap: 2rem; /* ✅ Added gap between cards */
-  padding: 0 5vw; /* ✅ Padding on sides */
+  justify-content: flex-start;
+  width: max-content;
+  height: 100vh;
+  gap: 2rem;
+  padding: 0 5vw;
   will-change: transform;
   z-index: 3;
 }
 
 .features-card {
   position: relative;
-  width: 22vw; /* ✅ Fixed width instead of percentage */
-  min-width: 300px; /* ✅ Minimum width */
+  width: 22vw;
+  min-width: 300px;
   height: 65vh;
   background-color: rgba(255, 255, 255, 0.85);
   display: flex;
@@ -70,9 +53,8 @@ canvas.fill-layer {
   gap: 1.5em;
   padding: 1.5em;
   border-radius: 30px;
-  flex-shrink: 0; /* ✅ Prevent shrinking */
+  flex-shrink: 0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .features-card:hover {
@@ -134,22 +116,38 @@ canvas.fill-layer {
     min-width: 260px;
     height: 60vh;
   }
-  
-  .features-card-title h1 {
-    font-size: 1.3rem;
-  }
+  .features-card-title h1 { font-size: 1.3rem; }
 }
 
+/* ✅ MOBILE: Vertical stacking — no pin, no horizontal scroll */
 @media (max-width: 768px) {
-  .features-cards {
-    width: 500%;
-    gap: 1.5rem;
-    padding: 0 3vw;
+  .features-sticky {
+    /* ✅ Remove fixed height — let content determine height */
+    min-height: auto;
+    height: auto;
+    overflow: visible;
   }
-  
+
+  .features-cards {
+    /* ✅ Column layout, full width */
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding: 3rem 1.25rem 4rem;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
   .features-card {
-    width: 70vw;
-    min-width: 240px;
-    height: 55vh;
+    /* ✅ Full width, natural height */
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    min-height: 380px;
+    flex-shrink: 1;
+  }
+
+  .features-card-img {
+    min-height: 220px;
   }
 }
