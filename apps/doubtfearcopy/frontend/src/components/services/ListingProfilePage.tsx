@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ImageCarousel from './ImageCarousel';
 
-type Profile = {
+export type Profile = {
   name: string;
   images: string[];
   description: string;
@@ -15,13 +15,13 @@ type Profile = {
   mapUrl?: string;
 };
 
-const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = {
+export const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = {
   'sports-venues': {
     'cricket-pitch': {
       'cp-1': {
         name: 'Tiento Sports',
         images: [
-          '/tiento.png'
+          '/images/tiento.png'
         ],
         description: 'Multi-sport venue with bookable slots.',
         facilities: ['Floodlights', 'Locker Rooms'],
@@ -32,7 +32,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'cp-2': {
         name: 'Fusion – The Turf',
         images: [
-          'c2.png',
+          '/images/c2.png',
         ],
         description: 'Synthetic turf venue for games and practice.',
         facilities: ['Floodlights'],
@@ -43,7 +43,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'cp-3': {
         name: 'Karnataka Sharks Cricket',
         images: [
-          'c3.png',
+          '/images/c3.png',
         ],
         description: 'Cricket facility with bookable nets and training.',
         facilities: ['Coaching'],
@@ -54,7 +54,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'cp-4': {
         name: 'Basecamp by Push Sports – Bengaluru',
         images: [
-          'c4.png',
+          '/images/c4.png',
         ],
         description: 'Sports venue offering bookable practice slots.',
         facilities: ['Parking', 'Water'],
@@ -65,7 +65,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'cp-5': {
         name: 'Basecamp Football by Rush Arena',
         images: [
-          'c5.png'
+          '/images/c5.png'
         ],
         description: 'Football turf at Bengaluru City University.',
         facilities: ['Locker Rooms', 'Floodlights'],
@@ -78,7 +78,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'ft-1': {
         name: 'Bangalore Football Turf',
         images: [
-          'f1.png',
+          '/images/f1.png',
         ],
         description: 'Soccer field with bookable slots.',
         facilities: ['Night Lighting'],
@@ -89,7 +89,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'ft-2': {
         name: 'Bangalore Turf Club Ltd.',
         images: [
-          'f2.png',
+          '/images/f2.png',
         ],
         description: 'Racecourse venue.',
         facilities: ['Locker Rooms'],
@@ -100,7 +100,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'ft-3': {
         name: 'Turf City Sports',
         images: [
-          'f3.png',
+          '/images/f3.png',
         ],
         description: 'Sports complex turf.',
         facilities: ['Night Lighting', 'Parking'],
@@ -109,11 +109,11 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
         contact: { phone: '+91 8619439126', address: 'BBL Layout Main Rd' },
       },
     },
-    pickleball: {
+    'pickleball': {
       'pb-1': {
         name: 'PicknPadel Arena – Padel & Pickleball',
         images: [
-          'p1.png',
+          '/images/p1.png',
         ],
         description: 'Padel & Pickleball sports complex.',
         facilities: ['Coaching', 'Pro Shop'],
@@ -124,7 +124,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'pb-2': {
         name: 'PowerPickle',
         images: [
-          'p2.png',
+          '/images/p2.png',
         ],
         description: 'Pickleball courts with equipment rental.',
         facilities: ['Equipment Rental', 'Parking'],
@@ -135,7 +135,7 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       'pb-3': {
         name: 'Go Picklers',
         images: [
-          'p3.png',
+          '/images/p3.png',
         ],
         description: 'Pickleball courts with coaching.',
         facilities: ['Coaching', 'Parking'],
@@ -145,91 +145,137 @@ const sampleProfiles: Record<string, Record<string, Record<string, Profile>>> = 
       },
     },
   },
-  gyms: {
-    'fun-workout': {
-      'fw-1': {
+  'fitness-studios': {
+    'gym': {
+      'gym-1': {
         name: 'Fit and Gold Gym',
-        images: ['/fng.png'],
-        description: 'Neighborhood gym with weights and cardio equipment.',
+        images: ['/images/fng.png'],
+        description: 'Modern gym with strength and cardio equipment.',
         facilities: ['Weights', 'Cardio', 'Trainer'],
         hours: '6 AM – 10 PM',
         pricing: '₹130 per session',
         contact: { phone: '+91 8619439126', address: 'Raja Park' },
       },
-      'fw-2': {
-        name: 'Group NATURE Fun workout',
-        images: ['/images/parkyoga.png', 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.touristplaces.net.in%2Fjaipur-rj%2Fshaheed-bhagat-singh-park%2F&psig=AOvVaw13k2g-sFN2hBaJ_AL7BVjt&ust=1763377849745000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCPCJmMXE9pADFQAAAAAdAAAAABAE'],
-        description: 'Outdoor group workout in nature at Bhagat Singh Park.',
-        facilities: ['Outdoor', 'Group', 'Bodyweight', 'REFRESHMENTS'],
-        hours: '7 AM – 9 AM',
-        pricing: '₹99 per session [2 hrs]',
-        contact: { phone: '+91 8619439126', address: 'Bhagat Singh Park · Raja Park' },
+      'gym-2': {
+        name: 'Gold Gym',
+        images: ['/images/goldgym.png'],
+        description: 'Fully equipped gym for strength & endurance training.',
+        facilities: ['Weights', 'Machines', 'Personal Training'],
+        hours: '6 AM – 11 PM',
+        pricing: '₹150 per session',
+        contact: { phone: '+91 8619439126', address: 'Raja Park' },
       },
-      'fw-3': {
-        name: 'Group workout & MUSICAL YOGA',
-        images: ['/images/services/service-2.jpg', '/images/parkyoga.png'],
-        description: 'Group workout and musical yoga at Central Park.',
-        facilities: ['Yoga Mats', 'Music', 'Instructor'],
-        hours: '6 AM – 9 AM',
-        pricing: '₹99 per session',
-        contact: { phone: '+91 8619439126', address: 'Central Park' },
-      },
-      'fw-4': {
-        name: 'Eco Fitness dance',
-        images: ['/dancecp.png'],
-        description: 'Eco-friendly fitness dance session in the park.',
-        facilities: ['Dance', 'Outdoor', 'Music'],
-        hours: '5 PM – 7 PM',
-        pricing: '₹99 per session',
-        contact: { phone: '+91 8619439126', address: 'Central Park' },
-      },
-      'fw-5': {
-        name: 'RELAXING MEDITATION IN NATURE',
-        images: ['/meditation.png'],
-        description: 'Relaxing guided meditation in nature at Central Park.',
-        facilities: ['Guided Meditation', 'Outdoor'],
-        hours: '6 AM – 7 AM',
-        pricing: '₹99 per session',
-        contact: { phone: '+91 8619439126', address: 'Central Park' },
-      },
-      'fw-6': {
+      'gym-3': {
         name: 'Sweatbox Gym',
         images: ['https://lh3.googleusercontent.com/p/AF1QipN4ORSvcvxZBpkSg9dTOlbslHFrhRgmKH1CVwgl=s1360-w1360-h1020-rw'],
-        description: 'Local gym with functional training and machines.',
+        description: 'Functional training & modern workout machines.',
         facilities: ['Weights', 'Cross-training', 'Trainer'],
         hours: '6 AM – 10 PM',
         pricing: '₹130 per session',
         contact: { phone: '+91 8619439126', address: 'Raja Park' },
       },
-      'fw-7': {
-        name: 'Fit Arena Gym',
-        images: ['https://img.fitimg.in/studio_profile_46256E619E41BE.png'],
-        description: 'Gym with modern equipment and spacious floor.',
-        facilities: ['Weights', 'Cardio', 'Lockers'],
-        hours: '6 AM – 10 PM',
-        pricing: '₹80 per session',
-        contact: { phone: '+91 8619439126', address: 'Vidyadarnagar' },
-      },
-       'fw-8': {
+      'gym-4': {
         name: 'Fitness Connection',
         images: ['https://lh3.googleusercontent.com/p/AF1QipMCJ78ZGMoyZ-1lCdTqN3Hij82Y0vPL-j0NtlfR=s1360-w1360-h1020-rw'],
-        description: 'Gym with modern equipment and spacious floor.',
+        description: 'Spacious gym with modern equipment.',
         facilities: ['Weights', 'Cardio', 'Lockers'],
         hours: '6 AM – 10 PM',
         pricing: '₹120 per session',
-        contact: { phone: '+91 8619439126', address: 'Vidyadarnagar' },
+        contact: { phone: '+91 8619439126', address: 'Vidyadhar Nagar' },
       },
-      'fw-9': {
+      'gym-5': {
         name: 'One Rule Gym',
         images: ['https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwhMp7yBIEdzNXrD6TIROue5d4wwUJS57bAtLj1KEdo3jwi_T1A3C2Sgsd3cCktzEm_BYVmq1-iyINNyIghEY8x3NQmyRfIcP2tGeFi88yztsgeJpWsGSEX-SJw1OSS6mPQtTMnvpK-90r8=s1360-w1360-h1020-rw'],
-        description: 'Gym with modern equipment and spacious floor.',
-        facilities: ['Weights', 'Cardio', 'Lockers'],
+        description: 'High-energy gym focused on strength training.',
+        facilities: ['Weights', 'Cardio', 'Trainer'],
         hours: '6 AM – 10 PM',
         pricing: '₹120 per session',
         contact: { phone: '+91 8619439126', address: 'Raja Park' },
       },
     },
+
+    'zumba': {
+      'zumba-1': {
+        name: 'Fit and Gold Gym',
+        images: ['/images/zumba.png'],
+        description: 'Energetic Zumba sessions for cardio & fun.',
+        facilities: ['Dance Floor', 'Instructor', 'Music'],
+        hours: '7 AM – 9 AM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Raja Park' },
+      },
+    },
+
+    'yoga': {
+      'yoga-1': {
+        name: 'Group workout & MUSICAL YOGA',
+        images: ['/images/parkyoga.png'],
+        description: 'Refreshing yoga with music in a group setting.',
+        facilities: ['Yoga Mats', 'Music', 'Instructor'],
+        hours: '6 AM – 9 AM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Central Park' },
+      },
+    },
+
+    'nature-workout': {
+      'nw-1': {
+        name: 'Group NATURE Fun workout',
+        images: ['/images/parkyoga.png'],
+        description: 'Outdoor group workout surrounded by nature.',
+        facilities: ['Outdoor', 'Group', 'Bodyweight'],
+        hours: '7 AM – 9 AM',
+        pricing: '₹99 per session [2 hrs]',
+        contact: { phone: '+91 8619439126', address: 'Bhagat Singh Park · Raja Park' },
+      },
+      'nw-2': {
+        name: 'Group workout & MUSICAL YOGA',
+        images: ['/images/parkyoga.png'],
+        description: 'Combination of workout & yoga in nature.',
+        facilities: ['Yoga Mats', 'Music', 'Instructor'],
+        hours: '6 AM – 9 AM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Central Park' },
+      },
+    },
+
+    'meditation': {
+      'med-1': {
+        name: 'RELAXING MEDITATION IN NATURE',
+        images: ['/images/meditation.png'],
+        description: 'Guided meditation for deep relaxation.',
+        facilities: ['Guided Meditation', 'Mindfulness'],
+        hours: '6 AM – 7 AM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Central Park' },
+      },
+    },
+
+    'nature-meditation': {
+      'nm-1': {
+        name: 'RELAXING MEDITATION IN NATURE',
+        images: ['/images/meditation.png'],
+        description: 'Peaceful meditation session in natural surroundings.',
+        facilities: ['Outdoor', 'Guided Session'],
+        hours: '6 AM – 7 AM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Central Park' },
+      },
+    },
+
+    'nature-fitness-dance-party': {
+      'ndp-1': {
+        name: 'Eco Fitness dance',
+        images: ['/images/dancecp.png'],
+        description: 'Fun outdoor fitness dance experience.',
+        facilities: ['Dance', 'Outdoor', 'Music'],
+        hours: '5 PM – 7 PM',
+        pricing: '₹99 per session',
+        contact: { phone: '+91 8619439126', address: 'Central Park' },
+      },
+    },
   },
+  
   doctors: {
     'general-physician': {
       'dr-vijay-pathak': {

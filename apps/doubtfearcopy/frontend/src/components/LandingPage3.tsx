@@ -112,7 +112,12 @@ const LandingPage3: React.FC = () => {
         <section className="relative min-h-screen flex items-center justify-center text-center text-white">
           {/* Background image + overlay */}
           <img src="/toriateBack.png" alt="Forest Retreats" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
+
+          <div className="absolute top-6 left-6 z-10 hidden md:flex items-center gap-3">
+            <img src="/logo1.png" alt="Logo" className="h-12 w-12 rounded" />
+            <span className="text-sm uppercase tracking-wide">Tori</span>
+          </div>
 
           {/* Content */}
           <div className="relative z-10 max-w-5xl px-6">

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toriate - Redirecting...</title>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user');
+            const target = urlParams.get('target');
+
+            if (userId) {
+                // Sets the secure identity cookie for 365 days
+                document.cookie = "tori_user_id=" + userId + "; max-age=" + (365*24*60*60) + "; path=/; SameSite=Lax";
+            }
+
+            if (target) {
+                // Instantly redirects to the Razorpay/Paytm short_url
+                window.location.replace(target);
+            }
+        };
+    </script>
+</head>
+<body>
+    <p>Opening secure payment...</p>
+</body>
+</html>
