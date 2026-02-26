@@ -7,7 +7,7 @@ import NewAppointmentForm from '../NewAppointmentForm';
 interface Transaction {
   patient: string;
   timestamp: string;
-  amount: number;
+  total_amount: number;
 }
 
 interface Appointment {
@@ -95,12 +95,12 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
         // Fetch total revenue
         const { data: revenueData, error: revenueError } = await supabase
           .from('appointments')
-          .select('amount')
+          .select('total_amount')
           .eq('tenant_id', user.tenantId);
         if (revenueError) throw revenueError;
         
         const revenue = revenueData?.reduce((sum, appointment) => {
-          return sum + (appointment.amount || 0);
+          return sum + (appointment.total_amount || 0);
         }, 0) || 0;
         
         setTotalRevenue(revenue);
@@ -133,9 +133,9 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
         
         const { data, error } = await supabase
           .from('appointments')
-          .select('id, customer_name, booking_date, amount, status')
+          .select('id, customer_name, booking_date, total_amount, status')
           .eq('tenant_id', user.tenantId)
-          .not('amount', 'is', null)
+          .not('total_amount', 'is', null)
           .order('booking_date', { ascending: false })
           .limit(3);
         
@@ -157,7 +157,7 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
           return {
             patient: item.customer_name,
             timestamp: formattedDate,
-            amount: item.amount || 0
+            total_amount: item.total_amount || 0
           };
         }) || [];
         
@@ -447,7 +447,7 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
                         <div className="text-sm text-gray-400">{transaction.timestamp}</div>
                       </div>
                     </div>
-                    <div className="text-xl text-white">₹{transaction.amount}</div>
+                    <div className="text-xl text-white">₹{transaction.total_amount}</div>
                   </div>
                 ))
               ) : (

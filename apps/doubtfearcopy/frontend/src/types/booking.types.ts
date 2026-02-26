@@ -7,7 +7,7 @@ export interface BaseBooking {
   status: 'Scheduled' | 'Completed' | 'Cancelled' | 'no-show';
   booking_reference?: string;
   payment_id?: string;
-  amount?: number;
+  total_amount?: number;
   currency?: string;
   payment_method?: string;
   created_at?: string;

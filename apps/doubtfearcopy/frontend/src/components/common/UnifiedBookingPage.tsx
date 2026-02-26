@@ -209,10 +209,10 @@ const BookingDetailModal: React.FC<{
               </tr>
               <tr>
                 <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
-                  Payment Amount
+                  Payment total_amount
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900">
-                  {booking.amount ? `${booking.currency || 'INR'} ${booking.amount}` : 'N/A'}
+                  {booking.total_amount ? `${booking.currency || 'INR'} ${booking.total_amount}` : 'N/A'}
                 </td>
               </tr>
               <tr>
@@ -662,7 +662,7 @@ const filteredBookings2 = useMemo( () => {
                       )}
                       {column.type === 'payment' && (
                         <div>
-                          <div>{booking.amount ? `${booking.currency || 'INR'} ${booking.amount}` : 'N/A'}</div>
+                          <div>{booking.total_amount ? `${booking.currency || 'INR'} ${booking.total_amount}` : 'N/A'}</div>
                           <div className="text-gray-500">{booking.payment_method?.toUpperCase() || 'N/A'}</div>
                         </div>
                       )}

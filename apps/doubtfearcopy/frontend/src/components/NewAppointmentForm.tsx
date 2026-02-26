@@ -9,7 +9,7 @@ interface FormValues {
   date: string;
   time: string;
   paymentId?: string;
-  amount?: string;
+  total_amount?: string;
   paymentMethod?: string;
   doctor?: string;
 }
@@ -31,7 +31,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
     date: new Date().toISOString().split('T')[0],
     time: '12:00',
     paymentId: '',
-    amount: '',
+    total_amount: '',
     paymentMethod: '',
     doctor: ''
   });
@@ -86,7 +86,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
           start_time: formatToPgTime(timeStr),
           booking_reference: `booking_${Date.now()}`,
           payment_id: formData.paymentId || null,
-          amount: formData.amount ? parseFloat(formData.amount) : null,
+          total_amount: formData.total_amount ? parseFloat(formData.total_amount) : null,
           currency: "INR",
           payment_method: formData.paymentMethod || null,
           status: 'Scheduled'
@@ -103,7 +103,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
           start_time: formatToPgTime(timeStr),
           booking_reference: `booking_${Date.now()}`,
           payment_id: formData.paymentId || null,
-          amount: formData.amount ? parseFloat(formData.amount) : null,
+          total_amount: formData.total_amount ? parseFloat(formData.total_amount) : null,
           currency: "INR",
           payment_method: formData.paymentMethod || null,
           status: 'Scheduled'
@@ -282,14 +282,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
 
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
-                Amount
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="total_amount">
+                total_amount
               </label>
               <input
-                id="amount"
-                name="amount"
+                id="total_amount"
+                name="total_amount"
                 type="number"
-                value={formData.amount}
+                value={formData.total_amount}
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />

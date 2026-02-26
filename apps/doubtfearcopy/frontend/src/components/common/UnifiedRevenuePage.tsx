@@ -187,7 +187,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
         config.fields.customerContact,
         'booking_date',
         'payment_method',
-        'amount',
+        'total_amount',
         'currency',
         'status',
         'created_at',
@@ -200,7 +200,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
         .eq('tenant_id', user.tenantId)
         .gte('booking_date', dateRange.startDate.toISOString())
         .lte('booking_date', dateRange.endDate.toISOString())
-        .not('amount', 'is', null)
+        .not('total_amount', 'is', null)
         .in('status', ['Scheduled', 'Completed', 'paid'])
         .order('booking_date', { ascending: false });
 
@@ -237,7 +237,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
   };
 
   const calculateMetrics = (data: Transaction[], dateRange: DateRangeResult) => {
-    const totalRevenue = data.reduce((sum: number, item: Transaction) => sum + (item.amount || 0), 0);
+    const totalRevenue = data.reduce((sum: number, item: Transaction) => sum + (item.total_amount || 0), 0);
     const totalCount = data.length;
 
     setMetrics({
@@ -248,11 +248,11 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
     });
   };
 
-  const formatCurrency = (amount: number, currency: string = 'INR') => {
+  const formatCurrency = (total_amount: number, currency: string = 'INR') => {
     if (currency === 'INR') {
-      return `₹${amount.toLocaleString('en-IN')}`;
+      return `₹${total_amount.toLocaleString('en-IN')}`;
     }
-    return `${currency} ${amount.toLocaleString()}`;
+    return `${currency} ${total_amount.toLocaleString()}`;
   };
 
   const formatDateOnly = (dateString: string) => {
@@ -491,7 +491,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
                   Payment Method
                 </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
+                  total_amount
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Reference
@@ -534,7 +534,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                      {formatCurrency(transaction.amount, transaction.currency)}
+                      {formatCurrency(transaction.total_amount, transaction.currency)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                       {transaction.booking_reference || transaction.id.slice(0, 8)}

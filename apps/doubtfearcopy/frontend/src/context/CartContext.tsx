@@ -16,7 +16,7 @@ interface CartContextType {
   addToCart: (item: CartItem) => void;
   removeFromCart: (index: number) => void;
   clearCart: () => void;
-  totalAmount: number;
+  totaltotal_amount: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -53,8 +53,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCartItems([]);
   };
 
-  // Calculate total amount
-  const totalAmount = cartItems.reduce((sum, item) => {
+  // Calculate total total_amount
+  const totaltotal_amount = cartItems.reduce((sum, item) => {
     // Extract number from price string (e.g. "₹700 per hour" -> 700)
     const priceMatch = item.price.match(/(\d+)/);
     const price = priceMatch ? parseInt(priceMatch[0]) : 0;
@@ -62,7 +62,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, totalAmount }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, totaltotal_amount }}>
       {children}
     </CartContext.Provider>
   );

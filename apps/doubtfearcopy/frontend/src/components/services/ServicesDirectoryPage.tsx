@@ -3,8 +3,8 @@ import ServiceCategoryCard, { ServiceCategory } from './ServiceCategoryCard';
 
 const categories: ServiceCategory[] = [
   
-  { id: 'gyms', name: 'FUN WORKOUT', slug: 'gyms', description: 'Fitness centers and personal training.', image: '/images/parkyoga.png' },
-  { id: 'sports-venues', name: 'Sports Venues', slug: 'sports-venues', description: 'Football turfs, courts, and arenas.', image: '/images/COMINGSOON.png'  },
+  { id: 'fitness-venues', name: 'FUN WORKOUT', slug: 'fitness-venues', description: 'Fitness centers and personal training.', image: '/images/parkyoga.png' },
+  { id: 'sports-venues', name: 'Sports Venues', slug: 'sports-venues', description: 'Football turfs, courts, and arenas.', image: '/images/f1.png'  },
   // { id: 'doctors', name: 'Doctors', slug: 'doctors', description: 'Consultations and clinics nearby.', image: '/doctor.png' },
   // { id: 'healthcare', name: 'Healthcare Centres', slug: 'healthcare-centres', description: 'Labs and diagnostic centers.', image: '/COMINGSOON.png' },
   // { id: 'physiotherapy', name: 'Physiotherapy', slug: 'physiotherapy', description: 'Sessions and home visits.', image: '/COMINGSOON.png' },
