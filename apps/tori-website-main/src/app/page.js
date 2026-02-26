@@ -135,7 +135,7 @@ export default function Home() {
           <div className="hero-gradient"></div>
           <div className="container">
             <div className="hero-content">
-              <div className="hero-status-pill">
+              <div className="hero-status-pill hero-status-pill-mobile">
                 <div className="hero-status-content">
                   <div className="hero-status-avatars">
                     <div className="hero-status-avatar">
@@ -178,13 +178,13 @@ export default function Home() {
                       <div
                         style={{
                           display: "flex",
+                          flexDirection: "column",
                           alignItems: "center",
                           justifyContent: "center",
-                          flexWrap: "wrap",
-                          gap: "0.3rem",
+                          gap: "0.75rem",
                         }}
                       >
-                        <span className="itc-garamond">
+                        <span className="itc-garamond hero-subheadline">
                           over "WHATSAPP" in JUST "10 sec"
                           <img
                             src="/images/bomb10s.png"
@@ -194,13 +194,13 @@ export default function Home() {
                             height="30"
                           />
                         </span>
-                        <div className="hero-cta">
+                        <div className="hero-cta hero-subheadline-cta">
                           <AnimatedButton
                             className="holiday-style"
                             label={<>Book any service in 10 sec</>}
                             animateOnScroll={false}
                             delay={1.15}
-                            route={"https://api.whatsapp.com/send/?phone=919351504729&text=Hi&type=phone_number&app_absent=0"}
+                            route={"/services"}
                           />
                         </div>
                       </div>
@@ -352,7 +352,9 @@ export default function Home() {
           <div className="hero-fade"></div>
         </section>
 
-        <ProcessAnimation />
+        <div className="process-animation-section">
+          <ProcessAnimation />
+        </div>
 
         {/* Clear separation between ProcessAnimation and FeaturesScroll */}
         <div style={{ height: "5vh", background: "#0d0c0c" }}></div>

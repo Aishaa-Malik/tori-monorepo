@@ -146,6 +146,20 @@ const TopBar = () => {
           <img src="/images/logo.png" alt="" />
         </a>
       </div>
+
+      <div className="top-bar-status">
+        <div className="top-bar-status-avatars">
+          <div className="top-bar-status-avatar">
+            <img src="/images/aisha-1.jpg" alt="" />
+          </div>
+          <div className="top-bar-status-avatar">
+            <img src="/images/ayush-2.png" alt="" />
+          </div>
+        </div>
+        <span className="top-bar-status-text">
+          Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur
+        </span>
+      </div>
       
       <div className="top-bar-nav">
         <div className="nav-pill">
@@ -160,8 +174,8 @@ const TopBar = () => {
       </div>
       
       <div className="top-bar-cta" ref={ctaRef}>
-        <AnimatedButton2 label="Login" route="/connect" animate={false} bgColor="orange" className="login-btn" />
-        <AnimatedButton label="Book ANY SERVICE IN 10 SEC" route="/connect" animate={false} />
+        {/* <AnimatedButton2 label="Login" route="/connect" animate={false} bgColor="orange" className="login-btn" /> */}
+        {/* <AnimatedButton label="Book ANY SERVICE IN 10 SEC" route="/connect" animate={false} /> */}
       </div>
     </div>
   );

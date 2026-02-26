@@ -15,17 +15,17 @@ const razorpay = new Razorpay({
  */
 exports.createOrder = async (req, res) => {
   try {
-    const { amount, currency = 'INR', receipt } = req.body;
+    const { total_amount, currency = 'INR', receipt } = req.body;
 
-    if (!amount) {
+    if (!total_amount) {
       return res.status(400).json({
         success: false,
-        message: 'Amount is required'
+        message: 'total_amount is required'
       });
     }
 
     const options = {
-      amount: amount * 100, // amount in smallest currency unit (paise)
+      total_amount: total_amount * 100, // total_amount in smallest currency unit (paise)
       currency,
       receipt: receipt || `receipt_${Date.now()}`
     };
@@ -78,7 +78,7 @@ exports.verifyPayment = async (req, res) => {
     
     // Set a default payment object for testing
     const payment = { 
-      amount: 100, 
+      total_amount: 100, 
       status: 'captured'
     };
 

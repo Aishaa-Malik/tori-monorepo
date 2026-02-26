@@ -213,7 +213,7 @@ export default function Gallery() {
       delay: 1,
       duration: 0.5,
       stagger: {
-        amount: 1,
+        total_amount: 1,
         from: "random",
       },
       ease: "power1.out",

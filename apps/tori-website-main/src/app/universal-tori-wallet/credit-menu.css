@@ -1,0 +1,123 @@
+ .credit-menu-page {
+   min-height: 100vh;
+   background: linear-gradient(135deg, #f7f8fc 0%, #eef1f9 100%);
+   color: #1a1a1a;
+ }
+ 
+ .credit-hero {
+   padding: 120px 0 40px;
+ }
+ 
+ .credit-hero-header h1 {
+   font-size: clamp(2.2rem, 3.5vw, 4rem);
+   color: #0f172a;
+   letter-spacing: -0.5px;
+ }
+ 
+ .credit-hero-header .subtitle {
+   margin-top: 8px;
+   font-size: 1rem;
+   color: #475569;
+ }
+ 
+ .credit-content {
+   padding: 24px 0 80px;
+ }
+ 
+ .menu-grid {
+   display: grid;
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+   gap: 16px;
+ }
+ 
+ .menu-card {
+   border-radius: 16px;
+   padding: 20px;
+   background: #ffffff;
+   border: 1px solid rgba(0, 0, 0, 0.08);
+   transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+ 
+ .menu-card:hover {
+   transform: translateY(-3px);
+   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+ }
+ 
+ .menu-card-header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+ }
+ 
+ .menu-card-header h3 {
+   font-size: 1.4rem;
+   color: #111827;
+ }
+ 
+ .price {
+   font-weight: 700;
+   font-size: 1.2rem;
+   color: #111827;
+ }
+ 
+ /* Light pastel variants */
+ .menu-card.gym {
+   background: linear-gradient(135deg, #eaf4ff 0%, #d6e8ff 100%);
+   border-color: rgba(68, 90, 145, 0.18);
+ }
+ 
+ .menu-card.zumba {
+   background: linear-gradient(135deg, #ffe3ec 0%, #ffd8e6 100%);
+   border-color: rgba(185, 80, 120, 0.2);
+ }
+ 
+ .menu-card.yoga {
+   background: linear-gradient(135deg, #fff7d6 0%, #fff1b8 100%);
+   border-color: rgba(180, 140, 40, 0.18);
+ }
+ 
+ .desc {
+   margin-top: 6px;
+   color: #374151;
+ }
+ 
+ .menu-table {
+   margin-top: 28px;
+   border-radius: 16px;
+   overflow: hidden;
+   border: 1px solid rgba(0, 0, 0, 0.08);
+   background: #ffffff;
+ }
+ 
+ .menu-table table {
+   width: 100%;
+   border-collapse: collapse;
+ }
+ 
+ .menu-table thead tr {
+   background: #f3f4f6;
+ }
+ 
+ .menu-table th,
+ .menu-table td {
+   padding: 14px 16px;
+   text-align: left;
+   color: #111827;
+ }
+ 
+ .menu-table tbody tr {
+   border-top: 1px solid rgba(0, 0, 0, 0.06);
+ }
+ 
+ .menu-table tbody tr:hover {
+   background: #f9fafb;
+ }
+ 
+ @media (max-width: 900px) {
+   .menu-grid {
+     grid-template-columns: 1fr;
+   }
+   .credit-hero {
+     padding-top: 96px;
+   }
+ }

@@ -65,7 +65,7 @@ This document outlines the complete implementation of a subscription management 
 3. **`payments`** - Payment records
    - `subscription_id`: Links to created subscription
    - `tenant_id`: Organization that made payment
-   - `amount`: Payment amount
+   - `total_amount`: Payment total_amount
    - `status`: Payment status
 
 ### Supporting Tables

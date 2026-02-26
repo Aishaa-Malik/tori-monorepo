@@ -1,6 +1,6 @@
 "use client";
 import "./FeaturedProjects.css";
-import featuredProjectsContent from "./featured-projects-content";
+import featuredProjectsContent from "./featuredProjectsContent";
 import AnimatedBodyText from "../AnimatedBodyText/AnimatedBodyText";
 
 import { useEffect } from "react";

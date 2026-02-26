@@ -32,7 +32,7 @@
         <div id="action-container" class="hidden mt-8 space-y-4">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
                 <p class="text-sm text-gray-400 uppercase tracking-widest font-semibold">Balance Due</p>
-                <h2 id="amount-display" class="text-4xl font-black text-gray-900 mt-1">₹0.00</h2>
+                <h2 id="total_amount-display" class="text-4xl font-black text-gray-900 mt-1">₹0.00</h2>
             </div>
             
             <button id="pay-button" class="w-full bg-[#10B981] hover:bg-[#059669] text-white text-xl font-bold py-5 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3">
@@ -57,7 +57,7 @@
             const subText = document.getElementById('sub-text');
             const loader = document.getElementById('loader-icon');
             const actionContainer = document.getElementById('action-container');
-            const amountDisplay = document.getElementById('amount-display');
+            const total_amountDisplay = document.getElementById('total_amount-display');
             const fallback = document.getElementById('fallback-container');
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -98,11 +98,11 @@
                     // Update UI for the user gesture
                     loader.style.display = 'none';
                     statusText.innerText = "Ready for Check-in";
-                    subText.innerText = "Please confirm the amount to proceed.";
+                    subText.innerText = "Please confirm the total_amount to proceed.";
                     
-                    // Razorpay sends amount in paise, convert to Rupees
-                    const amountInRupees = (data.amount / 100).toFixed(2);
-                    amountDisplay.innerText = "₹" + amountInRupees;
+                    // Razorpay sends total_amount in paise, convert to Rupees
+                    const total_amountInRupees = (data.total_amount / 100).toFixed(2);
+                    total_amountDisplay.innerText = "₹" + total_amountInRupees;
                     
                     actionContainer.classList.remove('hidden');
                 } else {

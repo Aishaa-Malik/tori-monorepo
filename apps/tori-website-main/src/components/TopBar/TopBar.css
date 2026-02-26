@@ -35,6 +35,53 @@
   display: block;
 }
 
+.top-bar .top-bar-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.top-bar .top-bar-status-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.top-bar .top-bar-status-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-left: -0.45rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.top-bar .top-bar-status-avatar:first-child {
+  margin-left: 0;
+}
+
+.top-bar .top-bar-status-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+}
+
+.top-bar .top-bar-status-text {
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+
 .top-bar .top-bar-cta {
   display: flex;
   align-items: center;
@@ -141,6 +188,10 @@
     padding: 0.5rem 1.5rem;
   }
   
+  .top-bar .top-bar-status {
+    display: none;
+  }
+
   .top-bar .nav-pill {
     gap: 1rem;
     padding: 0.4rem 1rem;
@@ -154,7 +205,7 @@
 @media (min-width: 1001px) {
   .top-bar {
     display: grid;
-    grid-template-columns: minmax(80px, 140px) 1fr auto;
+    grid-template-columns: minmax(80px, 120px) auto 1fr;
     align-items: center;
     gap: 1.25rem;
     background: linear-gradient(
@@ -166,6 +217,10 @@
   }
 
   .top-bar .top-bar-logo {
+    justify-self: start;
+  }
+
+  .top-bar .top-bar-status {
     justify-self: start;
   }
 

@@ -290,6 +290,16 @@ const Nav = () => {
                   <h2>Process</h2>
                 </a>
               </div>
+              <div className="link">
+                <a
+                  href="/universal-tori-wallet"
+                  onClick={(e) =>
+                    handleLinkClick(e, "/universal-tori-wallet")
+                  }
+                >
+                  <h2>Universal Tori wallet</h2>
+                </a>
+              </div>
                    <div className="link">
                 <a
                   href="#pricing-card"

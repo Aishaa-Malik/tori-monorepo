@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import './FeaturesScroll.css';
+import featuredProjectsContent from './featuredProjectsContent'; // ✅ Import data
 
 const FeaturesScroll = () => {
   const stickyRef = useRef(null);
@@ -23,7 +24,6 @@ const FeaturesScroll = () => {
     // ✅ MOBILE: Skip pin + horizontal scroll entirely — CSS handles vertical stacking
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
-      // Simple fade-in for each card on mobile
       const cardEls = cards.querySelectorAll(".features-card");
       gsap.set(cardEls, { opacity: 0, y: 30 });
       cardEls.forEach((card, i) => {
@@ -62,12 +62,11 @@ const FeaturesScroll = () => {
         id: "features-horizontal-scroll",
         invalidateOnRefresh: true,
         onLeave: () => {
-          // Wait for pin release + Lenis to settle before refreshing HowWeWork
           setTimeout(() => {
             ScrollTrigger.refresh();
           }, 50);
         },
-      }
+      },
     });
 
     return () => {
@@ -83,43 +82,33 @@ const FeaturesScroll = () => {
         <canvas className="outline-layer"></canvas>
         <canvas className="fill-layer"></canvas>
       </div>
+
+      {/* ✅ Dynamically render all 10 cards from featuredProjectsContent */}
       <div className="features-cards" ref={cardsRef}>
-        <div className="features-card">
-          <div className="features-card-img">
-            <img src="/images/2ndpara.png" alt="Book appointments in 10 seconds" />
+        {featuredProjectsContent.map((item, index) => (
+          <div
+            className="features-card"
+            key={index}
+            id={item.id || undefined} 
+          >
+            <div className="features-card-img">
+              <img src={item.image} alt={item.title} />
+            </div>
+            <div className="features-card-title">
+              <p>{item.info}</p>
+              <h1>{item.title}</h1>
+            </div>
+            {/* ✅ Description added — uses pre-line to respect \n line breaks */}
+            {item.description && (
+              <div
+                className="features-card-description"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                <p>{item.description}</p>
+              </div>
+            )}
           </div>
-          <div className="features-card-title">
-            <p>THE PROBLEM SOLVER</p>
-            <h1>Book Appointments In 10 Seconds</h1>
-          </div>
-        </div>
-        <div className="features-card">
-          <div className="features-card-img">
-            <img src="/images/Nobody Deletes.png" alt="Built for WhatsApp" />
-          </div>
-          <div className="features-card-title">
-            <p>CUSTOMERS ALREADY HAVE IT</p>
-            <h1>Built For WhatsApp</h1>
-          </div>
-        </div>
-        <div className="features-card">
-          <div className="features-card-img">
-            <img src="/images/24-7 Support.png" alt="24/7 Support" />
-          </div>
-          <div className="features-card-title">
-            <p>CUSTOMER SATISFACTION GUARANTEED</p>
-            <h1>99.9% Uptime + 24/7 Support</h1>
-          </div>
-        </div>
-        <div className="features-card">
-          <div className="features-card-img">
-            <img src="/images/INSTANT CONFIRMATION & REMINDER.png" alt="Instant confirmation" />
-          </div>
-          <div className="features-card-title">
-            <p>INSTANT CONFIRMATION & REMINDER</p>
-            <h1>Automatic Payment + Updates</h1>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

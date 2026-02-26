@@ -238,8 +238,8 @@ body.menu-open .menu-toggle {
 }
 
 .hero .hero-gradient {
-  position: absolute;
-  bottom: 0;
+  position: absolute;    /* ← release bottom anchor */
+  bottom:0;
   left: 0;
   width: 100%;
   height: 50svh;
@@ -385,6 +385,10 @@ body.menu-open .menu-toggle {
   line-height: 1;
 }
 
+.hero-status-pill-mobile {
+  display: none;
+}
+
 /* Hero Title */
 .hero-title-wrapper {
   display: flex;
@@ -415,6 +419,14 @@ body.menu-open .menu-toggle {
   margin-left: 8px;
   font-size: 40px;
   line-height: 1;
+}
+
+.hero-subheadline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 /* Hero Copy */
@@ -455,16 +467,29 @@ body.menu-open .menu-toggle {
 }
 
 @media (min-width: 1001px) {
-  .hero .hero-content {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: min(1100px, 90vw);
-    padding-top: 14svh;
-    padding-bottom: 10svh;
-    gap: 1.25rem;
+  .process-animation-section {
+    margin-top: 10svh;
   }
+
+  .hero {
+  height: auto;
+  min-height: 100svh;
+}
+
+ /* MODIFY inside @media (min-width: 1001px) — change only padding-bottom */
+.hero .hero-content {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: min(1100px, 88vw);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 16svh;
+  padding-bottom: 3rem; /* ← was 26svh */
+  gap: 1.25rem;
+}
+
 
   .hero .hero-content h1 {
     font-size: clamp(2.8rem, 3.6vw, 4.2rem);
@@ -508,6 +533,18 @@ body.menu-open .menu-toggle {
     max-width: 720px;
   }
 
+  .hero .hero-tagline-text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero .hero-copy {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .hero-header .hero-cta {
     margin-top: 0.75rem;
   }
@@ -522,22 +559,39 @@ body.menu-open .menu-toggle {
     margin-top: 0.5rem;
   }
 
-  .hero .hero-content > .hero-mockup {
-    order: 4;
-    position: relative;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    width: min(520px, 80vw);
-    margin-top: 1.5rem;
-    mask-image: none;
-    -webkit-mask-image: none;
+ /* MODIFY inside @media (min-width: 1001px) */
+.hero .hero-content > .hero-mockup {
+  order: 4;
+  position: relative;          /* ← was: position: absolute */
+  bottom: auto;                /* ← reset */
+  left: auto;                  /* ← reset */
+  transform: none;             /* ← reset */
+   width: min(360px, 38vw);   /* ← tighter cap */
+    overflow: hidden;           /* ← prevent bleed */
+  margin: 1.5rem auto 0 auto;
+  z-index: 4;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+}
+
+  /* ✅ KEY: Override the base 145% img width */
+  .hero .hero-content > .hero-mockup img {
+    width: 100% !important;     /* ← base CSS had width: 145% — this kills the overflow */
+    object-position: center;
   }
 
   .hero .hero-mockup img {
     width: 100%;
     object-position: center;
   }
+
+  /* ADD inside @media (min-width: 1001px) */
+.hero .hero-stats {
+  position: relative;   /* ← overrides global: position: absolute */
+  bottom: auto;         /* ← reset */
+  padding: 1rem 0 3rem;
+}
+
 }
 
 /* Mobile */
@@ -667,6 +721,10 @@ body.menu-open .menu-toggle {
    TABLET BREAKPOINT (1000px)
    ============================================ */
 @media (max-width: 1000px) {
+  .hero-status-pill-mobile {
+    display: flex;
+  }
+
   h1 {
     font-size: 3rem;
     letter-spacing: -0.1rem;
