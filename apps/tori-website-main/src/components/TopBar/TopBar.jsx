@@ -150,7 +150,7 @@ const TopBar = () => {
       <div className="top-bar-status">
         <div className="top-bar-status-avatars">
           <div className="top-bar-status-avatar">
-            <img src="/images/aisha-1.jpg" alt="" />
+            <img src="/images/aisha-1.png" alt="" />
           </div>
           <div className="top-bar-status-avatar">
             <img src="/images/ayush-2.png" alt="" />
@@ -165,10 +165,11 @@ const TopBar = () => {
         <div className="nav-pill">
           <a href="#features" className="nav-link"><span className="nav-text">Features</span></a>
           <a href="#process" className="nav-link"><span className="nav-text">Process</span></a>
+          <a href="/services" className="nav-link"><span className="nav-text">Services</span></a>
           <a href="#pricing-card" className="nav-link"><span className="nav-text">Pricing</span></a>
           <a href="#testimonials" className="nav-link"><span className="nav-text">Testimonials</span></a>
           <a href="#faq" className="nav-link"><span className="nav-text">FAQ</span></a>
-          <a href="#about-us" className="nav-link"><span className="nav-text">About us</span></a>
+          <a href="/universal-tori-wallet" className="nav-link"><span className="nav-text">Universal Wallet</span></a>
           <a href="#contact" className="nav-link"><span className="nav-text">Contact us</span></a>
         </div>
       </div>
