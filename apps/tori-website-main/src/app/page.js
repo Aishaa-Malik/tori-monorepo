@@ -194,13 +194,14 @@ export default function Home() {
                             height="30"
                           />
                         </span>
-                        <div className="hero-cta hero-subheadline-cta">
+                        <div>
                           <AnimatedButton
-                            className="holiday-style"
-                            label={<>Book any service in 10 sec</>}
+                            className="wedges-style"
+                            label={<>GET MORE BOOKINGS,  <br />
+                            CLICK HERE NOW</>}
                             animateOnScroll={false}
                             delay={1.15}
-                            route={"/services"}
+                            route={"/contact"}
                           />
                         </div>
                       </div>
