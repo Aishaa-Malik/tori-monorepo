@@ -101,7 +101,7 @@
                     subText.innerText = "Please confirm the total_amount to proceed.";
                     
                     // Razorpay sends total_amount in paise, convert to Rupees
-                    const total_amountInRupees = (data.total_amount / 100).toFixed(2);
+                    const total_amountInRupees = (data.amount / 100).toFixed(2);
                     total_amountDisplay.innerText = "₹" + total_amountInRupees;
                     
                     actionContainer.classList.remove('hidden');
