@@ -7,6 +7,7 @@ interface TimeSlot {
   start_time: string;
   end_time: string;
   price: number;
+  label?: string;
 }
 
 interface Service {
@@ -33,7 +34,7 @@ const OnboardingForm: React.FC = () => {
   const [step, setStep] = useState(1);
   const [userType, setUserType] = useState<'Healthcare' | 'SportsVenue' | 'Fitness' | 'SpaSalon' | null>(null);
   const [bookingSystemType, setBookingSystemType] = useState<'1' | '2' | null>(null);
-  const [turfName, setTurfName] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
   
@@ -49,6 +50,17 @@ const OnboardingForm: React.FC = () => {
   }>(JSON.parse(JSON.stringify(defaultAvailability)));
   const [tempSelectedDay, setTempSelectedDay] = useState<string>('Monday');
   
+  // Copy to Other Days Modal State
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
+  const [selectedDaysToCopy, setSelectedDaysToCopy] = useState<string[]>([]);
+  
+  // Series Generator State
+  const [genFirstStart, setGenFirstStart] = useState('');
+  const [genLastStart, setGenLastStart] = useState('');
+  const [genDuration, setGenDuration] = useState<number | ''>('');
+  const [genPrice, setGenPrice] = useState<number | ''>('');
+  const [genLabel, setGenLabel] = useState('');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
@@ -87,14 +99,83 @@ const OnboardingForm: React.FC = () => {
   const addTimeSlot = (day: string) => {
     setTempAvailability(prev => ({
       ...prev,
-      [day]: [...prev[day], { start_time: '', end_time: '', price: 0 }]
+      [day]: [...prev[day], { start_time: '', end_time: '', price: 0, label: '' }]
     }));
+  };
+
+  const clearAllSlots = (day: string) => {
+    setTempAvailability(prev => ({
+      ...prev,
+      [day]: []
+    }));
+  };
+
+  const timeToMs = (time: string) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return (hours * 60 + minutes) * 60 * 1000;
+  };
+
+  const msToTime = (ms: number) => {
+    const totalMinutes = Math.floor(ms / (60 * 1000));
+    let hours = Math.floor(totalMinutes / 60) % 24;
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  const generateSeries = () => {
+    if (!genFirstStart || !genLastStart || !genDuration || genPrice === '' || !genLabel.trim()) {
+      setModalError('Please fill all generator fields');
+      return;
+    }
+    
+    const duration = Number(genDuration);
+    if (isNaN(duration) || duration <= 0) {
+      setModalError('Invalid duration');
+      return;
+    }
+
+    const price = Number(genPrice);
+    if (isNaN(price) || price < 0) {
+      setModalError('Invalid price');
+      return;
+    }
+
+    const startMs = timeToMs(genFirstStart);
+    const endMs = timeToMs(genLastStart);
+
+    if (startMs > endMs) {
+      setModalError('First start time cannot be after last start time');
+      return;
+    }
+
+    const generatedSlots: TimeSlot[] = [];
+    let currentStartMs = startMs;
+
+    while (currentStartMs <= endMs) {
+      const currentEndMs = currentStartMs + duration * 60 * 1000;
+      
+      generatedSlots.push({
+        start_time: msToTime(currentStartMs),
+        end_time: msToTime(currentEndMs),
+        price: price,
+        label: genLabel
+      });
+
+      currentStartMs = currentEndMs;
+    }
+
+    setTempAvailability(prev => ({
+      ...prev,
+      [tempSelectedDay]: [...prev[tempSelectedDay], ...generatedSlots]
+    }));
+    
+    setModalError(null);
   };
 
   const updateTimeSlot = (
     day: string, 
     index: number, 
-    field: 'start_time' | 'end_time' | 'price', 
+    field: 'start_time' | 'end_time' | 'price' | 'label', 
     value: string | number
   ) => {
     setTempAvailability(prev => ({
@@ -114,6 +195,57 @@ const OnboardingForm: React.FC = () => {
 
   const isDayActive = (day: string) => {
     return tempAvailability[day]?.length > 0;
+  };
+
+  // --- Copy to Other Days Logic ---
+  
+  const openCopyModal = () => {
+    // Select all days by default except the current one
+    const initialSelection = daysOfWeek.filter(d => d !== tempSelectedDay);
+    setSelectedDaysToCopy(initialSelection);
+    setIsCopyModalOpen(true);
+  };
+
+  const closeCopyModal = () => {
+    setIsCopyModalOpen(false);
+  };
+
+  const handleToggleDaySelection = (day: string) => {
+    setSelectedDaysToCopy(prev => 
+      prev.includes(day) 
+        ? prev.filter(d => d !== day)
+        : [...prev, day]
+    );
+  };
+
+  const handleSelectAllDays = () => {
+    const allOtherDays = daysOfWeek.filter(d => d !== tempSelectedDay);
+    if (selectedDaysToCopy.length === allOtherDays.length) {
+      // If all are selected, deselect all
+      setSelectedDaysToCopy([]);
+    } else {
+      // Otherwise, select all
+      setSelectedDaysToCopy(allOtherDays);
+    }
+  };
+
+  const applyCopySlots = () => {
+    const sourceSlots = [...tempAvailability[tempSelectedDay]];
+    
+    // Deep copy to prevent reference issues
+    const slotsToCopy = JSON.parse(JSON.stringify(sourceSlots));
+    
+    setTempAvailability(prev => {
+      const updatedAvailability = { ...prev };
+      
+      selectedDaysToCopy.forEach(day => {
+        updatedAvailability[day] = JSON.parse(JSON.stringify(slotsToCopy));
+      });
+      
+      return updatedAvailability;
+    });
+    
+    closeCopyModal();
   };
 
   const saveService = () => {
@@ -170,26 +302,27 @@ const OnboardingForm: React.FC = () => {
       return;
     }
     
-    if (step === 2 && !bookingSystemType) {
-      setError('Please select how your booking system should handle time slots');
-      return;
+    if (step === 2) {
+      if (!businessName.trim()) {
+        setError('Please enter your business name');
+        return;
+      }
+      if (!bookingSystemType) {
+        setError('Please select how your booking system should handle time slots');
+        return;
+      }
     }
     
-    if (step === 3 && userType === 'SportsVenue' && !turfName.trim()) {
-      setError('Please enter your SportsVenue name');
-      return;
-    }
-    
-    // Step 4 is Service List. 
-    if (step === 4) {
+    // Step 3 is Service List. 
+    if (step === 3) {
       if (services.length === 0) {
         setError('Please add at least one service');
         return;
       }
     }
     
-    // Step 5 is Location
-    if (step === 5) {
+    // Step 4 is Location
+    if (step === 4) {
       if (!location.trim()) {
         setError('Please enter your location');
         return;
@@ -202,6 +335,11 @@ const OnboardingForm: React.FC = () => {
 
     setError(null);
     setStep(prev => prev + 1);
+  };
+
+  const handleBack = () => {
+    setError(null);
+    setStep(prev => prev - 1);
   };
 
   const handleSubmit = async () => {
@@ -264,8 +402,8 @@ const OnboardingForm: React.FC = () => {
         body: JSON.stringify({
           email: user.email,
           tenantId: user.tenantId,
-          businessType: userType,
-          businessName: userType === 'SportsVenue' ? turfName : null,
+          businessType: userType === 'Fitness' ? 'Fitness & Gym' : userType,
+          businessName: businessName,
           services: formattedServices,
           bookingSystemType: bookingSystemType,
           location: location,
@@ -352,7 +490,18 @@ const OnboardingForm: React.FC = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">How should your booking system handle time slot availability?</h2>
+            <h2 className="text-xl font-semibold text-gray-800">What's your business name?</h2>
+            <div>
+              <input
+                type="text"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                placeholder="Enter your business name"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6">How should your booking system handle time slot availability?</h2>
             <div className="grid grid-cols-1 gap-4">
               <button
                 className={`p-6 border rounded-lg text-left ${
@@ -382,24 +531,6 @@ const OnboardingForm: React.FC = () => {
         );
         
       case 3:
-        return userType === 'SportsVenue' ? (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">What's your SportsVenue's name?</h2>
-            <div>
-              <input
-                type="text"
-                value={turfName}
-                onChange={(e) => setTurfName(e.target.value)}
-                placeholder="Enter your SportsVenue name"
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        ) : (
-          <>{setStep(4)}</>
-        );
-        
-      case 4:
         return (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -456,7 +587,7 @@ const OnboardingForm: React.FC = () => {
           </div>
         );
 
-      case 5:
+      case 4:
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-800">Where is your business located?</h2>
@@ -513,7 +644,7 @@ const OnboardingForm: React.FC = () => {
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex justify-between mb-2">
-              {[1, 2, 3, 4, 5].map((stepNumber) => (
+              {[1, 2, 3, 4].map((stepNumber) => (
                 <div
                   key={stepNumber}
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -531,7 +662,7 @@ const OnboardingForm: React.FC = () => {
             <div className="overflow-hidden h-2 rounded-full bg-gray-200">
               <div
                 className="h-full bg-blue-600 transition-all duration-300"
-                style={{ width: `${((step - 1) / 4) * 100}%` }}
+                style={{ width: `${((step - 1) / 3) * 100}%` }}
               ></div>
             </div>
           </div>
@@ -549,14 +680,14 @@ const OnboardingForm: React.FC = () => {
             {step > 1 && (
               <button
                 type="button"
-                onClick={() => setStep(prev => prev - 1)}
+                onClick={handleBack}
                 className="text-gray-700 hover:text-gray-900"
               >
                 Back
               </button>
             )}
             
-            {step < 5 ? (
+            {step < 4 ? (
                <button
                type="button"
                onClick={handleNext}
@@ -638,55 +769,163 @@ const OnboardingForm: React.FC = () => {
                       </div>
 
                       {/* Time slots for selected day */}
-                      <div className="border rounded-lg p-3 bg-gray-50 max-h-60 overflow-y-auto">
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium">{tempSelectedDay} Slots</span>
+                      
+                      {/* Generator UI */}
+                      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-4">
+                        <h4 className="text-sm font-bold text-gray-800 mb-3">Series-Based Slot Generator</h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 items-end">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">First Start Time</label>
+                            <input 
+                              type="time" 
+                              value={genFirstStart}
+                              onChange={(e) => setGenFirstStart(e.target.value)}
+                              className="w-full p-2 border border-gray-300 rounded text-sm" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Last Start Time</label>
+                            <input 
+                              type="time" 
+                              value={genLastStart}
+                              onChange={(e) => setGenLastStart(e.target.value)}
+                              className="w-full p-2 border border-gray-300 rounded text-sm" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Duration (mins)</label>
+                            <input 
+                              type="number" 
+                              value={genDuration}
+                              onChange={(e) => setGenDuration(e.target.value ? Number(e.target.value) : '')}
+                              placeholder="40"
+                              className="w-full p-2 border border-gray-300 rounded text-sm" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Default Price</label>
+                            <input 
+                              type="number" 
+                              value={genPrice}
+                              onChange={(e) => setGenPrice(e.target.value ? Number(e.target.value) : '')}
+                              placeholder="500"
+                              className="w-full p-2 border border-gray-300 rounded text-sm" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Default Label</label>
+                            <input 
+                              type="text" 
+                              value={genLabel}
+                              onChange={(e) => setGenLabel(e.target.value)}
+                              placeholder="Premium Session"
+                              className="w-full p-2 border border-gray-300 rounded text-sm" 
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 flex justify-between items-center">
+                          <p className="text-xs text-gray-500 italic">
+                            {genLastStart && genDuration ? 
+                              `The last slot will end at ${msToTime(timeToMs(genLastStart) + Number(genDuration) * 60 * 1000)}` 
+                              : "Enter times and duration to generate."}
+                          </p>
                           <button
-                            onClick={() => addTimeSlot(tempSelectedDay)}
-                            className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+                            onClick={generateSeries}
+                            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition-colors"
                           >
-                            + Add Slot
+                            Generate Series
                           </button>
                         </div>
+                      </div>
 
-                        {tempAvailability[tempSelectedDay].length === 0 ? (
-                          <p className="text-xs text-gray-500 text-center py-4">
-                            No slots. Click "+ Add Slot".
-                          </p>
+                      <div className="border border-gray-200 rounded-lg p-3 bg-white max-h-80 overflow-y-auto shadow-sm">
+                        <div className="flex justify-between items-center mb-3 pb-2 border-b">
+                          <span className="text-sm font-bold text-gray-800">{tempSelectedDay} Editable Slots List</span>
+                          <div className="flex gap-2">
+                            {tempAvailability[tempSelectedDay]?.length > 0 && (
+                              <>
+                                <button
+                                  onClick={() => clearAllSlots(tempSelectedDay)}
+                                  className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 flex items-center gap-1"
+                                >
+                                  Clear All
+                                </button>
+                                <button
+                                  onClick={openCopyModal}
+                                  className="px-2 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 flex items-center gap-1"
+                                >
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
+                                  Copy to...
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => addTimeSlot(tempSelectedDay)}
+                              className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+                            >
+                              + Add Slot
+                            </button>
+                          </div>
+                        </div>
+
+                        {tempAvailability[tempSelectedDay]?.length === 0 ? (
+                          <div className="text-center py-6 text-gray-500 text-sm">
+                            No slots for {tempSelectedDay}. Generate a series or add one manually.
+                          </div>
                         ) : (
-                          <div className="space-y-2">
-                            {tempAvailability[tempSelectedDay].map((slot, index) => (
-                              <div key={index} className="flex gap-2 items-end">
-                                <div className="flex-1">
+                          <div className="space-y-3">
+                            {tempAvailability[tempSelectedDay]?.map((slot, index) => (
+                              <div key={index} className="flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 bg-gray-50 rounded border border-gray-100">
+                                <div className="w-full sm:w-1/3">
+                                  <label className="sr-only">Label</label>
+                                  <input
+                                    type="text"
+                                    value={slot.label || ''}
+                                    onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'label', e.target.value)}
+                                    placeholder="Slot Label"
+                                    className="w-full p-1.5 border border-gray-300 rounded text-sm"
+                                  />
+                                </div>
+                                <div className="w-1/3 sm:w-1/5">
+                                  <label className="sr-only">Start</label>
                                   <input
                                     type="time"
                                     value={slot.start_time}
                                     onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'start_time', e.target.value)}
-                                    className="w-full px-2 py-1 text-xs border rounded"
+                                    className="w-full p-1.5 border border-gray-300 rounded text-sm"
                                   />
                                 </div>
-                                <div className="flex-1">
+                                <div className="hidden sm:block text-gray-400">-</div>
+                                <div className="w-1/3 sm:w-1/5">
+                                  <label className="sr-only">End</label>
                                   <input
                                     type="time"
                                     value={slot.end_time}
                                     onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'end_time', e.target.value)}
-                                    className="w-full px-2 py-1 text-xs border rounded"
+                                    className="w-full p-1.5 border border-gray-300 rounded text-sm"
                                   />
                                 </div>
-                                <div className="w-20">
+                                <div className="w-1/4 sm:w-1/6">
+                                  <label className="sr-only">Price</label>
                                   <input
                                     type="number"
+                                    value={slot.price || ''}
+                                    onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'price', e.target.value ? Number(e.target.value) : 0)}
                                     placeholder="Price"
-                                    value={slot.price}
-                                    onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'price', Number(e.target.value))}
-                                    className="w-full px-2 py-1 text-xs border rounded"
+                                    className="w-full p-1.5 border border-gray-300 rounded text-sm"
                                   />
                                 </div>
                                 <button
                                   onClick={() => removeTimeSlot(tempSelectedDay, index)}
-                                  className="text-red-500 hover:text-red-700"
+                                  className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                                  title="Delete Slot"
                                 >
-                                  ×
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
                                 </button>
                               </div>
                             ))}
@@ -709,6 +948,87 @@ const OnboardingForm: React.FC = () => {
                   type="button"
                   onClick={closeServiceModal}
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Copy to Other Days Modal */}
+      {isCopyModalOpen && (
+        <div className="fixed inset-0 z-[60] overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true" onClick={closeCopyModal}>
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start w-full">
+                  <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">
+                      Copy {tempSelectedDay} Slots
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Select the days you want to copy these {tempAvailability[tempSelectedDay]?.length} slots to. This will overwrite any existing slots on those days.
+                    </p>
+
+                    <div className="mb-4">
+                      <button
+                        onClick={handleSelectAllDays}
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 mb-2"
+                      >
+                        {selectedDaysToCopy.length === daysOfWeek.length - 1 ? 'Deselect All' : 'Select All Weekdays'}
+                      </button>
+                      
+                      <div className="space-y-2 border border-gray-200 rounded-md p-3 max-h-60 overflow-y-auto bg-gray-50">
+                        {daysOfWeek
+                          .filter(day => day !== tempSelectedDay)
+                          .map(day => (
+                          <label key={day} className="flex items-center p-2 hover:bg-white rounded cursor-pointer transition-colors border border-transparent hover:border-gray-200">
+                            <input
+                              type="checkbox"
+                              checked={selectedDaysToCopy.includes(day)}
+                              onChange={() => handleToggleDaySelection(day)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                            />
+                            <span className="ml-3 text-sm font-medium text-gray-700 flex-1">
+                              {day}
+                            </span>
+                            {tempAvailability[day]?.length > 0 && (
+                              <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
+                                Overwrite ({tempAvailability[day].length} existing)
+                              </span>
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t">
+                <button
+                  type="button"
+                  onClick={applyCopySlots}
+                  disabled={selectedDaysToCopy.length === 0}
+                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm ${
+                    selectedDaysToCopy.length === 0
+                      ? 'bg-blue-300 cursor-not-allowed'
+                      : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                  }`}
+                >
+                  Apply to {selectedDaysToCopy.length} Day{selectedDaysToCopy.length !== 1 ? 's' : ''}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeCopyModal}
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Cancel
                 </button>
