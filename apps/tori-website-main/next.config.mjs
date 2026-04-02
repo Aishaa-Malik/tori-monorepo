@@ -29,6 +29,7 @@ const nextConfig = {
       { source: '/unauthorized', destination: `${DASHBOARD_URL}/unauthorized` },
       { source: '/update-password', destination: `${DASHBOARD_URL}/update-password` },
       { source: '/privacy-policy', destination: `${DASHBOARD_URL}/privacy-policy` },
+      { source: '/terms', destination: `${DASHBOARD_URL}/terms.html` },
       { source: '/onboarding', destination: `${DASHBOARD_URL}/onboarding` },
       { source: '/revenue/:path*', destination: `${DASHBOARD_URL}/revenue/:path*` },
       { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },
