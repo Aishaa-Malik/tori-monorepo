@@ -40,6 +40,7 @@ import TurfEmployeeDashboardLayout from './components/turf/TurfEmployeeDashboard
 import TurfSettingsPage from './components/turf/TurfSettingsPage';
 
 import PrivacyPolicy from './components/PrivacyPolicy';
+import DeleteAccount from './components/DeleteAccount';
 
 
 // Check if user needs onboarding
@@ -138,6 +139,7 @@ function App() {
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/delete-account" element={<DeleteAccount />} />
 
             
             {/* Public Services Directory */}
