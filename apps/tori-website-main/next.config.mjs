@@ -23,6 +23,16 @@ const nextConfig = {
       { source: '/dashboard/:path*', destination: `${DASHBOARD_URL}/dashboard/:path*` },
       { source: '/services/:path*', destination: `${DASHBOARD_URL}/services/:path*` },
       { source: '/contact/:path*', destination: `${DASHBOARD_URL}/contact/:path*` },
+      { source: '/about/:path*', destination: `${DASHBOARD_URL}/about/:path*` },
+      { source: '/oauth/callback', destination: `${DASHBOARD_URL}/oauth/callback` },
+      { source: '/payment-callback', destination: `${DASHBOARD_URL}/payment-callback` },
+      { source: '/unauthorized', destination: `${DASHBOARD_URL}/unauthorized` },
+      { source: '/update-password', destination: `${DASHBOARD_URL}/update-password` },
+      { source: '/privacy-policy', destination: `${DASHBOARD_URL}/privacy-policy` },
+      { source: '/onboarding', destination: `${DASHBOARD_URL}/onboarding` },
+      { source: '/revenue/:path*', destination: `${DASHBOARD_URL}/revenue/:path*` },
+      { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },
+      { source: '/healthwellness-dashboard/:path*', destination: `${DASHBOARD_URL}/healthwellness-dashboard/:path*` },
       
       // 2. Folder Mappings (Assets)
       { source: '/js/:path*', destination: `${DASHBOARD_URL}/js/:path*` },

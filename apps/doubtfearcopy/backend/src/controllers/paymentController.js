@@ -179,6 +179,8 @@ exports.verifyPayment = async (req, res) => {
       console.log('✅ approved_users insert successful');
     }
 
+    let businessProfileData = null;
+
     if(userError){ //new user
       const { data: businessData, error: businessError } = await supabase
         .from('business_profiles')
@@ -186,8 +188,12 @@ exports.verifyPayment = async (req, res) => {
           email: email,  
           onboarding_completed: false,
           tenant_id: newtenantId
-        });
+        })
+        .select()
+        .single();
       
+      businessProfileData = businessData;
+
       if (businessError) {
         console.log('business_profiles insertion error:', businessError);
       } else {
@@ -195,10 +201,7 @@ exports.verifyPayment = async (req, res) => {
       }
     }
 
-    const isTurf = false;
-    if(businessData.business_type === 'Turf'){
-      isTurf = true;
-    }
+    const isTurf = businessProfileData ? businessProfileData.business_type === 'Turf' : false;
 
     // Create subscription record using your existing subscriptions table structure
     console.log('Creating subscription for plan:', plan);
