@@ -179,6 +179,23 @@ exports.verifyPayment = async (req, res) => {
       console.log('✅ approved_users insert successful');
     }
 
+    // Insert mapping into user_tenants table if user exists
+    if (userId) {
+      const { error: userTenantError } = await supabase.from('user_tenants').insert([
+        {
+          user_id: userId,
+          tenant_id: newtenantId,
+          role: 'owner' // or whatever default role you use here
+        }
+      ]);
+      
+      if (userTenantError) {
+        console.error('❌ user_tenants insert failed:', userTenantError);
+      } else {
+        console.log('✅ user_tenants insert successful');
+      }
+    }
+
     let businessProfileData = null;
 
     if(userError){ //new user

@@ -146,7 +146,7 @@ export default function Home() {
                     </div>
                   </div>
                   <span className="hero-status-text">
-                    Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur
+                    Founded by Engineers from BITS Pilani, AMAZON & NIT Jaipur
                   </span>
                 </div>
               </div>
@@ -197,8 +197,8 @@ export default function Home() {
                         <div>
                           <AnimatedButton
                             className="wedges-style"
-                            label={<>GET MORE BOOKINGS,  <br />
-                            CLICK HERE NOW</>}
+                            label={<>FIND LIKE-MINDED PEOPLE <br />
+                            MEET| WORKOUT| FUN| BOOK| ALL-TOGETHER</>}
                             animateOnScroll={false}
                             delay={1.15}
                             route={"/contact"}
