@@ -201,7 +201,7 @@ export default function Home() {
                             MEET| WORKOUT| FUN| BOOK| ALL-TOGETHER</>}
                             animateOnScroll={false}
                             delay={1.15}
-                            route={"/contact"}
+                            route={"/services"}
                           />
                         </div>
                       </div>

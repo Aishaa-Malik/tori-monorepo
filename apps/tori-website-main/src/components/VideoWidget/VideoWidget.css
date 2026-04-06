@@ -1,0 +1,100 @@
+/* 1. Small Floating Bubble */
+#video-widget-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px; /* Adjust size */
+    height: 250px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    border: 2px solid white;
+}
+
+.mini-player, .mini-player iframe {
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Prevents user from clicking YouTube buttons in mini-mode */
+}
+
+.overlay-click-layer {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: transparent;
+    z-index: 10;
+}
+
+/* 2. The Full Screen Modal */
+#video-modal-overlay {
+    display: flex; 
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.85); /* Dimmed background */
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 400px; /* Mobile "Story" width */
+    height: 80vh;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.video-container-full, .video-container-full iframe {
+    width: 100%;
+    height: 100%;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px; 
+    right: 15px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    font-size: 24px;
+    border-radius: 50%;
+    width: 40px; 
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+/* Progress Bar at Top */
+.progress-bar-container {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+}
+
+.progress-bar-fill {
+    width: 40%; /* This is just a visual placeholder */
+    height: 100%;
+    background: white;
+}

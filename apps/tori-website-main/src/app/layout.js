@@ -1,6 +1,7 @@
 import "./globals.css";
 import ClientLayout from "@/client-layout";
 import TopBar from "@/components/TopBar/TopBar";
+import VideoWidget from "@/components/VideoWidget/VideoWidget";
 import localFont from "next/font/local";
 
 const resistSans = localFont({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
         <ClientLayout>
           <TopBar />
           {children}
+          <VideoWidget />
         </ClientLayout>
       </body>
     </html>
