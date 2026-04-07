@@ -282,8 +282,8 @@ export default function Home() {
                 <img
                   src="/images/phns4.png"
                   alt="Phone mockup"
-                  width="390"
-                  height="944"
+                  width="1390"
+                  height="1944"
                   fetchPriority="high"
                 />
               </div>
@@ -414,7 +414,7 @@ export default function Home() {
           subtitle="While your competitors sleep, Toriate is chatting, booking, and collecting payments 24/7. We replace booking friction* with 3X more bookings and 70% fewer no-shows."
           buttonLabel="Get Started Now"
           buttonRoute="contact"
-          helperText="Engineered by BITS Pilani & Ex-Amazon, NIT Jaipur alumni to ensure you never lose a customer to a slow link again."
+          helperText="Engineered by BITS PILANI, Amazon & NIT Jaipur to ensure you never lose a customer to a slow link again."
           bgImg="/images/home-cta-window.png"
           centered
         />

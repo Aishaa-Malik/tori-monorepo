@@ -157,7 +157,7 @@ const TopBar = () => {
           </div>
         </div>
         <span className="top-bar-status-text">
-          Founded by Engineers from BITS Pilani & (Ex-Amazon) NIT Jaipur
+          Founded by Engineers from BITS PILANI, Amazon & NIT Jaipur
         </span>
       </div>
       
