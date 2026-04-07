@@ -353,6 +353,23 @@ export default function Home() {
           <div className="hero-fade"></div>
         </section>
 
+        {/* Before and After Section */}
+        <section className="before-after-section">
+          <div className="container">
+            <div className="before-after-content">
+              <div className="image-container before-img">
+                <img src="/images/lose.jpeg" alt="Before Tori Ate" />
+              </div>
+              <div className="transition-text">
+                <h2>TO</h2>
+              </div>
+              <div className="image-container after-img">
+                <img src="/images/suces.jpg" alt="After Tori Ate" />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="process-animation-section">
           <ProcessAnimation />
         </div>
