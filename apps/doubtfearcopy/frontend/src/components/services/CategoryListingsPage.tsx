@@ -22,9 +22,31 @@ const CategoryListingsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 animate-fade-in">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="flex items-center justify-between">
+        <div className="relative flex items-center justify-between mb-8">
           <h1 className="text-2xl md:text-3xl font-bold">{title}</h1>
-          <Link to="/services" className="text-sm text-teal-600 hover:text-teal-700">Back to all services</Link>
+          
+          {category === 'events' && (
+            <div className="absolute left-1/2 -translate-x-1/2 hidden md:block">
+              <Link 
+                to="/events/create" 
+                className="bg-black text-white px-5 py-2.5 rounded-lg font-medium hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap"
+              >
+                Create and host an event
+              </Link>
+            </div>
+          )}
+
+          <div className="flex items-center gap-4">
+            {category === 'events' && (
+              <Link 
+                to="/events/create" 
+                className="md:hidden bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
+              >
+                Create Event
+              </Link>
+            )}
+            <Link to="/services" className="text-sm text-teal-600 hover:text-teal-700 font-medium">Back to all services</Link>
+          </div>
         </div>
         {subcategories ? (
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

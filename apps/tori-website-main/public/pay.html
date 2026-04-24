@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Toriate - Redirecting...</title>
-    <script>
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('user');
-            const target = urlParams.get('target');
-
-            if (userId) {
-                // Sets the secure identity cookie for 365 days
-                document.cookie = "tori_user_id=" + userId + "; max-age=" + (365*24*60*60) + "; path=/; SameSite=Lax";
-            }
-
-            if (target) {
-                // Instantly redirects to the Razorpay/Paytm short_url
-                window.location.replace(target);
-            }
-        };
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toriate - Secure Checkout</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #333; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin-right: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-    <p>Opening secure payment...</p>
+    <div class="loader"></div>
+    <p id="status">Redirecting to secure payment...</p>
+
+    <script>
+        // Execute immediately, don't wait for onload
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user');
+        const target = urlParams.get('target');
+
+        if (userId) {
+            // Added 'Secure' and changed to a more modern cookie string
+            document.cookie = `tori_user_id=${userId}; max-age=${365*24*60*60}; path=/; SameSite=Lax; Secure`;
+        }
+
+        if (target && target.startsWith('http')) {
+            // Using replace to keep history clean
+            window.location.replace(target);
+        } else {
+            document.getElementById('status').innerHTML = 'Link expired. Please request a new booking on WhatsApp.';
+        }
+    </script>
 </body>
 </html>
-

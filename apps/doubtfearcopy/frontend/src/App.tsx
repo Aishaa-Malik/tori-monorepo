@@ -28,6 +28,8 @@ import ServicesDirectoryPage from './components/services/ServicesDirectoryPage';
 import CategoryListingsPage from './components/services/CategoryListingsPage';
 import SubcategoryListingsPage from './components/services/SubcategoryListingsPage';
 import ListingProfilePage from './components/services/ListingProfilePage';
+import CreateEventPage from './components/events/CreateEventPage';
+import PaymentPage from './components/PaymentPage';
 
 // Turf owner components
 import TurfDashboardLayout from './components/turf/TurfDashboardLayout';
@@ -140,6 +142,7 @@ function App() {
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/delete-account" element={<DeleteAccount />} />
+            <Route path="/payment" element={<PaymentPage />} />
 
             
             {/* Public Services Directory */}
@@ -148,6 +151,16 @@ function App() {
             <Route path="/services/:category/:subcategory" element={<SubcategoryListingsPage />} />
             <Route path="/services/:category/:id" element={<ListingProfilePage />} />
             <Route path="/services/:category/:subcategory/:id" element={<ListingProfilePage />} />
+
+            {/* Event Creation Route */}
+            <Route 
+              path="/events/create" 
+              element={
+                // <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER]}>
+                  <CreateEventPage />
+                // </ProtectedRoute>
+              } 
+            />
 
             {/* Onboarding Route */}
             <Route 
