@@ -6,7 +6,7 @@ const categories: ServiceCategory[] = [
   { id: 'fitness-venues', name: 'FUN WORKOUT', slug: 'fitness-venues', description: 'Fitness centers and personal training.', image: '/images/parkyoga.png' },
   { id: 'sports-venues', name: 'Sports Venues', slug: 'sports-venues', description: 'Football turfs, courts, and arenas.', image: '/images/f1.png'  },
    { id: 'events', name: 'Events', slug: 'events', description: 'Local events and experiences.', image: '/images/run-1.png' },
-  // { id: 'doctors', name: 'Doctors', slug: 'doctors', description: 'Consultations and clinics nearby.', image: '/doctor.png' },
+  { id: 'doctors', name: 'Doctors', slug: 'doctors', description: 'Consultations and clinics nearby.', image: '/images/doctor.png' },
   // { id: 'healthcare', name: 'Healthcare Centres', slug: 'healthcare-centres', description: 'Labs and diagnostic centers.', image: '/COMINGSOON.png' },
   // { id: 'physiotherapy', name: 'Physiotherapy', slug: 'physiotherapy', description: 'Sessions and home visits.', image: '/COMINGSOON.png' },
   // { id: 'mental-health', name: 'Mental Health', slug: 'mental-health', description: 'Therapy and counseling.', image: '/COMINGSOON.png' },

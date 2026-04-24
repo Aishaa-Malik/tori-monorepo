@@ -12,8 +12,6 @@ const SubcategoryListingsPage: React.FC = () => {
   const listings = category && subcategory ? servicesData[category]?.[subcategory] : undefined;
   const title = `${subcategory?.replace('-', ' ') || 'Subcategory'}`;
 
-  const isGym = subcategory === 'gym';
-
   const handleSubscribe = (price: number, planName: string) => {
     navigate('/payment', {
       state: {
@@ -44,7 +42,7 @@ const SubcategoryListingsPage: React.FC = () => {
                 <ListingCard key={l.id} listing={l} categorySlug={category!} subcategorySlug={subcategory!} />
               ))}
               
-              {isGym && !showPricing && listings.length > 0 && (
+              {!showPricing && listings.length > 0 && (
                 <>
                   <div className="blur-md pointer-events-none opacity-50 relative">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50 z-10" />
@@ -62,10 +60,10 @@ const SubcategoryListingsPage: React.FC = () => {
               )}
             </div>
 
-            {isGym && !showPricing && (
+            {!showPricing && (
               <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-12 pt-32 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent">
                 <p className="text-gray-600 mb-4 font-medium text-center px-4 max-w-lg">
-                  Subscribe now to access 2000+ Gyms, yoga Studios and fitness centres
+                  Subscribe now to access 2000+ premium venues, clinics and fitness centres
                 </p>
                 <button 
                   onClick={() => setShowPricing(true)} 
@@ -76,7 +74,7 @@ const SubcategoryListingsPage: React.FC = () => {
               </div>
             )}
 
-            {isGym && showPricing && (
+            {showPricing && (
               <div className="mt-12 bg-white p-8 rounded-xl shadow-2xl border border-gray-100 animate-fade-in">
                 <h2 className="text-center text-xl font-bold mb-8 underline decoration-orange-400">CHOOSE YOUR PLAN</h2>
                 <div className="flex flex-col md:flex-row gap-8 justify-center">
@@ -85,7 +83,7 @@ const SubcategoryListingsPage: React.FC = () => {
                   <div className="border rounded-2xl p-6 w-full max-w-sm bg-gradient-to-br from-yellow-50 to-white shadow-lg hover:shadow-xl transition-shadow">
                     <h3 className="text-3xl font-black text-yellow-600 mb-4 italic">TORI 360</h3>
                     <ul className="space-y-3 text-sm text-gray-700 mb-6">
-                      <li>• Access to 2k+ premium gyms & centres</li>
+                      <li>• Access to 2k+ premium venues & centres</li>
                       <li>• Expert nutritionist consults & diet plans</li>
                       <li>• A.I. enabled personal fitness coaching</li>
                       <li>• Free Doctor Consultations & Pharmacy Vouchers</li>
@@ -102,7 +100,7 @@ const SubcategoryListingsPage: React.FC = () => {
                   <div className="border rounded-2xl p-6 w-full max-w-sm bg-gradient-to-br from-pink-50 to-white shadow-lg hover:shadow-xl transition-shadow">
                     <h3 className="text-3xl font-black text-pink-500 mb-4 italic">TORI 180</h3>
                     <ul className="space-y-3 text-sm text-gray-700 mb-6">
-                      <li>• Access to 2k+ premium gyms & centres</li>
+                      <li>• Access to 2k+ premium venues & centres</li>
                       <li>• Reserve up to 5 workouts every month</li>
                       <li>• A.I. enabled personal fitness coaching</li>
                       <li>• Access to unlimited virtual classes</li>
