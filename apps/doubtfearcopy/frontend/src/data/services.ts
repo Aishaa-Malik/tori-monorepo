@@ -895,68 +895,211 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
   },
 
   'events': {
-    'run-clubs': [
-      {
-        id: 'run-1',
-        name: 'Jaipur Road Runners',
-        location: 'Central Park',
-        thumb: '/images/run-1.png',
-        details: 'Community Run',
-        rating: 4.8,
-        reviewCount: 320,
-        images: ['/images/run-1.png'],
-        description: 'Join the city’s largest community of runners for daily morning laps.',
-        facilities: ['Pacer Groups', 'Hydration Support'],
-        hours: '5:30 AM – 7:30 AM',
-        pricing: 'Free / Community based',
-        contact: { phone: '+91 8619439126', address: 'Central Park Gate 2' },
-      },
-      {
-        id: 'run-2',
-        name: 'Pink City Half-Marathon Club',
-        location: 'Central park',
-        thumb: '/images/run-2.png',
-        details: 'Endurance Training',
-        rating: 4.5,
-        reviewCount: 95,
-        images: ['/images/run-2.png'],
-        description: 'Dedicated training for long-distance running and marathon prep.',
-        facilities: ['Coaching', 'Stretching Sessions'],
-        hours: '6:00 AM – 8:30 AM',
-        pricing: '₹500 monthly',
-        contact: { phone: '+91 8619439126', address: 'Central park' },
-      },
-      // {
-      //   id: 'run-3',
-      //   name: 'Sunday Long Run Crew',
-      //   location: 'Statue Circle',
-      //   thumb: '/images/run3.png',
-      //   details: 'Weekend Runs',
-      //   rating: 4.9,
-      //   reviewCount: 60,
-      //   images: ['/images/run3.png'],
-      //   description: 'Scenic 10k-15k loops through the historic walled city every Sunday.',
-      //   facilities: ['Route Maps', 'Post-run Tea'],
-      //   hours: '6:00 AM – 9:00 AM',
-      //   pricing: 'Free',
-      //   contact: { phone: '+91 8619439126', address: 'Statue Circle' },
-      // },
-      // {
-      //   id: 'run-4',
-      //   name: 'Night Owls Running Club',
-      //   location: 'C-Scheme',
-      //   thumb: '/images/run4.png',
-      //   details: 'Evening Run',
-      //   rating: 4.4,
-      //   reviewCount: 40,
-      //   images: ['/images/run4.png'],
-      //   description: 'Safe and energetic night runs for those who prefer working out late.',
-      //   facilities: ['Safety Vests', 'Fixed Routes'],
-      //   hours: '9:00 PM – 10:00 PM',
-      //   pricing: '₹100 per month',
-      //   contact: { phone: '+91 8619439126', address: 'C-Scheme' },
-      // }
-    ],
+    "all": [
+    {
+      "id": "event-1",
+      "name": "The Baddy Club Week 14 (Sunday)",
+      "location": "Bengaluru",
+      "thumb": "/images/baddy club.png",
+      "details": "Sunday Badminton Session",
+      "rating": 4.8,
+      "reviewCount": 156,
+      "images": ["/images/baddy club.png"],
+      "description": "This Sunday, we’re back in court. Join us for a solid badminton session with good games and even better energy. Spots are limited.",
+      "facilities": ["Badminton Court", "Refreshments", "Good Energy"],
+      "hours": "11:45 AM – 2:45 PM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "GameFit Sports Academy, Bengaluru"
+      }
+    },
+    {
+      "id": "event-2",
+      "name": "Mayan Weekender",
+      "location": "Goa",
+      "thumb": "/images/mayan weekender.png",
+      "details": "Beach Club Music Festival",
+      "rating": 4.7,
+      "reviewCount": 420,
+      "images": ["/images/mayan weekender.png"],
+      "description": "Mayan Beach Club Presents: Mayan Weekender Featuring a powerful lineup of artists including Belkond, Locate, and Blithe across three days.",
+      "facilities": ["Live Music", "Beachfront", "Bar & Kitchen"],
+      "hours": "3:00 PM – 10:00 PM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "Mayan Beach Club, Goa"
+      }
+    },
+    {
+      "id": "event-3",
+      "name": "After Hours - Weekend Party",
+      "location": "Kasol",
+      "thumb": "/images/after hours.png",
+      "details": "Underground Mountain Party",
+      "rating": 4.9,
+      "reviewCount": 285,
+      "images": ["/images/after hours.png"],
+      "description": "3 Nights of Underground Mayhem! Explosive nights with mind-altering visuals and relentless beats in the heart of Parvati Valley.",
+      "facilities": ["Underground Beats", "Mountain Vibe", "Visual Arts"],
+      "hours": "8:00 PM – 5:00 AM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "Pirates of Parvati, Kasol"
+      }
+    },
+    {
+      "id": "event-4",
+      "name": "Radiant Night at H.O.D ft DJ James",
+      "location": "Bengaluru",
+      "thumb": "/images/radiant night.png",
+      "details": "Premium Club Night",
+      "rating": 4.6,
+      "reviewCount": 198,
+      "images": ["/images/radiant night.png"],
+      "description": "Turn your Sunday into something extraordinary. An evening where music, lights, and energy come together with DJ James.",
+      "facilities": ["Dance Floor", "DJ Performance", "Cocktails"],
+      "hours": "8:00 PM – 1:00 AM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "House of Dopamine, Koramangala, Bengaluru"
+      }
+    },
+    {
+      "id": "event-5",
+      "name": "Bollytech ft. DJ Aditya",
+      "location": "Mumbai",
+      "thumb": "/images/bollytech.png",
+      "details": "Bollywood & Tech Fusion",
+      "rating": 4.5,
+      "reviewCount": 310,
+      "images": ["/images/bollytech.png"],
+      "description": "Get ready for a fusion of Bollywood & Tech beats. Groove all night with electrifying music and desi vibes at R-ADDA.",
+      "facilities": ["Fusion Music", "Valet Parking", "VIP Lounge"],
+      "hours": "8:00 PM – 1:30 AM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 9920039651",
+        "address": "R-ADDA, Juhu, Mumbai"
+      }
+    },
+    {
+      "id": "event-6",
+      "name": "Euphoria Sunday",
+      "location": "Pune",
+      "thumb": "/images/euphoria sunday.png",
+      "details": "Sundowner Experience",
+      "rating": 4.4,
+      "reviewCount": 142,
+      "images": ["/images/euphoria sunday.png"],
+      "description": "Experience pure euphoria this Sunday with a curated vibe that elevates your weekend finish. High-energy beats and great company.",
+      "facilities": ["Open Air", "Sundowner Vibes", "Lounge"],
+      "hours": "8:00 PM – 1:30 AM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "Di Mora, Pune"
+      }
+    },
+    {
+      "id": "event-7",
+      "name": "Afrobeat Sunday | Anniversary",
+      "location": "Mumbai",
+      "thumb": "/images/afrobeat.png",
+      "details": "4 Year Anniversary Edition",
+      "rating": 4.9,
+      "reviewCount": 470,
+      "images": ["/images/afrobeat.png"],
+      "description": "Join us for a massive celebration of Afrobeats Sunday. A special 4-year anniversary edition featuring the best rhythmic beats.",
+      "facilities": ["Celebration", "Signature Cocktails", "Themed Decor"],
+      "hours": "9:00 PM – 1:00 AM",
+      "pricing": "₹199",
+      "contact": {
+        "phone": "+91 8619439126",
+        "address": "Raasta Bombay Khar, Mumbai"
+      }
+    }
+  ],
+   "run-clubs": [
+    {
+      "id": "run-3",
+      "name": "Run Addicts",
+      "location": "Bangalore",
+      "thumb": "/images/RunAddicts.png",
+      "details": "Morning Community Run",
+      "rating": 4.7,
+      "reviewCount": 245,
+      "images": ["/images/RunAddicts.png"],
+      "description": "A vibrant community run at Cubbon Park to kickstart your day with like-minded fitness enthusiasts.",
+      "facilities": ["Pacer Groups", "Hydration Support", "Community"],
+      "hours": "6 AM – 9 AM (26 Apr)",
+      "pricing": "₹199",
+      "contact": { "phone": "+91 8619439126", "address": "Cubbon Park, Bangalore" }
+    },
+    {
+      "id": "run-4",
+      "name": "The Run Scene",
+      "location": "Bangalore",
+      "thumb": "/images/therunscene.png",
+      "details": "Whitefield Morning Sprint",
+      "rating": 4.5,
+      "reviewCount": 182,
+      "images": ["/images/therunscene.png"],
+      "description": "Connect with local runners for a structured and energetic morning session in the heart of Whitefield.",
+      "facilities": ["Pacer Groups", "Hydration Support", "Community"],
+      "hours": "6:45 AM onwards",
+      "pricing": "₹199",
+      "contact": { "phone": "+91 8619439126", "address": "KPTO Entrance, Whitefield, Bangalore" }
+    },
+    {
+      "id": "run-5",
+      "name": "JP Nagar Run Club",
+      "location": "Bangalore",
+      "thumb": "/images/JP.png",
+      "details": "Decathlon Flagship Run",
+      "rating": 4.9,
+      "reviewCount": 310,
+      "images": ["/images/JP.png"],
+      "description": "High-energy group run starting from the Bannerghatta flagship store, perfect for consistent training.",
+      "facilities": ["Pacer Groups", "Hydration Support", "Community"],
+      "hours": "7:00 AM onwards",
+      "pricing": "₹199",
+      "contact": { "phone": "+91 8619439126", "address": "Decathlon Bannerghatta Flagship Store, Bangalore" }
+    },
+    {
+      "id": "run-1",
+      "name": "Jaipur Road Runners",
+      "location": "Central Park",
+      "thumb": "/images/run-0.png",
+      "details": "Community Run",
+      "rating": 4.8,
+      "reviewCount": 320,
+      "images": ["/images/run-0.png"],
+      "description": "Join the city’s largest community of runners for daily morning laps.",
+      "facilities": ["Pacer Groups", "Hydration Support"],
+      "hours": "5:30 AM – 7:30 AM",
+      "pricing": "Free / Community based",
+      "contact": { "phone": "+91 8619439126", "address": "Central Park Gate 2" }
+    },
+    {
+      "id": "run-2",
+      "name": "Pink City Half-Marathon Club",
+      "location": "Central park",
+      "thumb": "/images/run-2.png",
+      "details": "Endurance Training",
+      "rating": 4.5,
+      "reviewCount": 95,
+      "images": ["/images/run-2.png"],
+      "description": "Dedicated training for long-distance running and marathon prep.",
+      "facilities": ["Coaching", "Stretching Sessions"],
+      "hours": "6:00 AM – 8:30 AM",
+      "pricing": "₹500 monthly",
+      "contact": { "phone": "+91 8619439126", "address": "Central park" }
+    }
+  ],
 
     'nature-dance': [
       {
@@ -1143,7 +1286,8 @@ export const subcategoriesMap: Record<string, SubcategoryMeta[]> = {
 
   // Update your subcategoriesMap
   'events': [
-    { id: 'run-clubs', name: 'Run Clubs', description: 'Morning & evening run groups', image: '/images/run-1.png' },
+    { id: 'all', name: 'Party| Music| Club', description: 'Music, DJ, Club parties', image: '/images/radiant night.png' },
+    { id: 'run-clubs', name: 'Run Clubs', description: 'Morning & evening run groups', image: '/images/run-0.png' },
     { id: 'nature-dance', name: 'Nature Dance', description: 'Dance & groove in the wild', image: '/images/nd-1.jpg' },
     { id: 'fun-group-workouts', name: 'Fun Group Workouts', description: 'Social fitness & games', image: '/images/fg-1.png' },
      { id: 'trekking', name: 'Trekking', description: 'Nature trails & hill climbs', image: '/images/trek-1.png' }

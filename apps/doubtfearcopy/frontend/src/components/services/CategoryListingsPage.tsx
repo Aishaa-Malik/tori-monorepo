@@ -101,7 +101,7 @@ const CategoryListingsPage: React.FC = () => {
             {!showPricing && (
               <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-12 pt-32 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent">
                 <p className="text-gray-600 mb-4 font-medium text-center px-4 max-w-lg">
-                  Subscribe now to access 2000+ premium venues, clinics and fitness centres
+                  Subscribe now to access 2000+ premium venues, clinics, events and fitness centres
                 </p>
                 <button 
                   onClick={() => setShowPricing(true)} 
