@@ -21,6 +21,12 @@ const ListingCard: React.FC<Props> = ({ listing, categorySlug, subcategorySlug }
   return (
     <Link
       to={`/services/${categorySlug}${subcategorySlug ? `/${subcategorySlug}` : ''}/${listing.id}`}
+      onClick={(e) => {
+        // Commenting out profile opening for doctors as requested
+        if (categorySlug === 'doctors') {
+          e.preventDefault();
+        }
+      }}
       className="group block rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition"
     >
       <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
