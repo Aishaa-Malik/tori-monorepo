@@ -30,6 +30,7 @@ import SubcategoryListingsPage from './components/services/SubcategoryListingsPa
 import ListingProfilePage from './components/services/ListingProfilePage';
 import CreateEventPage from './components/events/CreateEventPage';
 import PaymentPage from './components/PaymentPage';
+import ToriEmployeeOnboarding from './components/admin/ToriEmployeeOnboarding';
 
 // Turf owner components
 import TurfDashboardLayout from './components/turf/TurfDashboardLayout';
@@ -143,6 +144,9 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/delete-account" element={<DeleteAccount />} />
             <Route path="/payment" element={<PaymentPage />} />
+            
+            {/* Admin Routes */}
+            <Route path="/tori-employee" element={<ToriEmployeeOnboarding />} />
 
             
             {/* Public Services Directory */}

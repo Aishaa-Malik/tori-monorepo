@@ -21,8 +21,9 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
-  tenantId?: string; // Optional for super admin who isn't tied to a specific tenant
-  businessType?: 'doctor' | 'turf';
+  tenantId?: string;
+  // Expand this to include 'Fitness & Gym'
+  businessType?: 'doctor' | 'turf' | 'Fitness & Gym' | 'HealthCare' | 'events';
 }
 
 interface AuthContextType {
@@ -90,13 +91,14 @@ console.log('Hiee');
 
     if (approvedUser) {
       // --- user_profiles ---
+      // Check if profile exists by ID OR by Email
       const { data: existingProfile, error: profileCheckError } = await supabase
         .from('user_profiles')
         .select('id')
-        .eq('id', userId)
-        .single();
+        .or(`id.eq.${userId},email.eq.${userEmail}`)
+        .maybeSingle();
 
-        console.log("existingProfile - ", existingProfile);
+      console.log("existingProfile - ", existingProfile);
 
       if (profileCheckError && profileCheckError.code !== 'PGRST116') {
         console.error('Error checking user profile:', profileCheckError);
@@ -104,9 +106,7 @@ console.log('Hiee');
       }
 
       if (!existingProfile) {
-
-        console.log("i m inserting into  user_profiles- ");
-
+        console.log("i m inserting into user_profiles- ");
         const { error: profileError } = await supabase
           .from('user_profiles')
           .insert({
@@ -116,7 +116,18 @@ console.log('Hiee');
           });
         if (profileError) {
           console.error('Error creating user profile:', profileError);
-          // Continue despite error
+        }
+      } else if (existingProfile.id !== userId) {
+        // If a profile exists by email but has a different ID (e.g. created by admin onboarding), 
+        // we update its ID to match the real Auth user ID
+        console.log(`Updating existing profile ID from ${existingProfile.id} to ${userId}`);
+        const { error: profileUpdateError } = await supabase
+          .from('user_profiles')
+          .update({ id: userId })
+          .eq('email', userEmail);
+          
+        if (profileUpdateError) {
+          console.error('Error updating user profile ID:', profileUpdateError);
         }
       }
 
@@ -134,6 +145,7 @@ console.log('Hiee');
       }
 
       if (!existingTenant) {
+        console.log(`[handleUserInvitationSetup] Creating user_tenants mapping for user ${userId} and tenant ${approvedUser.tenant_id}`);
         const { error: tenantError } = await supabase
           .from('user_tenants')
           .insert({
@@ -144,6 +156,8 @@ console.log('Hiee');
           console.error('Error creating user-tenant relationship:', tenantError);
           // Continue despite error
         }
+      } else {
+        console.log(`[handleUserInvitationSetup] user_tenants mapping already exists for user ${userId} and tenant ${approvedUser.tenant_id}`);
       }
 
       // --- user_roles ---
@@ -233,7 +247,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         name: session.user.user_metadata?.full_name ?? email.split('@')[0],
         role: role ?? UserRole.EMPLOYEE,
         tenantId: tenantId ?? undefined,
-        businessType: businessType as 'doctor' | 'turf'
+        businessType: businessType // TypeScript will now allow 'Fitness & Gym'
       };
 
       if (tenantId) {
@@ -276,13 +290,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const role = await getUserRole(userId);
       const businessType = await getUserBusinessType(userId);
 
+      console.log(`[loginFromSession] Fetched businessType from supabaseService:`, businessType);
+
       const userData: User = {
         id: userId,
         email: userObj.email ?? '',
         name: userObj.user_metadata?.full_name ?? userObj.email?.split('@')[0] ?? 'User',
         role: role ?? UserRole.EMPLOYEE,
         tenantId: tenantId ?? undefined,
-        businessType: businessType as 'doctor' | 'turf'
+        businessType: businessType as any
       };
 
       setUser(userData);
@@ -337,13 +353,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const { getUserBusinessType } = await import('../services/supabaseService');
             const businessType = await getUserBusinessType(userId);
 
+            console.log(`[checkAuthStatus] Fetched businessType from supabaseService:`, businessType);
+
             const userData: User = {
               id: userId,
               email: session.user.email ?? '',
               name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
               role: role ?? UserRole.EMPLOYEE,
               tenantId: tenantId ?? undefined,
-              businessType: businessType as 'doctor' | 'turf'
+              businessType: businessType as any
             };
 
             if (tenantId) {

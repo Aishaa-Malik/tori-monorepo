@@ -222,6 +222,8 @@ export const getRevenueData = async (tenantId: string, startDate: string, endDat
 
 export const getUserBusinessType = async (userId: string) => {
   try {
+    console.log(`[getUserBusinessType] Starting fetch for userId: ${userId}`);
+    
     // First, get the tenant_id for the user
     const { data: userTenant, error: tenantError } = await supabase
       .from('user_tenants')
@@ -229,10 +231,16 @@ export const getUserBusinessType = async (userId: string) => {
       .eq('user_id', userId)
       .single();
       
-    if (tenantError || !userTenant?.tenant_id) {
-      console.error('Error getting user tenant:', tenantError);
+    if (tenantError) {
+      console.error(`[getUserBusinessType] Error getting user tenant for userId ${userId}:`, tenantError);
       return null;
     }
+    if (!userTenant?.tenant_id) {
+      console.log(`[getUserBusinessType] No tenant_id found in user_tenants for userId ${userId}`);
+      return null;
+    }
+    
+    console.log(`[getUserBusinessType] Found tenant_id: ${userTenant.tenant_id} for userId: ${userId}`);
     
     // Then get the business_type using the tenant_id
     const { data: businessProfile, error: profileError } = await supabase
@@ -242,14 +250,14 @@ export const getUserBusinessType = async (userId: string) => {
       .single();
       
     if (profileError) {
-      console.error('Error getting business type:', profileError);
+      console.error(`[getUserBusinessType] Error getting business profile for tenant_id ${userTenant.tenant_id}:`, profileError);
       return null;
     }
     
-    console.log('Business type found:', businessProfile?.business_type);
+    console.log(`[getUserBusinessType] Fetched business type '${businessProfile?.business_type}' for user ${userId} (tenant: ${userTenant.tenant_id}) from business_profiles table.`);
     return businessProfile?.business_type || null;
   } catch (error) {
-    console.error('Error in getUserBusinessType:', error);
+    console.error(`[getUserBusinessType] Exception in getUserBusinessType for userId ${userId}:`, error);
     return null;
   }
 };

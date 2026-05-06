@@ -35,6 +35,7 @@ const nextConfig = {
       { source: '/revenue/:path*', destination: `${DASHBOARD_URL}/revenue/:path*` },
       { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },
       { source: '/healthwellness-dashboard/:path*', destination: `${DASHBOARD_URL}/healthwellness-dashboard/:path*` },
+      { source: '/tori-employee/:path*', destination: `${DASHBOARD_URL}/tori-employee/:path*` },
       
       // 2. Folder Mappings (Assets)
       { source: '/js/:path*', destination: `${DASHBOARD_URL}/js/:path*` },

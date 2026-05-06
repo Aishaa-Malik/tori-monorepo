@@ -194,6 +194,8 @@ exports.verifyPayment = async (req, res) => {
       } else {
         console.log('✅ user_tenants insert successful');
       }
+    } else {
+      console.log('⚠️ No userId available yet. The user_tenants relationship will be created during OAuth callback / AuthContext handleUserInvitationSetup when the user actually logs in.');
     }
 
     let businessProfileData = null;

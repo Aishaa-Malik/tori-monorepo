@@ -4,6 +4,7 @@ const config = require('./config');
 const paymentRoutes = require('./routes/payment');
 const onboardingRoutes = require('./routes/onboarding');
 const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', paymentRoutes);
 app.use('/api', onboardingRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
