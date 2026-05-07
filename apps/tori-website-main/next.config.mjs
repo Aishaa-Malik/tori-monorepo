@@ -31,6 +31,7 @@ const nextConfig = {
       { source: '/privacy-policy', destination: `${DASHBOARD_URL}/privacy-policy` },
       { source: '/delete-account', destination: `${DASHBOARD_URL}/delete-account` },
       { source: '/terms.html', destination: `${DASHBOARD_URL}/terms.html` },
+      { source: '/refund-policy', destination: `${DASHBOARD_URL}/refund-policy` },
       { source: '/onboarding', destination: `${DASHBOARD_URL}/onboarding` },
       { source: '/revenue/:path*', destination: `${DASHBOARD_URL}/revenue/:path*` },
       { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },

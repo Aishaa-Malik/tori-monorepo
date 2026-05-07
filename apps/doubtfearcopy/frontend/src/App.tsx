@@ -44,6 +44,7 @@ import TurfSettingsPage from './components/turf/TurfSettingsPage';
 
 import PrivacyPolicy from './components/PrivacyPolicy';
 import DeleteAccount from './components/DeleteAccount';
+import RefundPolicy from './components/RefundPolicy';
 
 
 // Check if user needs onboarding
@@ -227,6 +228,8 @@ function App() {
             }>
               <Route index element={<UserManagement />} />
             </Route>
+
+            <Route path="/refund-policy" element={<RefundPolicy />} />
 
             {/* Turf Owner Dashboard Routes */}
             <Route

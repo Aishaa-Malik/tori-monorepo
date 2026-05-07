@@ -201,12 +201,32 @@ This isn't a tax write-off. It is our unconditional duty. Rain or shine, profit 
             <img src="/images/tori-footer-logo.svg" alt="" />
           </div>
           <div className="footer-copyright">
+
+            {/* ///////////////////////////////// */}
+            {/* SAHI KRLO ISSE */}
             <p>
-              Developed with ❤️ by <a href="https://69kelvin.com" target="_blank" rel="noopener noreferrer">69 Kelvin</a>
+              {/* Developed with ❤️ by <a href="https://69kelvin.com" target="_blank" rel="noopener noreferrer">69 Kelvin</a> 
+              */}
+              <a>Developed with ❤️ by AISHA MALIK</a>
             </p>
-            <p>Incorporated in Delaware, US 🥰</p>
+            {/* <p>Incorporated in Delaware, US 🥰</p> */}
+            <p>A 123 RAM GALI 3 RAJAPARK, JAIPUR</p>
             <p> &copy; 2025 Tori Ate Inc</p>
           </div>
+
+          <div className="footer-content" style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--base-400)', color: 'var(--base-400)' }}> 
+            {/* THIS PART FIXES THE LEGAL NAME ISSUE */} 
+            <p>© 2026 Aisha Malik | Tori ate</p> 
+            
+            <div className="footer-links" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', margin: '1rem 0' }}> 
+              <a href="/contact" style={{ color: 'var(--base-400)' }}>Contact Us</a> 
+              <a href="/privacy-policy" style={{ color: 'var(--base-400)' }}>Privacy Policy</a> 
+              <a href="/terms.html" style={{ color: 'var(--base-400)' }}>Terms & Conditions</a> 
+              <a href="/refund-policy" style={{ color: 'var(--base-400)' }}>Refund & Cancellation Policy</a> {/* Add this one! */} 
+            </div> 
+            
+            {/* <p>Registered Address: [Insert Address from your Udyam/PAN details]</p>  */}
+          </div> 
         </div>
       </div>
     </div>
