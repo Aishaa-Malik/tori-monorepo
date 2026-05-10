@@ -8,14 +8,18 @@ const ToriEmployeeOnboarding = () => {
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
   const [bookingType, setBookingType] = useState('single');
-  const [serviceName, setServiceName] = useState('');
-  const [price, setPrice] = useState('');
-  const [durationMins, setDurationMins] = useState('');
+  
+  // Multiple services state
+  const [services, setServices] = useState([{ name: '', price: '', durationMins: '' }]);
   
   // Minimal slot representation for this form (e.g. daily 9am to 5pm)
   const [operatingDays, setOperatingDays] = useState<string[]>([]);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
+  
+  // Separate timings for Sunday
+  const [sundayStartTime, setSundayStartTime] = useState('06:00');
+  const [sundayEndTime, setSundayEndTime] = useState('23:00');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +36,22 @@ const ToriEmployeeOnboarding = () => {
     }
   };
 
+  const handleAddService = () => {
+    setServices([...services, { name: '', price: '', durationMins: '' }]);
+  };
+
+  const handleServiceChange = (index: number, field: string, value: string) => {
+    const newServices = [...services];
+    newServices[index] = { ...newServices[index], [field]: value };
+    setServices(newServices);
+  };
+
+  const handleRemoveService = (index: number) => {
+    const newServices = [...services];
+    newServices.splice(index, 1);
+    setServices(newServices);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -43,9 +63,8 @@ const ToriEmployeeOnboarding = () => {
       day,
       times: [
         {
-          start_time: startTime,
-          end_time: endTime,
-          price: Number(price),
+          start_time: day === 'Sunday' ? sundayStartTime : startTime,
+          end_time: day === 'Sunday' ? sundayEndTime : endTime,
           capacity: bookingType === 'multi' ? 20 : 1 // Example capacity logic
         }
       ]
@@ -67,9 +86,7 @@ const ToriEmployeeOnboarding = () => {
           location,
           googleMapsLink,
           bookingType,
-          serviceName,
-          price: Number(price),
-          durationMins: Number(durationMins),
+          services,
           slots
         }),
       });
@@ -87,9 +104,7 @@ const ToriEmployeeOnboarding = () => {
       setBusinessName('');
       setLocation('');
       setGoogleMapsLink('');
-      setServiceName('');
-      setPrice('');
-      setDurationMins('');
+      setServices([{ name: '', price: '', durationMins: '' }]);
       setOperatingDays([]);
       
     } catch (err: any) {
@@ -212,41 +227,68 @@ const ToriEmployeeOnboarding = () => {
           </div>
 
           <div>
-            <h4 className="text-md font-medium text-gray-900 border-b pb-2 mb-4">4. Default Service</h4>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Service Name</label>
-                <input
-                  type="text"
-                  required
-                  value={serviceName}
-                  onChange={(e) => setServiceName(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  placeholder="General Access"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Price</label>
-                <input
-                  type="number"
-                  required
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  placeholder="e.g. 500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Duration (Mins)</label>
-                <input
-                  type="number"
-                  required
-                  value={durationMins}
-                  onChange={(e) => setDurationMins(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  placeholder="e.g. 60"
-                />
-              </div>
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h4 className="text-md font-medium text-gray-900">4. Services</h4>
+              <button
+                type="button"
+                onClick={handleAddService}
+                className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                + Add Service
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {services.map((service, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
+                  {services.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveService(index)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Service Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={service.name}
+                        onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                        placeholder="General Access"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Price</label>
+                      <input
+                        type="number"
+                        required
+                        value={service.price}
+                        onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                        placeholder="e.g. 500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Duration (Mins)</label>
+                      <input
+                        type="number"
+                        required
+                        value={service.durationMins}
+                        onChange={(e) => handleServiceChange(index, 'durationMins', e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                        placeholder="e.g. 60"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -272,7 +314,10 @@ const ToriEmployeeOnboarding = () => {
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 max-w-xs">
+              <div className="grid grid-cols-2 gap-4 max-w-xs mt-4">
+                <div className="col-span-2">
+                  <span className="text-sm font-medium text-gray-700">Monday - Saturday Timings</span>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Start Time</label>
                   <input
@@ -290,6 +335,32 @@ const ToriEmployeeOnboarding = () => {
                     required
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 max-w-xs mt-4">
+                <div className="col-span-2">
+                  <span className="text-sm font-medium text-gray-700">Sunday Timings</span>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Start Time</label>
+                  <input
+                    type="time"
+                    required
+                    value={sundayStartTime}
+                    onChange={(e) => setSundayStartTime(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">End Time</label>
+                  <input
+                    type="time"
+                    required
+                    value={sundayEndTime}
+                    onChange={(e) => setSundayEndTime(e.target.value)}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                   />
                 </div>

@@ -10,16 +10,14 @@ exports.onboardBusiness = async (req, res) => {
       location,
       googleMapsLink,
       bookingType, // 'single' or 'multi'
-      serviceName,
-      price,
-      durationMins,
-      slots // Array of { day: string, times: [{ start_time, end_time, price, capacity }] }
+      services, // Array of { name, price, durationMins }
+      slots // Array of { day: string, times: [{ start_time, end_time, capacity }] }
     } = req.body;
 
     console.log('Received admin onboarding request for:', email);
 
     // Basic validation
-    if (!email || !businessName || !serviceName) {
+    if (!email || !businessName || !services || services.length === 0) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
@@ -54,21 +52,19 @@ exports.onboardBusiness = async (req, res) => {
       }
     }
 
-    // 2.5 Create/Upsert User Profile to save phone_number
+    // 2.5 Create Business Owner Contact
     if (phoneNumber) {
-      const { error: profileUserError } = await supabase
-        .from('user_profiles')
-        .upsert({
-          email: email,
-          full_name: email.split('@')[0],
-          phone_number: phoneNumber,
-          created_at: new Date().toISOString()
-        }, { onConflict: 'email' });
-      
-      if (profileUserError) {
-        console.error('Failed to upsert user_profiles with phone_number:', profileUserError);
-        // We log but do not strictly throw here, to avoid blocking the main business creation 
-        // if user_profiles strict constraint (like id) prevents upsert without Auth UUID.
+      const { error: contactError } = await supabase
+        .from('business_owner_contacts')
+        .insert({
+          tenant_id: newtenantId,
+          role: 'BUSINESS_OWNER',
+          phone_number: phoneNumber
+        });
+
+      if (contactError) {
+        console.error('Error inserting business_owner_contacts:', contactError);
+        // We don't fail the whole onboarding if this fails, just log it
       }
     }
 
@@ -90,46 +86,43 @@ exports.onboardBusiness = async (req, res) => {
 
     if (profileError) throw new Error(`Business profile creation failed: ${profileError.message}`);
 
-    // 4. Create Service
-    const { data: service, error: serviceError } = await supabase
-      .from('business_services')
-      .insert({
-        profile_id: profile.id,
-        name: serviceName,
-        price: price,
-        duration_mins: durationMins,
-        category: 'Fitness & Gym'
-      })
-      .select()
-      .single();
+    // 4. Create Services and Weekly Slots
+    for (const svc of services) {
+      const { data: service, error: serviceError } = await supabase
+        .from('business_services')
+        .insert({
+          profile_id: profile.id,
+          name: svc.name,
+          price: svc.price || 0,
+          duration_mins: svc.durationMins || 60,
+          category: 'Fitness & Gym'
+        })
+        .select()
+        .single();
 
-    if (serviceError) throw new Error(`Service creation failed: ${serviceError.message}`);
+      if (serviceError) throw new Error(`Service creation failed: ${serviceError.message}`);
 
-    // 5. Add Weekly Slots
-    if (slots && slots.length > 0) {
-      const slotInserts = [];
-      
-      slots.forEach(slotDay => {
-        // Prepare time_slots JSON array
-        const timeSlotsJson = slotDay.times.map(t => ({
-          start_time: t.start_time,
-          end_time: t.end_time,
-          price: t.price || price,
-          capacity: t.capacity || 10
-        }));
-
-        slotInserts.push({
-          service_id: service.id,
-          day_of_week: slotDay.day,
-          time_slots: timeSlotsJson
+      // 5. Add Weekly Slots
+      if (slots && Array.isArray(slots) && slots.length > 0) {
+        const weeklySlotsData = slots.map(slot => {
+          // Expecting slot.times to be an array with at least one item
+          const timeInfo = slot.times && slot.times.length > 0 ? slot.times[0] : {};
+          return {
+            service_id: service.id,
+            day_of_week: slot.day,
+            start_time: timeInfo.start_time || '09:00',
+            end_time: timeInfo.end_time || '17:00',
+            capacity: timeInfo.capacity || (bookingType === 'multi' ? 20 : 1),
+            price: timeInfo.price || svc.price || 0
+          };
         });
-      });
 
-      const { error: slotsError } = await supabase
-        .from('service_weekly_slots')
-        .insert(slotInserts);
+        const { error: slotsError } = await supabase
+          .from('service_weekly_slots')
+          .insert(weeklySlotsData);
 
-      if (slotsError) throw new Error(`Slots creation failed: ${slotsError.message}`);
+        if (slotsError) throw new Error(`Failed to create weekly slots: ${slotsError.message}`);
+      }
     }
 
     // 6. Update Discovery Summary (business_type_summary)
