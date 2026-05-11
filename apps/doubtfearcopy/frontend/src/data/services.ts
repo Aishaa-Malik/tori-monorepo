@@ -16,6 +16,7 @@ export type VenueProfile = {
   contact: { phone?: string; email?: string; address?: string };
   mapUrl?: string;
   qrCode?: string;
+  bookingLink?: string;
 };
 
 export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
@@ -35,6 +36,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         hours: '6 AM – 10 PM',
         pricing: '₹700 per hour',
         contact: { phone: '+91 8619439126', address: 'Mission Road · 1.1 km' },
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'cp-2',
@@ -50,6 +53,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         hours: '7 AM – 9 PM',
         pricing: '₹600 per hour',
         contact: { phone: '+91 8619439126', address: 'Next to KSH · 1.1 km' },
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
     ],
 
@@ -68,6 +73,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         hours: '7 AM – 11 PM',
         pricing: '₹1200 per hour',
         contact: { phone: '+91 8619439126', address: 'Royal Towers, Hennur Ring' },
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
     ],
 
@@ -86,6 +93,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         hours: '8 AM – 10 PM',
         pricing: '₹800 per hour',
         contact: { phone: '+91 8619439126', address: 'Begur' },
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
     ],
   },
@@ -106,6 +115,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '7 AM – 9 AM',
       pricing: '₹99 per session',
       contact: { phone: '+91 8619439126', address: 'Malaviya nagar' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'zumba-2',
@@ -121,6 +132,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '7 AM – 9 AM',
       pricing: '₹99 per session',
       contact: { phone: '+91 8619439126', address: 'Raja Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
         {
       id: 'zumba-3',
@@ -136,6 +149,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 11 PM',
       pricing: '₹99 per session',
       contact: { phone: '+91 8619439126', address: 'Raja Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'zumba-4',
@@ -151,6 +166,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 10 PM',
       pricing: '₹99 per session',
       contact: { phone: '+91 8619439126', address: 'Raja Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 
@@ -171,7 +188,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Mahadevapura"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-2",
@@ -189,7 +208,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Marathahalli"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-3",
@@ -207,7 +228,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Mahadevapura"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-4",
@@ -225,7 +248,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Garudachar Palya"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-5",
@@ -243,7 +268,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Indiranagar"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-6",
@@ -261,7 +288,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Mahadevapura"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-7",
@@ -278,7 +307,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "pricing": "Starting at ₹99 per session",
       "contact": {
         "address": "2nd Floor, G.K.Plaza, next to SCT College, Kondappa Layout, Vignan Nagar, Doddanekundi, Kaggadasapura, Bengaluru, Karnataka 560075"
-      }
+      },
+      "qrCode": "/images/euro fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book+Euro+Fitness+Center&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-8",
@@ -296,7 +327,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Raja Park"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-8",
@@ -314,7 +347,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Raja Park"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-9",
@@ -332,7 +367,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Raja Park"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-10",
@@ -350,7 +387,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Vidyadhar Nagar"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-11",
@@ -368,7 +407,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Jawahar Nagar"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-12",
@@ -386,7 +427,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Raja Park"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     },
     {
       "id": "gym-13",
@@ -404,7 +447,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "contact": {
         "phone": "+91 8619439126",
         "address": "Raja Park"
-      }
+      },
+      "qrCode": "/images/fitness.png",
+      "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
     }
   ],
 
@@ -423,6 +468,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹50 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'yoga-2',
@@ -438,6 +485,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹70 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
      {
       id: 'yoga-3',
@@ -453,6 +502,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹99 per session',
       contact: { phone: '+91 8619439126', address: 'Raja Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
      {
       id: 'yoga-4',
@@ -468,6 +519,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: ' per session',
       contact: { phone: '+91 8619439126', address: 'Jawahar nagar, Rajapark, Jaipur' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
      {
       id: 'yoga-5',
@@ -483,6 +536,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹70 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'yoga-7',
@@ -498,6 +553,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹50 per session',
       contact: { phone: '+91 8619439126', address: 'Malaviya nagar, Jaipur'},
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'yoga-8',
@@ -513,6 +570,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 PM',
       pricing: '₹50 per session',
       contact: { phone: '+91 8619439126', address: 'At your home, Jaipur'},
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 
@@ -531,6 +590,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '7 AM – 9 AM',
       pricing: '₹50 per session [2 hrs]',
       contact: { phone: '+91 8619439126', address: 'Bhagat Singh Park · Raja Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'nw-2',
@@ -546,6 +607,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 9 AM',
       pricing: '₹50 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 
@@ -564,6 +627,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 7 AM',
       pricing: '₹60 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
     {
       id: 'med-2',
@@ -579,6 +644,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 7 AM',
       pricing: '₹80 per session',
       contact: { phone: '+91 8619439126', address: 'Gopalpura, Jaipur' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 
@@ -597,6 +664,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '6 AM – 7 AM',
       pricing: '₹60 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 
@@ -615,6 +684,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       hours: '5 PM – 7 PM',
       pricing: '₹60 per session',
       contact: { phone: '+91 8619439126', address: 'Central Park' },
+      qrCode: '/images/fitness.png',
+      bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
     },
   ],
 },
@@ -636,6 +707,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         pricing: '₹900',
         contact: { phone: '+91 8619439126', address: 'Brookefield' },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'd7-Sreenivasa',
@@ -652,6 +725,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         pricing: '₹900',
         contact: { phone: '+91 8619439126', address: 'Brookefield' },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'd7-Khoushik',
@@ -668,6 +743,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         pricing: '₹900',
         contact: { phone: '+91 8619439126', address: 'Brookefield' },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'dr-plabani-sarkar',
@@ -684,6 +761,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         pricing: '₹900',
         contact: { phone: '+91 8619439126', address: 'Brookefield' },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'dr-manjunath-pandit',
@@ -700,6 +779,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         pricing: '₹1,100',
         contact: { phone: '+91 8619439126', address: 'Brookefield' },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'sanjiwani-chikitsa-kendra',
@@ -714,8 +795,10 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         facilities: ['Consultation'],
         hours: '9 AM – 8 PM',
         pricing: '₹800',
-        contact: { phone: '+91 8619439126', address: '201, 2nd Floor, Kadiri’s Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad' },
+        contact: { phone: '+91 8619439126', address: "201, 2nd Floor, Kadiri's Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad" },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'dr-rakesh-vuppala',
@@ -730,8 +813,10 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         facilities: ['Consultation'],
         hours: '10 AM – 6 PM',
         pricing: '₹750',
-        contact: { phone: '+91 8619439126', address: '201, 2nd Floor, Kadiri’s Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad' },
+        contact: { phone: '+91 8619439126', address: "201, 2nd Floor, Kadiri's Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad" },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         id: 'neo-ent',
@@ -746,8 +831,10 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         facilities: ['Consultation'],
         hours: '10 AM – 8 PM',
         pricing: '₹800',
-        contact: { phone: '+91 8619439126', address: '201, 2nd Floor, Kadiri’s Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad' },
+        contact: { phone: '+91 8619439126', address: "201, 2nd Floor, Kadiri's Apurupa Urban, Botanical Gardens Road, Landmark: Near Chirec School, Hyderabad" },
         mapUrl: '',
+        qrCode: '/images/fitness.png',
+        bookingLink: 'https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0',
       },
       {
         "id": "dr-athira-haridas",
@@ -763,7 +850,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         "hours": "6 PM – 9 PM",
         "pricing": "650.00",
         "contact": { "phone": "+91 8619439126", "address": "Brookefield" },
-        "mapUrl": ""
+        "mapUrl": "",
+        "qrCode": "/images/fitness.png",
+        "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
       },
       {
         "id": "dr-pavan-kumar-ym",
@@ -779,7 +868,9 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
         "hours": "7:30 PM – 9:30 PM",
         "pricing": "900.00",
         "contact": { "phone": "+91 8619439126", "address": "Brookefield" },
-        "mapUrl": ""
+        "mapUrl": "",
+        "qrCode": "/images/fitness.png",
+        "bookingLink": "https://api.whatsapp.com/send/?phone=919351504729&text=Book++Gym&type=phone_number&app_absent=0"
       },
       {
         "id": "dr-santosh-kumar-m",
