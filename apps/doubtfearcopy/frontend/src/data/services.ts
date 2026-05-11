@@ -15,6 +15,7 @@ export type VenueProfile = {
   pricing: string;
   contact: { phone?: string; email?: string; address?: string };
   mapUrl?: string;
+  qrCode?: string;
 };
 
 export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
@@ -268,8 +269,8 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "location": "Kaggadasapura, Bengaluru",
       "thumb": "/images/Euro Fitness Center.jpg",
       "details": "Gym & Fitness",
-      "rating": 4.6,
-      "reviewCount": 110,
+      "rating": 4.4,
+      "reviewCount": 351,
       "images": ["/images/Euro Fitness Center.jpg"],
       "description": "A well-equipped fitness center offering a variety of memberships and workout sessions.",
       "facilities": ["Weights", "Cardio", "Personal Training"],

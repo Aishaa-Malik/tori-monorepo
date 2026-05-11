@@ -15,6 +15,7 @@ export type Profile = {
   ratingScore?: number;
   ratingCount?: number;
   mapUrl?: string;
+  qrCode?: string;
 };
 
 
@@ -100,10 +101,18 @@ const ListingProfilePage: React.FC = () => {
                   href="https://api.whatsapp.com/send/?phone=919351504729&text=Hi&type=phone_number&app_absent=0"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block rounded-md bg-teal-600 px-4 py-2 text-white"
+                  className="inline-block rounded-md bg-yellow-100 px-4 py-2 text-gray-900 font-medium hover:bg-yellow-200 transition-colors"
                 >
                   Book Now
                 </a>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-gray-600 mb-2">Scan to Book/Pay</p>
+                <img
+                  src={profile.qrCode || "/images/euro fitness.png"}
+                  alt="QR Code"
+                  className="w-full max-w-[200px] h-auto rounded-md border border-gray-200"
+                />
               </div>
             </section>
           </aside>
