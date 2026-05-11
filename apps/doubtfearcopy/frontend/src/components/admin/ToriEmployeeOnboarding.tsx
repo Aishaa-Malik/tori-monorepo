@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+type TimeSlot = { start_time: string, end_time: string, price: number, label?: string };
+type DaySlots = {
+  morning: TimeSlot[];
+  evening: TimeSlot[];
+};
+
 const ToriEmployeeOnboarding = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
-  const [bookingType, setBookingType] = useState('single');
+  const [bookingType, setBookingType] = useState('');
   
   // Multiple services state
   const [services, setServices] = useState([{ name: '', price: '', durationMins: '' }]);
   
-  // Minimal slot representation for this form (e.g. daily 9am to 5pm)
-  const [operatingDays, setOperatingDays] = useState<string[]>([]);
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
-  
-  // Separate timings for Sunday
-  const [sundayStartTime, setSundayStartTime] = useState('06:00');
-  const [sundayEndTime, setSundayEndTime] = useState('23:00');
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [weekdaySlots, setWeekdaySlots] = useState<DaySlots>({
+    morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
+    evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+  });
+  const [sundaySlots, setSundaySlots] = useState<DaySlots>({
+    morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
+    evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,10 +36,58 @@ const ToriEmployeeOnboarding = () => {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   const handleDayToggle = (day: string) => {
-    if (operatingDays.includes(day)) {
-      setOperatingDays(operatingDays.filter(d => d !== day));
+    if (selectedDays.includes(day)) {
+      setSelectedDays(selectedDays.filter(d => d !== day));
     } else {
-      setOperatingDays([...operatingDays, day]);
+      setSelectedDays([...selectedDays, day]);
+    }
+  };
+
+  const handleAddSlot = (type: 'weekday' | 'sunday', period: 'morning' | 'evening') => {
+    if (type === 'weekday') {
+      setWeekdaySlots({
+        ...weekdaySlots,
+        [period]: [...weekdaySlots[period], { start_time: '', end_time: '', price: 0 }]
+      });
+    } else {
+      setSundaySlots({
+        ...sundaySlots,
+        [period]: [...sundaySlots[period], { start_time: '', end_time: '', price: 0 }]
+      });
+    }
+  };
+
+  const handleRemoveSlot = (type: 'weekday' | 'sunday', period: 'morning' | 'evening', index: number) => {
+    if (type === 'weekday') {
+      const updatedPeriodSlots = weekdaySlots[period].filter((_, i) => i !== index);
+      setWeekdaySlots({ 
+        ...weekdaySlots, 
+        [period]: updatedPeriodSlots
+      });
+    } else {
+      const updatedPeriodSlots = sundaySlots[period].filter((_, i) => i !== index);
+      setSundaySlots({ 
+        ...sundaySlots, 
+        [period]: updatedPeriodSlots
+      });
+    }
+  };
+
+  const handleSlotChange = (type: 'weekday' | 'sunday', period: 'morning' | 'evening', index: number, field: string, value: string) => {
+    if (type === 'weekday') {
+      const updatedPeriodSlots = [...weekdaySlots[period]];
+      updatedPeriodSlots[index] = { ...updatedPeriodSlots[index], [field]: value } as any;
+      setWeekdaySlots({ 
+        ...weekdaySlots, 
+        [period]: updatedPeriodSlots
+      });
+    } else {
+      const updatedPeriodSlots = [...sundaySlots[period]];
+      updatedPeriodSlots[index] = { ...updatedPeriodSlots[index], [field]: value } as any;
+      setSundaySlots({ 
+        ...sundaySlots, 
+        [period]: updatedPeriodSlots
+      });
     }
   };
 
@@ -42,7 +97,7 @@ const ToriEmployeeOnboarding = () => {
 
   const handleServiceChange = (index: number, field: string, value: string) => {
     const newServices = [...services];
-    newServices[index] = { ...newServices[index], [field]: value };
+    newServices[index] = { ...newServices[index], [field]: value } as any;
     setServices(newServices);
   };
 
@@ -58,18 +113,27 @@ const ToriEmployeeOnboarding = () => {
     setError(null);
     setSuccess(null);
 
-    // Prepare slots array
-    const slots = operatingDays.map(day => ({
-      day,
-      times: [
-        {
-          start_time: day === 'Sunday' ? sundayStartTime : startTime,
-          end_time: day === 'Sunday' ? sundayEndTime : endTime,
-          capacity: bookingType === 'multi' ? 20 : 1 // Example capacity logic
-        }
-      ]
-    }));
-
+    // Format slots to an array for backend
+    const slotsArray = selectedDays.map(day => {
+      if (day === 'Sunday') {
+        return {
+          day,
+          times: [
+            ...(sundaySlots.morning || []).map(s => ({ ...s, label: 'Morning Hourly Session' })),
+            ...(sundaySlots.evening || []).map(s => ({ ...s, label: 'Evening Hourly Session' }))
+          ]
+        };
+      } else {
+        return {
+          day,
+          times: [
+            ...(weekdaySlots.morning || []).map(s => ({ ...s, label: 'Morning Hourly Session' })),
+            ...(weekdaySlots.evening || []).map(s => ({ ...s, label: 'Evening Hourly Session' }))
+          ]
+        };
+      }
+    });
+    
     try {
       const { getApiUrl } = await import('../../utils/environmentUtils');
       const BACKEND_API_URL = getApiUrl();
@@ -87,7 +151,8 @@ const ToriEmployeeOnboarding = () => {
           googleMapsLink,
           bookingType,
           services,
-          slots
+          slots: slotsArray,
+          operatingDays: selectedDays
         }),
       });
 
@@ -105,7 +170,15 @@ const ToriEmployeeOnboarding = () => {
       setLocation('');
       setGoogleMapsLink('');
       setServices([{ name: '', price: '', durationMins: '' }]);
-      setOperatingDays([]);
+      setSelectedDays([]);
+      setWeekdaySlots({
+        morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
+        evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+      });
+      setSundaySlots({
+        morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
+        evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+      });
       
     } catch (err: any) {
       setError(err.message || 'An error occurred during onboarding');
@@ -143,7 +216,6 @@ const ToriEmployeeOnboarding = () => {
                 <label className="block text-sm font-medium text-gray-700">Owner Email</label>
                 <input
                   type="email"
-                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -154,7 +226,6 @@ const ToriEmployeeOnboarding = () => {
                 <label className="block text-sm font-medium text-gray-700">Contact Number</label>
                 <input
                   type="tel"
-                  required
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -171,7 +242,6 @@ const ToriEmployeeOnboarding = () => {
                 <label className="block text-sm font-medium text-gray-700">Business Name</label>
                 <input
                   type="text"
-                  required
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -181,7 +251,6 @@ const ToriEmployeeOnboarding = () => {
                 <label className="block text-sm font-medium text-gray-700">Location (City)</label>
                 <input
                   type="text"
-                  required
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -191,7 +260,6 @@ const ToriEmployeeOnboarding = () => {
                 <label className="block text-sm font-medium text-gray-700">Google Maps Link</label>
                 <input
                   type="url"
-                  required
                   value={googleMapsLink}
                   onChange={(e) => setGoogleMapsLink(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -247,9 +315,7 @@ const ToriEmployeeOnboarding = () => {
                       onClick={() => handleRemoveService(index)}
                       className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
+                      ✕
                     </button>
                   )}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -257,7 +323,6 @@ const ToriEmployeeOnboarding = () => {
                       <label className="block text-sm font-medium text-gray-700">Service Name</label>
                       <input
                         type="text"
-                        required
                         value={service.name}
                         onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -268,7 +333,6 @@ const ToriEmployeeOnboarding = () => {
                       <label className="block text-sm font-medium text-gray-700">Price</label>
                       <input
                         type="number"
-                        required
                         value={service.price}
                         onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -279,7 +343,6 @@ const ToriEmployeeOnboarding = () => {
                       <label className="block text-sm font-medium text-gray-700">Duration (Mins)</label>
                       <input
                         type="number"
-                        required
                         value={service.durationMins}
                         onChange={(e) => handleServiceChange(index, 'durationMins', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
@@ -297,15 +360,15 @@ const ToriEmployeeOnboarding = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Operating Days</label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-6">
                   {daysOfWeek.map(day => (
                     <button
                       type="button"
                       key={day}
                       onClick={() => handleDayToggle(day)}
                       className={`px-3 py-1 rounded-full text-sm font-medium border ${
-                        operatingDays.includes(day)
-                          ? 'bg-blue-100 text-blue-800 border-blue-300'
+                        selectedDays.includes(day)
+                          ? 'bg-blue-600 text-white border-blue-600'
                           : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                       }`}
                     >
@@ -314,71 +377,202 @@ const ToriEmployeeOnboarding = () => {
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 max-w-xs mt-4">
-                <div className="col-span-2">
-                  <span className="text-sm font-medium text-gray-700">Monday - Saturday Timings</span>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Start Time</label>
-                  <input
-                    type="time"
-                    required
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">End Time</label>
-                  <input
-                    type="time"
-                    required
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  />
-                </div>
-              </div>
               
-              <div className="grid grid-cols-2 gap-4 max-w-xs mt-4">
-                <div className="col-span-2">
-                  <span className="text-sm font-medium text-gray-700">Sunday Timings</span>
+              {/* Monday - Saturday Section */}
+              {selectedDays.some(day => day !== 'Sunday') && (
+                <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                  <h3 className="font-bold border-b border-gray-200 pb-2 mb-4">Monday - Saturday Timings</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Morning Section */}
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-sm font-semibold text-gray-700">Morning Slots</h4>
+                        <button 
+                          type="button"
+                          onClick={() => handleAddSlot('weekday', 'morning')} 
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      {weekdaySlots.morning.map((slot, index) => (
+                        <div key={index} className="flex items-center gap-2 mb-2">
+                          <input 
+                            type="time" 
+                            value={slot.start_time} 
+                            onChange={(e) => handleSlotChange('weekday', 'morning', index, 'start_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <span className="text-xs text-gray-500">to</span>
+                          <input 
+                            type="time" 
+                            value={slot.end_time} 
+                            onChange={(e) => handleSlotChange('weekday', 'morning', index, 'end_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveSlot('weekday', 'morning', index)} 
+                            className="text-red-500 hover:text-red-700 font-bold ml-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      {weekdaySlots.morning.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No morning slots</p>
+                      )}
+                    </div>
+
+                    {/* Evening Section */}
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-sm font-semibold text-gray-700">Evening Slots</h4>
+                        <button 
+                          type="button"
+                          onClick={() => handleAddSlot('weekday', 'evening')} 
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      {weekdaySlots.evening.map((slot, index) => (
+                        <div key={index} className="flex items-center gap-2 mb-2">
+                          <input 
+                            type="time" 
+                            value={slot.start_time} 
+                            onChange={(e) => handleSlotChange('weekday', 'evening', index, 'start_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <span className="text-xs text-gray-500">to</span>
+                          <input 
+                            type="time" 
+                            value={slot.end_time} 
+                            onChange={(e) => handleSlotChange('weekday', 'evening', index, 'end_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveSlot('weekday', 'evening', index)} 
+                            className="text-red-500 hover:text-red-700 font-bold ml-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      {weekdaySlots.evening.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No evening slots</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Start Time</label>
-                  <input
-                    type="time"
-                    required
-                    value={sundayStartTime}
-                    onChange={(e) => setSundayStartTime(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  />
+              )}
+
+              {/* Sunday Section */}
+              {selectedDays.includes('Sunday') && (
+                <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                  <h3 className="font-bold border-b border-gray-200 pb-2 mb-4">Sunday Timings</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Morning Section */}
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-sm font-semibold text-gray-700">Morning Slots</h4>
+                        <button 
+                          type="button"
+                          onClick={() => handleAddSlot('sunday', 'morning')} 
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      {sundaySlots.morning.map((slot, index) => (
+                        <div key={index} className="flex items-center gap-2 mb-2">
+                          <input 
+                            type="time" 
+                            value={slot.start_time} 
+                            onChange={(e) => handleSlotChange('sunday', 'morning', index, 'start_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <span className="text-xs text-gray-500">to</span>
+                          <input 
+                            type="time" 
+                            value={slot.end_time} 
+                            onChange={(e) => handleSlotChange('sunday', 'morning', index, 'end_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveSlot('sunday', 'morning', index)} 
+                            className="text-red-500 hover:text-red-700 font-bold ml-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      {sundaySlots.morning.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No morning slots</p>
+                      )}
+                    </div>
+
+                    {/* Evening Section */}
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-sm font-semibold text-gray-700">Evening Slots</h4>
+                        <button 
+                          type="button"
+                          onClick={() => handleAddSlot('sunday', 'evening')} 
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      {sundaySlots.evening.map((slot, index) => (
+                        <div key={index} className="flex items-center gap-2 mb-2">
+                          <input 
+                            type="time" 
+                            value={slot.start_time} 
+                            onChange={(e) => handleSlotChange('sunday', 'evening', index, 'start_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <span className="text-xs text-gray-500">to</span>
+                          <input 
+                            type="time" 
+                            value={slot.end_time} 
+                            onChange={(e) => handleSlotChange('sunday', 'evening', index, 'end_time', e.target.value)}
+                            className="bg-white p-1 text-sm border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveSlot('sunday', 'evening', index)} 
+                            className="text-red-500 hover:text-red-700 font-bold ml-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      {sundaySlots.evening.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No evening slots</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">End Time</label>
-                  <input
-                    type="time"
-                    required
-                    value={sundayEndTime}
-                    onChange={(e) => setSundayEndTime(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                  />
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
           <div className="pt-4">
             <button
               type="submit"
-              disabled={isLoading || operatingDays.length === 0}
+              disabled={isLoading || selectedDays.length === 0}
               className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                isLoading || operatingDays.length === 0 ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                isLoading || selectedDays.length === 0 ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
               } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             >
               {isLoading ? 'Processing...' : 'Activate Business'}
             </button>
-            {operatingDays.length === 0 && (
+            {selectedDays.length === 0 && (
               <p className="text-xs text-red-500 text-center mt-2">Please select at least one operating day.</p>
             )}
           </div>

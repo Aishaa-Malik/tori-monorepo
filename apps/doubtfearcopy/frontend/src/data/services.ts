@@ -264,6 +264,23 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
     },
     {
       "id": "gym-7",
+      "name": "Euro Fitness Center",
+      "location": "Kaggadasapura, Bengaluru",
+      "thumb": "/images/Euro Fitness Center.jpg",
+      "details": "Gym & Fitness",
+      "rating": 4.6,
+      "reviewCount": 110,
+      "images": ["/images/Euro Fitness Center.jpg"],
+      "description": "A well-equipped fitness center offering a variety of memberships and workout sessions.",
+      "facilities": ["Weights", "Cardio", "Personal Training"],
+      "hours": "Mon-Sat: Morning & Evening Slots",
+      "pricing": "Starting at ₹99 per session",
+      "contact": {
+        "address": "2nd Floor, G.K.Plaza, next to SCT College, Kondappa Layout, Vignan Nagar, Doddanekundi, Kaggadasapura, Bengaluru, Karnataka 560075"
+      }
+    },
+    {
+      "id": "gym-8",
       "name": "Fit and Gold Gym",
       "location": "Raja Park",
       "thumb": "/images/fng.png",
