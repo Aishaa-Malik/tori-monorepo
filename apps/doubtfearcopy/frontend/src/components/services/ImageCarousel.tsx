@@ -10,12 +10,12 @@ const ImageCarousel: React.FC<Props> = ({ images }) => {
   const next = () => setCurrent((current + 1) % images.length);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl">
-      <div className="aspect-[16/9] bg-black">
+    <div className="relative w-full overflow-hidden rounded-xl bg-gray-900">
+      <div className="w-full h-[50vh] md:h-[70vh]">
         <img
           src={images[current]}
           alt={`Image ${current + 1}`}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
           loading="eager"
         />
       </div>
