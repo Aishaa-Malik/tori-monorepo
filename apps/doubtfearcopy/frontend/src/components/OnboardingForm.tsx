@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../services/supabaseService';
 import { getApiUrl } from '../utils/environmentUtils';
 
 interface TimeSlot {
@@ -12,12 +11,46 @@ interface TimeSlot {
 
 interface Service {
   name: string;
+  subcategoryTag?: string;
   availabilitySchedule: {
     [key: string]: Array<TimeSlot>;
   };
 }
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DEFAULT_SLOT_PRICE = 99;
+const DEFAULT_SLOT_DURATION_MINS = 60;
+
+const FITNESS_CATEGORIES = [
+  { label: 'Gym', value: 'gym' },
+  { label: 'Zumba', value: 'zumba' },
+  { label: 'Yoga', value: 'yoga' },
+  { label: 'Nature Workout', value: 'nature_workout' },
+  { label: 'Meditation', value: 'meditation' },
+  { label: 'Fitness Dance Party', value: 'dance_party' },
+] as const;
+
+const FITNESS_SERVICE_NAME_OPTIONS = [
+  'Abs Exercise',
+  'Cardio',
+  'Crossfit',
+  'Eco Fitness Dance',
+  'Floor Exercise',
+  'Gym Workout',
+  'Half Yearly Gym Membership',
+  'HIIT',
+  'Monthly Gym + PT Membership',
+  'Monthly Gym Membership',
+  'Nature Fun Workout',
+  'Quarterly Gym Membership',
+  'Relaxing Meditation in Nature',
+  'Strength',
+  'Tabata',
+  'Weight Loss',
+  'Yoga',
+  'Yog_Medit_Therapy Combo',
+  'Zumba',
+] as const;
 
 const defaultAvailability = {
   Monday: [],
@@ -45,6 +78,7 @@ const OnboardingForm: React.FC = () => {
   
   // Modal State (Temporary Service being edited)
   const [tempServiceName, setTempServiceName] = useState('');
+  const [tempSubcategoryTag, setTempSubcategoryTag] = useState('');
   const [tempAvailability, setTempAvailability] = useState<{
     [key: string]: Array<TimeSlot>;
   }>(JSON.parse(JSON.stringify(defaultAvailability)));
@@ -57,8 +91,8 @@ const OnboardingForm: React.FC = () => {
   // Series Generator State
   const [genFirstStart, setGenFirstStart] = useState('');
   const [genLastStart, setGenLastStart] = useState('');
-  const [genDuration, setGenDuration] = useState<number | ''>('');
-  const [genPrice, setGenPrice] = useState<number | ''>('');
+  const [genDuration, setGenDuration] = useState<number | ''>(DEFAULT_SLOT_DURATION_MINS);
+  const [genPrice, setGenPrice] = useState<number | ''>(DEFAULT_SLOT_PRICE);
   const [genLabel, setGenLabel] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,8 +107,14 @@ const OnboardingForm: React.FC = () => {
 
   const openAddServiceModal = () => {
     setTempServiceName('');
+    setTempSubcategoryTag('');
     setTempAvailability(JSON.parse(JSON.stringify(defaultAvailability)));
     setTempSelectedDay('Monday');
+    setGenFirstStart('');
+    setGenLastStart('');
+    setGenDuration(DEFAULT_SLOT_DURATION_MINS);
+    setGenPrice(DEFAULT_SLOT_PRICE);
+    setGenLabel('');
     setModalError(null);
     setEditingServiceIndex(null);
     setIsServiceModalOpen(true);
@@ -83,9 +123,15 @@ const OnboardingForm: React.FC = () => {
   const openEditServiceModal = (index: number) => {
     const service = services[index];
     setTempServiceName(service.name);
+    setTempSubcategoryTag(service.subcategoryTag || '');
     // Deep copy availability to avoid direct mutation
     setTempAvailability(JSON.parse(JSON.stringify(service.availabilitySchedule)));
     setTempSelectedDay('Monday');
+    setGenFirstStart('');
+    setGenLastStart('');
+    setGenDuration(DEFAULT_SLOT_DURATION_MINS);
+    setGenPrice(DEFAULT_SLOT_PRICE);
+    setGenLabel(service.name);
     setModalError(null);
     setEditingServiceIndex(index);
     setIsServiceModalOpen(true);
@@ -99,7 +145,7 @@ const OnboardingForm: React.FC = () => {
   const addTimeSlot = (day: string) => {
     setTempAvailability(prev => ({
       ...prev,
-      [day]: [...prev[day], { start_time: '', end_time: '', price: 0, label: '' }]
+      [day]: [...prev[day], { start_time: '', end_time: '', price: DEFAULT_SLOT_PRICE, label: '' }]
     }));
   };
 
@@ -180,9 +226,18 @@ const OnboardingForm: React.FC = () => {
   ) => {
     setTempAvailability(prev => ({
       ...prev,
-      [day]: prev[day].map((slot, i) => 
-        i === index ? { ...slot, [field]: value } : slot
-      )
+      [day]: prev[day].map((slot, i) => {
+        if (i !== index) {
+          return slot;
+        }
+
+        if (field === 'start_time' && typeof value === 'string' && value && !slot.end_time) {
+          const defaultEndTime = msToTime(timeToMs(value) + DEFAULT_SLOT_DURATION_MINS * 60 * 1000);
+          return { ...slot, start_time: value, end_time: defaultEndTime };
+        }
+
+        return { ...slot, [field]: value };
+      })
     }));
   };
 
@@ -254,6 +309,11 @@ const OnboardingForm: React.FC = () => {
       return;
     }
 
+    if (userType === 'Fitness' && !tempSubcategoryTag) {
+      setModalError('Please select a fitness category tag');
+      return;
+    }
+
     // Check if at least one day has time slots
     const hasAnySlots = Object.values(tempAvailability).some(slots => slots.length > 0);
     if (!hasAnySlots) {
@@ -276,6 +336,7 @@ const OnboardingForm: React.FC = () => {
       const updatedServices = [...services];
       updatedServices[editingServiceIndex] = {
         name: tempServiceName,
+        subcategoryTag: tempSubcategoryTag || undefined,
         availabilitySchedule: tempAvailability
       };
       setServices(updatedServices);
@@ -283,6 +344,7 @@ const OnboardingForm: React.FC = () => {
       // Add new service
       setServices([...services, {
         name: tempServiceName,
+        subcategoryTag: tempSubcategoryTag || undefined,
         availabilitySchedule: tempAvailability
       }]);
     }
@@ -387,6 +449,7 @@ const OnboardingForm: React.FC = () => {
 
         return {
           name: service.name,
+          subcategoryTag: service.subcategoryTag || null,
           operatingDays,
           timeSlots: timeSlotsObject,
           slotPrice: firstPrice
@@ -558,6 +621,11 @@ const OnboardingForm: React.FC = () => {
                   >
                     <div>
                       <h4 className="font-bold text-lg text-gray-800">{service.name}</h4>
+                      {service.subcategoryTag && (
+                        <div className="mt-1 inline-flex rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                          {service.subcategoryTag}
+                        </div>
+                      )}
                       <div className="text-sm text-gray-600 mt-1">
                         {Object.entries(service.availabilitySchedule)
                           .filter(([_, slots]) => slots.length > 0)
@@ -735,15 +803,48 @@ const OnboardingForm: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Service Title</label>
-                      <input
-                        type="text"
-                        value={tempServiceName}
-                        onChange={(e) => setTempServiceName(e.target.value)}
-                        placeholder="e.g. Zumba, Fitness Training"
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                      />
+                    <div className={`mb-4 grid gap-4 ${userType === 'Fitness' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
+                        <input
+                          type="text"
+                          list={userType === 'Fitness' ? 'fitness-service-name-options' : undefined}
+                          value={tempServiceName}
+                          onChange={(e) => setTempServiceName(e.target.value)}
+                          placeholder="Select or type a service name"
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        {userType === 'Fitness' && (
+                          <>
+                            <datalist id="fitness-service-name-options">
+                              {FITNESS_SERVICE_NAME_OPTIONS.map((serviceName) => (
+                                <option key={serviceName} value={serviceName} />
+                              ))}
+                            </datalist>
+                            <p className="mt-1 text-xs text-gray-500">
+                              Choose from the list or type a new service name.
+                            </p>
+                          </>
+                        )}
+                      </div>
+
+                      {userType === 'Fitness' && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory Tag</label>
+                          <select
+                            value={tempSubcategoryTag}
+                            onChange={(e) => setTempSubcategoryTag(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                          >
+                            <option value="">Select a category</option>
+                            {FITNESS_CATEGORIES.map((category) => (
+                              <option key={category.value} value={category.value}>
+                                {category.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="space-y-4">
@@ -798,7 +899,7 @@ const OnboardingForm: React.FC = () => {
                               type="number" 
                               value={genDuration}
                               onChange={(e) => setGenDuration(e.target.value ? Number(e.target.value) : '')}
-                              placeholder="40"
+                              placeholder="60"
                               className="w-full p-2 border border-gray-300 rounded text-sm" 
                             />
                           </div>
@@ -808,7 +909,7 @@ const OnboardingForm: React.FC = () => {
                               type="number" 
                               value={genPrice}
                               onChange={(e) => setGenPrice(e.target.value ? Number(e.target.value) : '')}
-                              placeholder="500"
+                              placeholder="99"
                               className="w-full p-2 border border-gray-300 rounded text-sm" 
                             />
                           </div>
@@ -913,7 +1014,7 @@ const OnboardingForm: React.FC = () => {
                                   <input
                                     type="number"
                                     value={slot.price || ''}
-                                    onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'price', e.target.value ? Number(e.target.value) : 0)}
+                                    onChange={(e) => updateTimeSlot(tempSelectedDay, index, 'price', e.target.value ? Number(e.target.value) : DEFAULT_SLOT_PRICE)}
                                     placeholder="Price"
                                     className="w-full p-1.5 border border-gray-300 rounded text-sm"
                                   />

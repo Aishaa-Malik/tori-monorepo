@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ImageCarousel from './ImageCarousel';
-import { servicesData } from '../../data/services';
+import {
+  buildListingDescription,
+  buildListingFacilities,
+  fetchPublicListingById,
+  formatOperatingHours,
+  formatPricing,
+  getListingImage,
+} from '../../services/publicListings';
 
 
 export type Profile = {
@@ -12,27 +19,105 @@ export type Profile = {
   hours: string;
   pricing: string;
   contact: { phone?: string; email?: string; address?: string };
-  ratingScore?: number;
-  ratingCount?: number;
+  rating?: number;
+  reviewCount?: number;
   mapUrl?: string;
   qrCode?: string;
   bookingLink?: string;
 };
 
-
-
 const ListingProfilePage: React.FC = () => {
-  //const { category, subcategory, id } = useParams<{ category: string; subcategory?: string; id: string }>();
- const { category, subcategory, id } = useParams<{
+  const { category, subcategory, id } = useParams<{
     category: string;
     subcategory: string;
     id: string;
   }>();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const profile = category && subcategory && id
-    ? servicesData[category]?.[subcategory]?.find((v) => v.id === id)
-    : undefined;
+  useEffect(() => {
+    let isMounted = true;
 
+    if (!id) {
+      setProfile(null);
+      setIsLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const loadProfile = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+
+        const listing = await fetchPublicListingById(id);
+
+        if (!isMounted) return;
+
+        const image = getListingImage(listing.subcategoryTag);
+        const mappedProfile: Profile = {
+          name: listing.businessName,
+          images: [image],
+          description: buildListingDescription(listing),
+          facilities: buildListingFacilities(listing),
+          hours: formatOperatingHours(listing.weeklySlots, listing.operatingDays),
+          pricing: formatPricing(listing.price, listing.durationMins),
+          contact: {
+            email: listing.email || undefined,
+            address: listing.location || undefined,
+          },
+          rating: typeof listing.rating === 'number' ? listing.rating : undefined,
+          reviewCount: typeof listing.reviewCount === 'number' ? listing.reviewCount : undefined,
+          mapUrl: listing.googleMapsLink || undefined,
+        };
+
+        setProfile(mappedProfile);
+      } catch (error) {
+        if (!isMounted) return;
+        setLoadError(error instanceof Error ? error.message : 'Unable to load profile right now.');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 animate-fade-in">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <div className="rounded-lg bg-white border border-gray-200 p-6">
+            <p className="text-gray-700">Loading profile...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-gray-50 animate-fade-in">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <div className="rounded-lg bg-white border border-red-200 p-6">
+            <p className="text-red-700">{loadError}</p>
+            <div className="mt-4 flex gap-4">
+              <Link to={subcategory ? `/services/${category}/${subcategory}` : `/services/${category || ''}`} className="text-teal-600">Back to listings</Link>
+              <Link to="/services" className="text-teal-600">All services</Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!profile) {
     return (
@@ -54,7 +139,7 @@ const ListingProfilePage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 animate-fade-in">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <h1 className="text-2xl md:text-3xl font-bold">{profile.name}</h1>
-        {typeof profile.rating === 'number' && typeof profile.rating === 'number' && (
+        {typeof profile.rating === 'number' && (
           <p className="mt-2 text-lg text-gray-800">{profile.rating.toFixed(1)} ★ ({profile.reviewCount})</p>
         )}
         <div className="mt-6">
@@ -98,23 +183,27 @@ const ListingProfilePage: React.FC = () => {
                 )}
               </div>
               <div className="mt-4">
-                <a
-                  href={profile.bookingLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block rounded-md bg-yellow-300 px-6 py-4 text-gray-900 font-medium hover:bg-yellow-300 transition-colors"
-                >
-                  Book Now
-                </a>
+                {(profile.bookingLink || profile.mapUrl) && (
+                  <a
+                    href={profile.bookingLink || profile.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block rounded-md bg-yellow-300 px-6 py-4 text-gray-900 font-medium hover:bg-yellow-300 transition-colors"
+                  >
+                    {profile.bookingLink ? 'Book Now' : 'View on Google Maps'}
+                  </a>
+                )}
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-2">Scan to Book/Pay</p>
-                <img
-                  src={profile.qrCode}
-                  alt="QR Code"
-                  className="w-full max-w-[700px] h-auto rounded-md border border-gray-200"
-                />
-              </div>
+              {profile.qrCode && (
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600 mb-2">Scan to Book/Pay</p>
+                  <img
+                    src={profile.qrCode}
+                    alt="QR Code"
+                    className="w-full max-w-[700px] h-auto rounded-md border border-gray-200"
+                  />
+                </div>
+              )}
             </section>
           </aside>
         </div>

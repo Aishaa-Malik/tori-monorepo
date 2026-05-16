@@ -179,11 +179,11 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
       "thumb": "/images/musle-monsterz.png",
       "details": "Bodybuilding and transformation",
       "rating": 4.6,
-      "reviewCount": 310,
+      "reviewCount": 196,
       "images": ["/images/musle-monsterz.png"],
       "description": "Become the best version of yourself with our specialized transformation programs and bodybuilding focus.",
       "facilities": ["Weights", "Cardio", "Trainer"],
-      "hours": "6 AM – 10 PM",
+      "hours": "5:30 am–10 pm, 7–11 am",
       "pricing": "₹99 per session",
       "contact": {
         "phone": "+91 8619439126",
@@ -575,7 +575,7 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
     },
   ],
 
-  'nature-workout': [
+  'nature_workout': [
     {
       id: 'nw-1',
       name: 'Group NATURE Fun workout',
@@ -669,7 +669,7 @@ export const servicesData: Record<string, Record<string, VenueProfile[]>> = {
     },
   ],
 
-  'nature-fitness-dance-party': [
+  'dance_party': [
     {
       id: 'ndp-1',
       name: 'Eco Fitness dance by Shalini maam',
@@ -1436,9 +1436,9 @@ export const subcategoriesMap: Record<string, SubcategoryMeta[]> = {
     { id: 'gym', name: 'Gym', description: 'Strength & cardio workouts', image: '/images/CrossFit Gym.png' },
     { id: 'zumba', name: 'Zumba', description: 'Dance-based cardio fitness', image: '/images/zumba.jpg' },
     { id: 'yoga', name: 'Yoga', description: 'Flexibility & mindfulness', image: '/images/parkyoga.png' },
-    { id: 'nature-workout', name: 'Nature Workout', description: 'Outdoor fitness sessions', image: '/images/nature workout.png' },
+    { id: 'nature_workout', name: 'Nature Workout', description: 'Outdoor fitness sessions', image: '/images/nature workout.png' },
     { id: 'meditation', name: 'Meditation', description: 'Relaxation & focus', image: '/images/meditation.png' },
-    { id: 'nature-fitness-dance-party', name: 'Nature Fitness Dance Party', description: 'Outdoor dance fitness', image: '/images/dancecp.png' },
+    { id: 'dance_party', name: 'Fitness Dance Party', description: 'Outdoor dance fitness', image: '/images/dancecp.png' },
   ],
 
   // Update your subcategoriesMap

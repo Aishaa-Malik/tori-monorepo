@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 type TimeSlot = { start_time: string, end_time: string, price: number, label?: string };
 type DaySlots = {
@@ -7,33 +6,95 @@ type DaySlots = {
   evening: TimeSlot[];
 };
 
+type AdminService = {
+  name: string;
+  subcategoryTag: string;
+  price: string;
+  durationMins: string;
+};
+
+const DEFAULT_SLOT_PRICE = 99;
+const DEFAULT_SLOT_DURATION_MINS = 60;
+const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+
+const FITNESS_CATEGORIES = [
+  { label: 'Gym', value: 'gym' },
+  { label: 'Zumba', value: 'zumba' },
+  { label: 'Yoga', value: 'yoga' },
+  { label: 'Nature Workout', value: 'nature_workout' },
+  { label: 'Meditation', value: 'meditation' },
+  { label: 'Fitness Dance Party', value: 'dance_party' },
+] as const;
+
+const FITNESS_SERVICE_NAME_OPTIONS = [
+  'Abs Exercise',
+  'Cardio',
+  'Crossfit',
+  'Eco Fitness Dance',
+  'Floor Exercise',
+  'Gym Workout',
+  'Half Yearly Gym Membership',
+  'HIIT',
+  'Monthly Gym + PT Membership',
+  'Monthly Gym Membership',
+  'Nature Fun Workout',
+  'Quarterly Gym Membership',
+  'Relaxing Meditation in Nature',
+  'Strength',
+  'Tabata',
+  'Weight Loss',
+  'Yoga',
+  'Yog_Medit_Therapy Combo',
+  'Zumba',
+] as const;
+
+const DEFAULT_PREFILLED_SERVICE_NAMES = [
+  'Abs Exercise',
+  'Cardio',
+  'Crossfit',
+  'Floor Exercise',
+  'Gym Workout',
+  'HIIT',
+  'Strength',
+  'Tabata',
+  'Weight Loss',
+  'Monthly Gym Membership',
+] as const;
+
+const createDefaultService = (name = ''): AdminService => ({
+  name,
+  subcategoryTag: 'gym',
+  price: String(DEFAULT_SLOT_PRICE),
+  durationMins: String(DEFAULT_SLOT_DURATION_MINS),
+});
+
+const createPrefilledServices = (): AdminService[] =>
+  DEFAULT_PREFILLED_SERVICE_NAMES.map((serviceName) => createDefaultService(serviceName));
+
 const ToriEmployeeOnboarding = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
-  const [bookingType, setBookingType] = useState('');
+  const [bookingType, setBookingType] = useState('multi');
   
   // Multiple services state
-  const [services, setServices] = useState([{ name: '', price: '', durationMins: '' }]);
+  const [services, setServices] = useState<AdminService[]>(createPrefilledServices());
   
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedDays, setSelectedDays] = useState<string[]>([...DAYS_OF_WEEK]);
   const [weekdaySlots, setWeekdaySlots] = useState<DaySlots>({
-    morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
-    evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+    morning: [{ start_time: '06:00', end_time: '12:00', price: DEFAULT_SLOT_PRICE }],
+    evening: [{ start_time: '16:00', end_time: '22:00', price: DEFAULT_SLOT_PRICE }]
   });
   const [sundaySlots, setSundaySlots] = useState<DaySlots>({
-    morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
-    evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+    morning: [{ start_time: '06:00', end_time: '12:00', price: DEFAULT_SLOT_PRICE }],
+    evening: [{ start_time: '16:00', end_time: '22:00', price: DEFAULT_SLOT_PRICE }]
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const navigate = useNavigate();
-
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   const handleDayToggle = (day: string) => {
     if (selectedDays.includes(day)) {
@@ -47,12 +108,12 @@ const ToriEmployeeOnboarding = () => {
     if (type === 'weekday') {
       setWeekdaySlots({
         ...weekdaySlots,
-        [period]: [...weekdaySlots[period], { start_time: '', end_time: '', price: 0 }]
+        [period]: [...weekdaySlots[period], { start_time: '', end_time: '', price: DEFAULT_SLOT_PRICE }]
       });
     } else {
       setSundaySlots({
         ...sundaySlots,
-        [period]: [...sundaySlots[period], { start_time: '', end_time: '', price: 0 }]
+        [period]: [...sundaySlots[period], { start_time: '', end_time: '', price: DEFAULT_SLOT_PRICE }]
       });
     }
   };
@@ -92,7 +153,7 @@ const ToriEmployeeOnboarding = () => {
   };
 
   const handleAddService = () => {
-    setServices([...services, { name: '', price: '', durationMins: '' }]);
+    setServices([...services, createDefaultService()]);
   };
 
   const handleServiceChange = (index: number, field: string, value: string) => {
@@ -169,15 +230,16 @@ const ToriEmployeeOnboarding = () => {
       setBusinessName('');
       setLocation('');
       setGoogleMapsLink('');
-      setServices([{ name: '', price: '', durationMins: '' }]);
-      setSelectedDays([]);
+      setBookingType('multi');
+      setServices(createPrefilledServices());
+      setSelectedDays([...DAYS_OF_WEEK]);
       setWeekdaySlots({
-        morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
-        evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+        morning: [{ start_time: '06:00', end_time: '12:00', price: DEFAULT_SLOT_PRICE }],
+        evening: [{ start_time: '16:00', end_time: '22:00', price: DEFAULT_SLOT_PRICE }]
       });
       setSundaySlots({
-        morning: [{ start_time: '06:00', end_time: '12:00', price: 0 }],
-        evening: [{ start_time: '16:00', end_time: '22:00', price: 0 }]
+        morning: [{ start_time: '06:00', end_time: '12:00', price: DEFAULT_SLOT_PRICE }],
+        evening: [{ start_time: '16:00', end_time: '22:00', price: DEFAULT_SLOT_PRICE }]
       });
       
     } catch (err: any) {
@@ -318,16 +380,38 @@ const ToriEmployeeOnboarding = () => {
                       ✕
                     </button>
                   )}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Service Name</label>
                       <input
                         type="text"
+                        list="tori-employee-service-options"
                         value={service.name}
                         onChange={(e) => handleServiceChange(index, 'name', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                        placeholder="General Access"
+                        placeholder="Select or type a service"
                       />
+                      <datalist id="tori-employee-service-options">
+                        {FITNESS_SERVICE_NAME_OPTIONS.map((serviceName) => (
+                          <option key={serviceName} value={serviceName} />
+                        ))}
+                      </datalist>
+                      <p className="mt-1 text-xs text-gray-500">Choose from the list or type a new service.</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Subcategory Tag</label>
+                      <select
+                        value={service.subcategoryTag}
+                        onChange={(e) => handleServiceChange(index, 'subcategoryTag', e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border bg-white"
+                      >
+                        <option value="">Select category</option>
+                        {FITNESS_CATEGORIES.map((category) => (
+                          <option key={category.value} value={category.value}>
+                            {category.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Price</label>
@@ -336,7 +420,7 @@ const ToriEmployeeOnboarding = () => {
                         value={service.price}
                         onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                        placeholder="e.g. 500"
+                        placeholder="99"
                       />
                     </div>
                     <div>
@@ -346,7 +430,7 @@ const ToriEmployeeOnboarding = () => {
                         value={service.durationMins}
                         onChange={(e) => handleServiceChange(index, 'durationMins', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-                        placeholder="e.g. 60"
+                        placeholder="60"
                       />
                     </div>
                   </div>
@@ -361,7 +445,7 @@ const ToriEmployeeOnboarding = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Operating Days</label>
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {daysOfWeek.map(day => (
+                  {DAYS_OF_WEEK.map(day => (
                     <button
                       type="button"
                       key={day}

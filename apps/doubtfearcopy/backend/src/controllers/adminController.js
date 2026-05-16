@@ -29,6 +29,12 @@ exports.onboardBusiness = async (req, res) => {
       .eq('business_name', businessName)
       .maybeSingle();
 
+    console.log('[admin onboarding] existing profile lookup:', {
+      businessName,
+      existingProfile,
+      fetchError
+    });
+
     let tenantId;
     let profileId;
 
@@ -36,53 +42,116 @@ exports.onboardBusiness = async (req, res) => {
       console.log('Business exists. Updating services for Tenant:', existingProfile.tenant_id);
       tenantId = existingProfile.tenant_id;
       profileId = existingProfile.id;
+
+      const { error: profileUpdateError } = await supabase
+        .from('business_profiles')
+        .update({
+          phone_number: phoneNumber,
+          email: email,
+          location: location,
+          google_maps_profile: googleMapsLink,
+          multiorsinglebooking: bookingType === 'single' ? 'single' : 'multi',
+          onboarding_completed: true
+        })
+        .eq('id', profileId);
+
+      console.log('[admin onboarding] business_profiles update result:', {
+        profileId,
+        bookingType,
+        profileUpdateError
+      });
     } else {
       console.log('New business detected. Starting full onboarding...');
       tenantId = crypto.randomUUID();
+      console.log('[admin onboarding] generated tenantId:', tenantId);
 
       // Create Tenant
-      await supabase.from('tenants').insert({ id: tenantId, name: businessName });
+      const { error: tenantInsertError } = await supabase
+        .from('tenants')
+        .insert({ id: tenantId, name: businessName });
+      console.log('[admin onboarding] tenant insert result:', {
+        tenantId,
+        businessName,
+        tenantInsertError
+      });
 
       // Approve User (only if email is provided)
       if (email) {
-        await supabase.from('approved_users').insert({
+        const { error: approvedUserError } = await supabase.from('approved_users').insert({
           email: email,
           role: 'BUSINESS_OWNER',
           tenant_id: tenantId
         });
+        console.log('[admin onboarding] approved_users insert result:', {
+          email,
+          tenantId,
+          approvedUserError
+        });
       }
 
       // Create Business Owner Contact
-      if (phoneNumber) {
-        const { error: contactError } = await supabase
-          .from('business_owner_contacts')
-          .insert({
-            tenant_id: tenantId,
-            role: 'BUSINESS_OWNER',
-            phone_number: phoneNumber
-          });
+      // if (phoneNumber) {
+      //   const { error: contactError } = await supabase
+      //     .from('user_profiles')
+      //     .insert({
+      //       tenant_id: tenantId,
+      //       role: 'BUSINESS_OWNER',
+      //       phone_number: phoneNumber
+      //     });
 
-        if (contactError) {
-          console.error('Error inserting business_owner_contacts:', contactError);
-        }
-      }
+      //   if (contactError) {
+      //     console.error('Error inserting user_profiles:', contactError);
+      //   }
+      // }
 
       // Create Business Profile
-      const { data: newProfile } = await supabase
+      console.log('[admin onboarding] business_profiles insert payload:', {
+        tenant_id: tenantId,
+        business_type: 'Fitness & Gym',
+        business_name: businessName,
+        phone_number: phoneNumber,
+        email,
+        location,
+        google_maps_profile: googleMapsLink,
+        multiorsinglebooking: bookingType === 'single' ? 'single' : 'multi',
+        onboarding_completed: true
+      });
+
+      const { data: newProfile, error: newProfileError } = await supabase
         .from('business_profiles')
         .insert({
           tenant_id: tenantId,
           business_type: 'Fitness & Gym',
           business_name: businessName,
+          phone_number: phoneNumber,
           email: email,
           location: location,
           google_maps_profile: googleMapsLink,
+          multiorsinglebooking: bookingType === 'single' ? 'single' : 'multi',
           onboarding_completed: true
         })
         .select()
         .single();
-      
+
+      console.log('[admin onboarding] business_profiles insert result:', {
+        newProfile,
+        newProfileError
+      });
+
+      if (!newProfile) {
+        console.error('[admin onboarding] business_profiles insert returned null profile', {
+          tenantId,
+          businessName,
+          email,
+          phoneNumber,
+          location,
+          googleMapsLink,
+          newProfileError
+        });
+      }
+
       profileId = newProfile.id;
+      console.log('[admin onboarding] created profileId:', profileId);
     }
 
     // 2. Create Services and Weekly Slots
@@ -95,6 +164,7 @@ exports.onboardBusiness = async (req, res) => {
           price: svc.price || 0,
           duration_mins: svc.durationMins || 60,
           category: 'Fitness & Gym',
+          subcategory_tag: svc.subcategoryTag || null,
           operating_days: operatingDays || []
         })
         .select()

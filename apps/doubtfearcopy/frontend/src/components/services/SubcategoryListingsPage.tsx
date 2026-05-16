@@ -1,16 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ListingCard, { Listing } from './ListingCard';
-import { servicesData } from '../../data/services';
+import { fetchPublicListings, getListingImage, humanizeSlug } from '../../services/publicListings';
 
 
 const SubcategoryListingsPage: React.FC = () => {
   const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
   const [showPricing, setShowPricing] = useState(false);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const navigate = useNavigate();
-  
-  const listings = category && subcategory ? servicesData[category]?.[subcategory] : undefined;
-  const title = `${subcategory?.replace('-', ' ') || 'Subcategory'}`;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!subcategory) {
+      setListings([]);
+      setIsLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const loadListings = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+
+        const data = await fetchPublicListings(subcategory);
+
+        if (!isMounted) return;
+
+        const mappedListings: Listing[] = data.map((listing) => ({
+          id: listing.id,
+          name: listing.businessName,
+          location: listing.location || 'Location not available',
+          thumb: getListingImage(listing.subcategoryTag),
+          details: listing.serviceName || humanizeSlug(listing.subcategoryTag) || 'Available for booking',
+          rating: typeof listing.rating === 'number' ? listing.rating : undefined,
+          reviewCount: typeof listing.reviewCount === 'number' ? listing.reviewCount : undefined,
+        }));
+
+        setListings(mappedListings);
+      } catch (error) {
+        if (!isMounted) return;
+        setLoadError(error instanceof Error ? error.message : 'Unable to load listings right now.');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadListings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [subcategory]);
+
+  const title = humanizeSlug(subcategory) || 'Subcategory';
 
   const handleSubscribe = (price: number, planName: string) => {
     navigate('/payment', {
@@ -31,7 +81,15 @@ const SubcategoryListingsPage: React.FC = () => {
             <Link to="/services" className="text-sm text-teal-600 hover:text-teal-700">All services</Link>
           </div>
         </div>
-        {!listings || listings.length === 0 ? (
+        {isLoading ? (
+          <div className="mt-8 rounded-lg bg-white border border-gray-200 p-6">
+            <p className="text-gray-700">Loading listings...</p>
+          </div>
+        ) : loadError ? (
+          <div className="mt-8 rounded-lg bg-white border border-red-200 p-6">
+            <p className="text-red-700">{loadError}</p>
+          </div>
+        ) : listings.length === 0 ? (
           <div className="mt-8 rounded-lg bg-white border border-gray-200 p-6">
             <p className="text-gray-700">No listings available yet.</p>
           </div>
