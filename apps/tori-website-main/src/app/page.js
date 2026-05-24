@@ -25,6 +25,14 @@ import ProcessAnimation from "@/components/ProcessAnimation/ProcessAnimation";
 
 let isInitialLoad = true;
 
+const heroPartners = [
+  { name: "D7", image: "/images/d7.png" },
+  { name: "Sanjevni", image: "/images/sanjevni.png" },
+  { name: "Poorna", image: "/images/poorna.png" },
+  { name: "Aim Fit", image: "/images/aim fit.png" },
+  { name: "Ashish", image: "/images/ashish.png" },
+];
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, CustomEase);
   CustomEase.create("hop", "0.9, 0, 0.1, 1");
@@ -46,12 +54,21 @@ if (typeof window !== "undefined") {
 export default function Home() {
   const tagsRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
+  const [activePartnerIndex, setActivePartnerIndex] = useState(0);
 
   // Cleanup isInitialLoad on unmount
   useEffect(() => {
     return () => {
       isInitialLoad = false;
     };
+  }, []);
+
+  useEffect(() => {
+    const partnerInterval = window.setInterval(() => {
+      setActivePartnerIndex((currentIndex) => (currentIndex + 1) % heroPartners.length);
+    }, 3000);
+
+    return () => window.clearInterval(partnerInterval);
   }, []);
 
   // FIX 4: Refresh ScrollTrigger after all images load — wrapped in requestAnimationFrame
@@ -135,6 +152,7 @@ export default function Home() {
           <div className="hero-gradient"></div>
           <div className="container">
             <div className="hero-content">
+              <div className="hero-left-column">
               <div className="hero-status-pill hero-status-pill-mobile">
                 <div className="hero-status-content">
                   <div className="hero-status-avatars">
@@ -173,7 +191,8 @@ export default function Home() {
                             }}
                           />
                         </div>
-                        <div className="hero-title-row">lets book Sessions</div>
+                        <div className="hero-title-row">World’s 1st AI</div>
+                        {/* <div className="hero-title-row">lets book Sessions</div> */}
                       </div>
                       <div
                         style={{
@@ -185,14 +204,14 @@ export default function Home() {
                         }}
                       >
                         <span className="itc-garamond hero-subheadline">
-                          over "WHATSAPP" in JUST "10 sec"
-                          <img
+                          "10-SEC" BOOK, NETWORK, SHARE & MATCH REVOLUTION
+                          {/* <img
                             src="/images/bomb10s.png"
                             alt="Tori"
                             className="bomb-icon"
                             width="30"
                             height="30"
-                          />
+                          /> */}
                         </span>
                         <div>
                           <AnimatedButton
@@ -278,14 +297,36 @@ export default function Home() {
                 />
               </div>
 
-              <div className="hero-mockup">
-                <img
-                  src="/images/phns4.png"
-                  alt="Phone mockup"
-                  width="1390"
-                  height="1944"
-                  fetchPriority="high"
-                />
+              </div>
+
+              <div className="hero-right-column">
+                <div className="hero-partner-card">
+                  <div className="hero-partner-card-glow"></div>
+                  <div className="hero-partner-showcase">
+                    <div className="hero-partner-carousel">
+                      <div
+                        className="hero-partner-carousel-track"
+                        style={{ transform: `translateX(-${activePartnerIndex * 100}%)` }}
+                      >
+                        {heroPartners.map((partner) => (
+                          <div className="hero-partner-slide" key={partner.name}>
+                            <img src={partner.image} alt={partner.name} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hero-mockup">
+                  <img
+                    src="/images/phns4.png"
+                    alt="Phone mockup"
+                    width="1390"
+                    height="1944"
+                    fetchPriority="high"
+                  />
+                </div>
               </div>
             </div>
           </div>

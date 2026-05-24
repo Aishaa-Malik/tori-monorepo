@@ -289,13 +289,31 @@ body.menu-open .menu-toggle {
   text-align: center;
   width: 90%;
   max-width: 1400px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 10;
+}
+
+.hero-left-column {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1.5rem;
-  padding: 1rem;
-  z-index: 10;
+}
+
+.hero-right-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
 }
 
 .hero .hero-content h1 {
@@ -466,6 +484,121 @@ body.menu-open .menu-toggle {
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
+.hero-partner-card {
+  position: relative;
+  width: min(520px, 100%);
+  aspect-ratio: 1587 / 2245;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 2rem;
+  background: transparent;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+  padding: 0;
+}
+
+.hero-partner-card-glow {
+  display: none;
+}
+
+.hero-partner-showcase {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  background: transparent;
+}
+
+.hero-partner-carousel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.hero-partner-carousel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-partner-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  height: 100%;
+}
+
+.hero-partner-slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+.hero-partner-logo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.hero-partner-logo:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.36);
+}
+
+.hero-partner-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.75rem;
+}
+
+.hero-partner-logo-1 {
+  top: 0;
+  left: 7%;
+  width: 42%;
+  height: 128px;
+}
+
+.hero-partner-logo-2 {
+  top: 24px;
+  right: 3%;
+  width: 38%;
+  height: 150px;
+}
+
+.hero-partner-logo-3 {
+  top: 154px;
+  left: 0;
+  width: 46%;
+  height: 142px;
+}
+
+.hero-partner-logo-4 {
+  top: 178px;
+  right: 7%;
+  width: 41%;
+  height: 132px;
+}
+
+.hero-partner-logo-5 {
+  bottom: 0;
+  left: 26%;
+  width: 48%;
+  height: 112px;
+}
+
 @media (min-width: 1001px) {
   .process-animation-section {
     margin-top: 10svh;
@@ -482,12 +615,24 @@ body.menu-open .menu-toggle {
   top: auto;
   left: auto;
   transform: none;
-  width: min(1100px, 88vw);
+  width: min(1280px, 92vw);
   margin-left: auto;
   margin-right: auto;
   padding-top: 16svh;
   padding-bottom: 3rem; /* ← was 26svh */
-  gap: 1.25rem;
+  gap: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.hero-left-column {
+  align-items: center;
+  text-align: center;
+}
+
+.hero-right-column {
+  order: 2;
 }
 
 
@@ -560,7 +705,7 @@ body.menu-open .menu-toggle {
   }
 
  /* MODIFY inside @media (min-width: 1001px) */
-.hero .hero-content > .hero-mockup {
+.hero .hero-right-column > .hero-mockup {
   order: 4;
   position: relative;          /* ← was: position: absolute */
   bottom: auto;                /* ← reset */
@@ -575,7 +720,7 @@ body.menu-open .menu-toggle {
 }
 
   /* ✅ KEY: Override the base 145% img width */
-  .hero .hero-content > .hero-mockup img {
+  .hero .hero-right-column > .hero-mockup img {
     width: 100% !important;     /* ← base CSS had width: 145% — this kills the overflow */
     object-position: center;
   }
@@ -895,21 +1040,77 @@ body.menu-open .menu-toggle {
     padding-top: 1vh !important;
     padding-bottom: 2rem !important;
     gap: 1rem !important;
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     align-items: center !important;
     z-index: 10;
   }
 
+  .hero-left-column,
+  .hero-right-column {
+    width: 100% !important;
+    display: contents !important;
+  }
+
+  .hero-status-pill-mobile {
+    order: 1;
+  }
+
+  .hero-text-section {
+    order: 2;
+    display: contents !important;
+  }
+
+  .hero-text-section .hero-header {
+    order: 1;
+  }
+
+  .hero-text-section .hero-tagline {
+    order: 4;
+  }
+
+  .hero-right-column .hero-partner-card {
+    order: 3;
+  }
+
+  .hero .hero-cta {
+    order: 5;
+  }
+
+  .hero-right-column .hero-mockup {
+    order: 6;
+  }
+
+  .hero-partner-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    aspect-ratio: 1587 / 2245 !important;
+    margin: 0.35rem calc(50% - 50vw) 0.75rem !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .hero-partner-showcase {
+    position: absolute !important;
+    inset: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+  }
+
   .hero-header {
     width: 100% !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0 !important;
   }
 
   .hero .hero-content h1 {
-    font-size: 2.5rem !important;
-    line-height: 1.2 !important;
-    gap: 1rem !important;
+    font-size: 2.05rem !important;
+    line-height: 1.12 !important;
+    gap: 0.75rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -952,7 +1153,7 @@ body.menu-open .menu-toggle {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 
   .hero-title-row {
@@ -960,7 +1161,13 @@ body.menu-open .menu-toggle {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .hero-subheadline {
+    max-width: 92vw;
+    font-size: 1.7rem !important;
+    line-height: 1.08 !important;
   }
 
   /* ✅ Mobile wrapper */
@@ -1049,10 +1256,10 @@ body.menu-open .menu-toggle {
 
   .hero .hero-cta {
     width: 100% !important;
-    max-width: 95vw !important;
+    max-width: 88vw !important;
     height: auto !important;
     max-height: none !important;
-    margin: 1rem auto !important;
+    margin: 0.65rem auto !important;
     position: relative !important;
     z-index: 10 !important;
     opacity: 1 !important;
@@ -1061,13 +1268,28 @@ body.menu-open .menu-toggle {
     align-items: center !important;
   }
 
-  .hero .hero-cta button,
-  .hero .hero-cta a {
-    /* Let AnimatedButton.css handle everything */
+  .hero-header .btn,
+  .hero .hero-cta .btn {
+    min-width: min(280px, 84vw) !important;
+    max-width: 84vw !important;
+    padding: 0.9rem 1.3rem !important;
+    margin: 0.4rem 0 !important;
+    border-radius: 38px !important;
+    font-size: 0.76rem !important;
+    line-height: 1.25 !important;
+    gap: 0.5rem !important;
   }
 
-  .hero .hero-cta .button-text {
-    /* Let AnimatedButton.css handle text */
+  .hero-header .btn .icon,
+  .hero .hero-cta .btn .icon {
+    width: 1rem !important;
+    height: 1rem !important;
+    font-size: 1rem !important;
+  }
+
+  .hero-header .btn .button-text br,
+  .hero .hero-cta .btn .button-text br {
+    margin: 0.15rem 0 !important;
   }
 
   .hero .hero-mockup {
@@ -1172,7 +1394,28 @@ background: linear-gradient(
   }
 
   .hero .hero-content h1 {
-    font-size: 2.2rem !important;
+    font-size: 1.85rem !important;
+    gap: 0.6rem !important;
+  }
+
+  .hero-subheadline {
+    font-size: 1.42rem !important;
+    line-height: 1.06 !important;
+  }
+
+  .hero-header .btn,
+  .hero .hero-cta .btn {
+    min-width: min(250px, 82vw) !important;
+    max-width: 82vw !important;
+    padding: 0.78rem 1.1rem !important;
+    font-size: 0.68rem !important;
+  }
+
+  .hero-partner-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-height: 0 !important;
+    margin: 0.35rem calc(50% - 50vw) 0.75rem !important;
   }
 
   .hero-copy {
