@@ -618,21 +618,26 @@ body.menu-open .menu-toggle {
   width: min(1280px, 92vw);
   margin-left: auto;
   margin-right: auto;
-  padding-top: 16svh;
+  padding-top: 6svh;
   padding-bottom: 3rem; /* ← was 26svh */
   gap: 2rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
 }
 
 .hero-left-column {
+  justify-content: flex-start;
   align-items: center;
+  align-self: start;
   text-align: center;
+  gap: 1rem;
 }
 
 .hero-right-column {
   order: 2;
+  justify-content: flex-start;
+  align-self: start;
 }
 
 
@@ -666,16 +671,20 @@ body.menu-open .menu-toggle {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    justify-content: flex-start;
+    gap: 0.9rem;
   }
 
   .hero-text-section .hero-header {
+    order: 1;
     width: 100%;
   }
 
   .hero .hero-tagline {
+    order: 2;
     width: 100%;
     max-width: 720px;
+    margin-top: 0.1rem;
   }
 
   .hero .hero-tagline-text {
@@ -699,9 +708,10 @@ body.menu-open .menu-toggle {
     max-width: 340px;
   }
 
-  .hero .hero-content > .hero-cta {
+  .hero-left-column > .hero-cta {
     order: 3;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
+    align-self: center;
   }
 
  /* MODIFY inside @media (min-width: 1001px) */
