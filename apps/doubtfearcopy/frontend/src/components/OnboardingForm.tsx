@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getApiUrl } from '../utils/environmentUtils';
 
@@ -62,6 +62,18 @@ const defaultAvailability = {
   Sunday: []
 };
 
+const mapBusinessTypeToUserType = (businessType?: string) => {
+  const normalizedType = (businessType || '').trim().toLowerCase();
+
+  if (!normalizedType) return null;
+  if (normalizedType === 'fitness & gym' || normalizedType === 'fitness') return 'Fitness';
+  if (normalizedType === 'physiotherapy' || normalizedType === 'healthcare') return 'Healthcare';
+  if (normalizedType === 'sportsvenue' || normalizedType === 'sports venues') return 'SportsVenue';
+  if (normalizedType === 'spasalon') return 'SpaSalon';
+
+  return null;
+};
+
 const OnboardingForm: React.FC = () => {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
@@ -98,6 +110,29 @@ const OnboardingForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userType && user?.businessType) {
+      const mappedUserType = mapBusinessTypeToUserType(user.businessType);
+      if (mappedUserType) {
+        setUserType(mappedUserType);
+      }
+    }
+  }, [user?.businessType, userType]);
+
+  const resolvedBusinessType = useMemo(() => {
+    const existingBusinessType = user?.businessType?.trim();
+
+    if (existingBusinessType?.toLowerCase() === 'physiotherapy') {
+      return 'Physiotherapy';
+    }
+
+    if (userType === 'Fitness') {
+      return 'Fitness & Gym';
+    }
+
+    return userType;
+  }, [user?.businessType, userType]);
 
   const handleUserTypeSelect = (type: 'Healthcare' | 'SportsVenue' | 'Fitness' | 'SpaSalon') => {
     setUserType(type);
@@ -465,7 +500,7 @@ const OnboardingForm: React.FC = () => {
         body: JSON.stringify({
           email: user.email,
           tenantId: user.tenantId,
-          businessType: userType === 'Fitness' ? 'Fitness & Gym' : userType,
+          businessType: resolvedBusinessType,
           businessName: businessName,
           services: formattedServices,
           bookingSystemType: bookingSystemType,

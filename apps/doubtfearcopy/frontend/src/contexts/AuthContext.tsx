@@ -22,8 +22,14 @@ export interface User {
   name: string;
   role: UserRole;
   tenantId?: string;
-  // Expand this to include 'Fitness & Gym'
-  businessType?: 'doctor' | 'turf' | 'Fitness & Gym' | 'HealthCare' | 'events';
+  businessType?:
+    | 'doctor'
+    | 'turf'
+    | 'Fitness & Gym'
+    | 'HealthCare'
+    | 'Healthcare'
+    | 'Physiotherapy'
+    | 'events';
 }
 
 interface AuthContextType {

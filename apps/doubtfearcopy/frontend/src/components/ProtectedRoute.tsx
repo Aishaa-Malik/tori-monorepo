@@ -48,6 +48,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // 1. Define the "Map" of where business types belong 
   const DASHBOARD_MAP: Record<string, string> = { 
     'healthcare': '/dashboard', 
+    'healthcare & physiotherapy': '/dashboard',
+    'physiotherapy': '/dashboard',
     'turf': '/healthwellness-dashboard', 
     'fitness & gym': '/healthwellness-dashboard', 
     'fitness': '/healthwellness-dashboard', 

@@ -1,5 +1,26 @@
 const { supabase } = require('../config');
 
+const normalizeBusinessType = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+
+function resolveBusinessType({ incomingBusinessType, existingBusinessType, services = [] }) {
+  const normalizedIncomingType = normalizeBusinessType(incomingBusinessType);
+  const normalizedExistingType = normalizeBusinessType(existingBusinessType);
+  const hasPhysiotherapyService = Array.isArray(services) && services.some((service) => {
+    const subcategoryTag = normalizeBusinessType(service?.subcategoryTag ?? service?.subcategory_tag);
+    return subcategoryTag === 'physiotherapy';
+  });
+
+  if (normalizedExistingType === 'physiotherapy' && normalizedIncomingType === 'healthcare') {
+    return 'Physiotherapy';
+  }
+
+  if (hasPhysiotherapyService) {
+    return 'Physiotherapy';
+  }
+
+  return incomingBusinessType;
+}
+
 // Check if a user needs onboarding
 exports.checkOnboardingStatus = async (req, res) => {
   console.log("INSIDE checkOnboardingStatus CONTROLLER");
@@ -232,13 +253,29 @@ exports.saveOnboardingData = async (req, res) => {
   }
   
   try {
+    const { data: existingProfile, error: existingProfileError } = await supabase
+      .from('business_profiles')
+      .select('id, business_type')
+      .eq('tenant_id', tenantId)
+      .maybeSingle();
+
+    if (existingProfileError && existingProfileError.code !== 'PGRST116') {
+      throw existingProfileError;
+    }
+
+    const resolvedBusinessType = resolveBusinessType({
+      incomingBusinessType: businessType,
+      existingBusinessType: existingProfile?.business_type,
+      services,
+    });
+
     // 1. Save business profile
     const { data: profileData, error: profileError } = await supabase
       .from('business_profiles')
       .upsert({
         email: email,
         tenant_id: tenantId,
-        business_type: businessType,
+        business_type: resolvedBusinessType,
         business_name: businessName,
         multiorsinglebooking: bookingSystemType === '1' ? 'single' : 'multi',
         onboarding_completed: true,
@@ -315,8 +352,8 @@ exports.saveOnboardingData = async (req, res) => {
         // Prepare service payload
         const servicePayload = {
           profile_id: profileId,
-          name: service.name || `${businessType} Service`,
-          category: businessType,
+          name: service.name || `${resolvedBusinessType} Service`,
+          category: resolvedBusinessType,
           subcategory_tag: selectedSubcategoryTag,
           price: minPrice,
           operating_days: service.operatingDays,
@@ -358,7 +395,7 @@ exports.saveOnboardingData = async (req, res) => {
         const { data: existingSummary, error: summarySelectError } = await supabase
           .from('business_type_summary')
           .select('id, tenant_ids, business_names, slot_price')
-          .eq('business_type', businessType)
+          .eq('business_type', resolvedBusinessType)
           .single();
 
         if (summarySelectError && summarySelectError.code !== 'PGRST116') {
@@ -367,7 +404,7 @@ exports.saveOnboardingData = async (req, res) => {
 
         if (!existingSummary) {
           const insertPayload = {
-            business_type: businessType,
+            business_type: resolvedBusinessType,
             tenant_ids: [tenantId],
             slot_price: [firstServicePrice]
           };
@@ -405,7 +442,7 @@ exports.saveOnboardingData = async (req, res) => {
             const { data: updatedSummary, error: updateSummaryError } = await supabase
               .from('business_type_summary')
               .update(updatePayload)
-              .eq('business_type', businessType)
+              .eq('business_type', resolvedBusinessType)
               .select();
 
             if (updateSummaryError) {
