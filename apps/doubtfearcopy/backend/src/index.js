@@ -9,9 +9,23 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 
 // Middleware
-// Configure CORS with specalloweific options
+// Configure CORS with specific options
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://toriate.com'],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3000', 
+      'http://localhost:3001', 
+      'https://toriate.com',
+      'https://www.toriate.com'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    // and any vercel.app preview deployments
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -20,7 +34,7 @@ app.use(cors({
     'Cache-Control',
     'X-Requested-With',
     'Accept',
-  'pragma'
+    'pragma'
   ]
 }));
 

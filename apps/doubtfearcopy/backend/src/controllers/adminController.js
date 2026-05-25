@@ -206,6 +206,7 @@ exports.onboardBusiness = async (req, res) => {
       businessName,
       location,
       googleMapsLink,
+      doctorQualifications,
       bookingType, // 'single' or 'multi'
       services, // Array of { name, price, durationMins }
       slots, // Array of { day, times: [{ start_time, end_time, price }] }
@@ -226,6 +227,8 @@ exports.onboardBusiness = async (req, res) => {
     const normalizedEmail = normalizeString(email);
     const normalizedPhoneNumber = normalizeString(phoneNumber);
     const normalizedGoogleMapsLink = normalizeString(googleMapsLink);
+    const hasDoctorQualifications = typeof doctorQualifications === 'string';
+    const normalizedDoctorQualifications = normalizeString(doctorQualifications);
     const fallbackOperatingDays = Array.isArray(operatingDays) ? operatingDays : [];
 
     // Basic validation
@@ -265,6 +268,17 @@ exports.onboardBusiness = async (req, res) => {
     let tenantId;
     let profileId;
 
+    const businessProfilePayload = {
+      phone_number: normalizedPhoneNumber,
+      email: normalizedEmail,
+      location: normalizedLocation,
+      google_maps_profile: normalizedGoogleMapsLink,
+      multiorsinglebooking: resolvedBookingType,
+      business_type: resolvedBusinessType,
+      onboarding_completed: true,
+      ...(hasDoctorQualifications ? { doctor_qualifications: normalizedDoctorQualifications } : {}),
+    };
+
     if (existingProfile) {
       console.log('Business exists. Updating services for Tenant:', existingProfile.tenant_id);
       tenantId = existingProfile.tenant_id;
@@ -272,15 +286,7 @@ exports.onboardBusiness = async (req, res) => {
 
       const { error: profileUpdateError } = await supabase
         .from('business_profiles')
-        .update({
-          phone_number: normalizedPhoneNumber,
-          email: normalizedEmail,
-          location: normalizedLocation,
-          google_maps_profile: normalizedGoogleMapsLink,
-          multiorsinglebooking: resolvedBookingType,
-          business_type: resolvedBusinessType,
-          onboarding_completed: true
-        })
+        .update(businessProfilePayload)
         .eq('id', profileId);
 
       if (profileUpdateError) {
@@ -349,28 +355,16 @@ exports.onboardBusiness = async (req, res) => {
       // Create Business Profile
       console.log('[admin onboarding] business_profiles insert payload:', {
         tenant_id: tenantId,
-        business_type: resolvedBusinessType,
         business_name: normalizedBusinessName,
-        phone_number: normalizedPhoneNumber,
-        email: normalizedEmail,
-        location: normalizedLocation,
-        google_maps_profile: normalizedGoogleMapsLink,
-        multiorsinglebooking: resolvedBookingType,
-        onboarding_completed: true
+        ...businessProfilePayload,
       });
 
       const { data: newProfile, error: newProfileError } = await supabase
         .from('business_profiles')
         .insert({
           tenant_id: tenantId,
-          business_type: resolvedBusinessType,
           business_name: normalizedBusinessName,
-          phone_number: normalizedPhoneNumber,
-          email: normalizedEmail,
-          location: normalizedLocation,
-          google_maps_profile: normalizedGoogleMapsLink,
-          multiorsinglebooking: resolvedBookingType,
-          onboarding_completed: true
+          ...businessProfilePayload,
         })
         .select()
         .single();

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 type DayOfWeek =
   | 'Monday'
@@ -258,7 +258,7 @@ const HEALTHCARE_SUBCATEGORIES: ClinicalSubcategoryConfig[] = [
   {
     emoji: '🌸',
     label: "Women's Health & Gyno",
-    tag: 'womens_health_gyno',
+    tag: 'Gynaecologist',
     coreServices: [
       { name: 'Gynaecology Consultation', price: 600, durationMins: 20 },
       { name: 'Antenatal Routine Checkup', price: 700, durationMins: 20 },
@@ -279,7 +279,7 @@ const HEALTHCARE_SUBCATEGORIES: ClinicalSubcategoryConfig[] = [
   {
     emoji: '👶',
     label: 'Pediatrics & Child Health',
-    tag: 'pediatrics_child_health',
+    tag: 'Pediatrics',
     coreServices: asServices([
       'General Consultation',
       'Vaccination Centre',
@@ -325,6 +325,19 @@ const createServiceFromTemplate = (
 
 const buildServicesForConfig = (config: ClinicalSubcategoryConfig, category: string) =>
   config.coreServices.map((service) => createServiceFromTemplate(service, category, config.tag));
+
+const createBlankHealthcareService = (category: string, subcategoryTag: string): ServiceFormState => ({
+  id: createServiceId(),
+  enabled: true,
+  name: '',
+  price: '400',
+  durationMins: '15',
+  bookingType: 'single',
+  subcategoryTag,
+  category,
+  weekdaySlots: cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS),
+  sundaySlots: [],
+});
 
 const buildPrefixedTag = (serviceTag: string, selectedTags: string[]) => {
   if (!selectedTags.includes('homeopathy') || serviceTag === 'homeopathy') {
@@ -403,6 +416,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
   const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
+  const [doctorQualifications, setDoctorQualifications] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([defaultConfig.tag]);
   const [services, setServices] = useState<ServiceFormState[]>(() => buildServicesForConfig(defaultConfig, businessType));
   const [sharedWeekdaySlots, setSharedWeekdaySlots] = useState<TimeSlot[]>(() => cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS));
@@ -410,6 +424,8 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [recentlyAddedServiceId, setRecentlyAddedServiceId] = useState<string | null>(null);
+  const serviceRowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const selectedConfigs = useMemo(() => {
     if (!isHealthcare) return [PHYSIOTHERAPY_CONFIG];
@@ -425,6 +441,19 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     () => services.filter((service) => service.enabled && service.name.trim()).length,
     [services]
   );
+
+  useEffect(() => {
+    if (!recentlyAddedServiceId) return;
+
+    const targetRow = serviceRowRefs.current[recentlyAddedServiceId];
+    targetRow?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const highlightTimeout = window.setTimeout(() => {
+      setRecentlyAddedServiceId(null);
+    }, 1800);
+
+    return () => window.clearTimeout(highlightTimeout);
+  }, [recentlyAddedServiceId]);
 
   const updateService = (serviceId: string, updater: (service: ServiceFormState) => ServiceFormState) => {
     setServices((currentServices) =>
@@ -467,20 +496,46 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     const serviceTag = template.tag || defaultConfig.tag;
 
     setServices((currentServices) => {
-      const alreadyExists = currentServices.some(
-        (service) =>
-          service.subcategoryTag === serviceTag && service.name.trim().toLowerCase() === template.name.toLowerCase()
+      const nextService = createServiceFromTemplate(template, businessType, serviceTag);
+      setRecentlyAddedServiceId(nextService.id);
+      const insertAfterIndex = currentServices.reduce(
+        (lastMatchedIndex, service, serviceIndex) =>
+          service.subcategoryTag === serviceTag ? serviceIndex : lastMatchedIndex,
+        -1
       );
 
-      if (alreadyExists) {
-        return currentServices.map((service) =>
-          service.subcategoryTag === serviceTag && service.name.trim().toLowerCase() === template.name.toLowerCase()
-            ? { ...service, enabled: true }
-            : service
-        );
+      if (insertAfterIndex === -1) {
+        return [...currentServices, nextService];
       }
 
-      return [...currentServices, createServiceFromTemplate(template, businessType, serviceTag)];
+      const nextServices = [...currentServices];
+      nextServices.splice(insertAfterIndex + 1, 0, nextService);
+      return nextServices;
+    });
+  };
+
+  const handleAddBlankService = () => {
+    setServices((currentServices) => {
+      const serviceTag = selectedTags[selectedTags.length - 1] || defaultConfig.tag;
+      const nextService = isHealthcare
+        ? createBlankHealthcareService(businessType, serviceTag)
+        : createServiceFromTemplate({ name: '', price: 400, durationMins: 15 }, businessType, serviceTag);
+      
+      setRecentlyAddedServiceId(nextService.id);
+      
+      const insertAfterIndex = currentServices.reduce(
+        (lastMatchedIndex, service, serviceIndex) =>
+          service.subcategoryTag === serviceTag ? serviceIndex : lastMatchedIndex,
+        -1
+      );
+
+      if (insertAfterIndex === -1) {
+        return [...currentServices, nextService];
+      }
+
+      const nextServices = [...currentServices];
+      nextServices.splice(insertAfterIndex + 1, 0, nextService);
+      return nextServices;
     });
   };
 
@@ -490,10 +545,12 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     setBusinessName('');
     setLocation('');
     setGoogleMapsLink('');
+    setDoctorQualifications('');
     setSelectedTags([defaultConfig.tag]);
     setServices(buildServicesForConfig(defaultConfig, businessType));
     setSharedWeekdaySlots(cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS));
     setSharedSundaySlots([]);
+    setRecentlyAddedServiceId(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -530,6 +587,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
           businessName,
           location,
           googleMapsLink,
+          doctorQualifications: isHealthcare ? doctorQualifications : undefined,
           bookingType: 'single',
           businessType,
           category: businessType,
@@ -580,7 +638,11 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div>
                   <h2 className="text-lg font-semibold text-slate-900">Manual Inputs</h2>
-                  <p className="text-sm text-slate-500">Only these five fields require direct admin entry.</p>
+                  <p className="text-sm text-slate-500">
+                    {isHealthcare
+                      ? 'Only these six fields require direct admin entry.'
+                      : 'Only these five fields require direct admin entry.'}
+                  </p>
                 </div>
                 <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
                   Business Type: {businessType}
@@ -624,21 +686,37 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                   />
                 </div>
 
+                {isHealthcare && (
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700">
+                      Doctor&apos;s Educational Qualifications
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={doctorQualifications}
+                      onChange={(event) => setDoctorQualifications(event.target.value)}
+                      placeholder="MBBS, MD, DNB"
+                      className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                    />
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium text-slate-700">City Location Selection</label>
-                  <input
+                  <select
                     required
-                    list="clinical-city-options"
                     value={location}
                     onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Bangalore"
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                  />
-                  <datalist id="clinical-city-options">
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-white"
+                  >
+                    <option value="" disabled>Select a city...</option>
                     {BANGALORE_FOCUS_CITIES.map((city) => (
-                      <option key={city} value={city} />
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
 
                 <div>
@@ -842,45 +920,53 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                 </div>
               </div>
 
-              {optionalServices.length > 0 && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-sm font-medium text-slate-800">+ Add Additional Popular Services</p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Click any option to append a fresh pre-configured service row.
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {optionalServices.map((service) => {
-                      const exists = services.some(
-                        (existingService) =>
-                          existingService.subcategoryTag === service.tag &&
-                          existingService.name.trim().toLowerCase() === service.name.toLowerCase()
-                      );
-
-                      return (
-                        <button
-                          key={`${service.tag}-${service.name}`}
-                          type="button"
-                          onClick={() => handleAddOptionalService(service)}
-                          className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
-                            exists
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-300 bg-white text-slate-700 hover:border-sky-300 hover:text-sky-700'
-                          }`}
-                        >
-                          {exists ? `Added: ${service.name}` : `+ ${service.name}`}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              <div className="relative z-10 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <button
+                  type="button"
+                  onClick={handleAddBlankService}
+                  className="text-sm font-medium text-sky-600 hover:text-sky-700 hover:underline cursor-pointer focus:outline-none"
+                >
+                  + Add Additional Popular Services
+                </button>
+                {optionalServices.length > 0 && (
+                  <>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Click any option below to append a pre-configured service row, or click above for a blank one.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {optionalServices.map((service) => {
+                        return (
+                          <button
+                            key={`${service.tag}-${service.name}`}
+                            type="button"
+                            onClick={() => handleAddOptionalService(service)}
+                            className="pointer-events-auto cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-sky-300 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-200 active:scale-[0.98]"
+                          >
+                            + {service.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
 
               <div className="space-y-5">
                 {services.map((service) => {
                   const sundayEnabled = isHealthcare ? sharedSundaySlots.length > 0 : service.sundaySlots.length > 0;
 
                   return (
-                    <div key={service.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div
+                      key={service.id}
+                      ref={(element) => {
+                        serviceRowRefs.current[service.id] = element;
+                      }}
+                      className={`rounded-3xl border bg-white p-5 shadow-sm transition ${
+                        recentlyAddedServiceId === service.id
+                          ? 'border-sky-400 ring-2 ring-sky-200'
+                          : 'border-slate-200'
+                      }`}
+                    >
                       <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 lg:flex-row lg:items-start lg:justify-between">
                         <div className="flex items-start gap-3">
                           <input
