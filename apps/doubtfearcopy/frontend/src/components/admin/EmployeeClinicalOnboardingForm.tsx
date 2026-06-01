@@ -42,6 +42,23 @@ type ServiceFormState = {
   sundaySlots: TimeSlot[];
 };
 
+type DoctorSpecializationOption = {
+  value: string;
+  label: string;
+  serviceName: string;
+};
+
+type DoctorFormState = {
+  id: string;
+  providerName: string;
+  qualifications: string;
+  specializationTags: string[];
+  price: string;
+  tags: string[];
+  tagInput: string;
+  timeSlotsByDay: Record<DayOfWeek, TimeSlot[]>;
+};
+
 type EmployeeClinicalOnboardingFormProps = {
   mode: 'physiotherapy' | 'healthcare';
   pageTitle: string;
@@ -63,8 +80,62 @@ const DEFAULT_SUNDAY_SLOTS: TimeSlot[] = [
   { label: 'Sunday Morning', start_time: '10:00', end_time: '13:00' },
 ];
 
+const ALL_DAYS: DayOfWeek[] = [...WEEKDAYS, 'Sunday'];
+
+const DOCTOR_SPECIALIZATION_OPTIONS: DoctorSpecializationOption[] = [
+  {
+    value: 'general_physician',
+    label: 'General Physician Consultation',
+    serviceName: 'General Physician Consultation',
+  },
+  {
+    value: 'dermatologist',
+    label: 'Skin, Hair & Nails Consultation',
+    serviceName: 'Skin, Hair & Nails Consultation',
+  },
+  {
+    value: 'dental',
+    label: 'Dental Consultation',
+    serviceName: 'Dental Consultation',
+  },
+  {
+    value: 'gynecologist',
+    label: 'Gynecologist & Obstetrics Consultation',
+    serviceName: 'Gynecologist & Obstetrics Consultation',
+  },
+];
+
 const createServiceId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 const cloneSlots = (slots: TimeSlot[]) => slots.map((slot) => ({ ...slot }));
+const defaultSlotsForDay = (day: DayOfWeek) =>
+  cloneSlots(day === 'Sunday' ? DEFAULT_SUNDAY_SLOTS : DEFAULT_SPLIT_SHIFT_SLOTS);
+
+const createDoctorTimeSlotsByDay = (): Record<DayOfWeek, TimeSlot[]> => ({
+  Monday: defaultSlotsForDay('Monday'),
+  Tuesday: defaultSlotsForDay('Tuesday'),
+  Wednesday: defaultSlotsForDay('Wednesday'),
+  Thursday: defaultSlotsForDay('Thursday'),
+  Friday: defaultSlotsForDay('Friday'),
+  Saturday: defaultSlotsForDay('Saturday'),
+  Sunday: [],
+});
+
+const createDoctorCard = (): DoctorFormState => ({
+  id: createServiceId(),
+  providerName: '',
+  qualifications: '',
+  specializationTags: [],
+  price: '400',
+  tags: [],
+  tagInput: '',
+  timeSlotsByDay: createDoctorTimeSlotsByDay(),
+});
+
+const extractTagsFromInput = (value: string) =>
+  value
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 
 const asServices = (names: string[], price: number, durationMins: number): ServiceTemplate[] =>
   names.map((name) => ({ name, price, durationMins }));
@@ -90,24 +161,17 @@ const HEALTHCARE_SUBCATEGORIES: ClinicalSubcategoryConfig[] = [
     label: 'General Physician',
     tag: 'general_physician',
     coreServices: [
-      { name: 'General Consultation', price: 400, durationMins: 15 },
-      { name: 'Follow-up Consultation', price: 250, durationMins: 10 },
+      { name: '🩺 General Physician Consultation (Fever, Infections, Allergies)', price: 400, durationMins: 15 },
+      { name: '📈 Chronic Lifestyle Consultation (Diabetes, BP, Thyroid)', price: 250, durationMins: 10 },
+      { name: '👴 Geriatric (Senior Citizen) Care', price: 400, durationMins: 15 },
     ],
     optionalServices: [
-      { name: 'Health Checkup & Screening', price: 999, durationMins: 30 },
-      { name: 'Chronic Disease Management', price: 500, durationMins: 20 },
+      // { name: 'Health Checkup & Screening', price: 999, durationMins: 30 },
+      // { name: 'Chronic Disease Management', price: 500, durationMins: 20 },
       ...asServices([
-        'Diabetes',
-        'Hypertension Screening',
-        'Thyroid Disorders',
-        'Lifestyle Management',
-        'Dengue',
-        'Typhoid',
-        'Malaria',
-        'Fever Evaluation',
-        'Obesity & Weight Management',
-        'Geriatric Care',
-        'Allergy Management',
+        // '🩺 General Physician Consultation (Fever, Infections, Allergies)',
+        // '📈 Chronic Lifestyle Consultation (Diabetes, BP, Thyroid)',
+        // '👴 Geriatric (Senior Citizen) Care',
       ], 400, 15),
     ],
   },
@@ -326,19 +390,6 @@ const createServiceFromTemplate = (
 const buildServicesForConfig = (config: ClinicalSubcategoryConfig, category: string) =>
   config.coreServices.map((service) => createServiceFromTemplate(service, category, config.tag));
 
-const createBlankHealthcareService = (category: string, subcategoryTag: string): ServiceFormState => ({
-  id: createServiceId(),
-  enabled: true,
-  name: '',
-  price: '400',
-  durationMins: '15',
-  bookingType: 'single',
-  subcategoryTag,
-  category,
-  weekdaySlots: cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS),
-  sundaySlots: [],
-});
-
 const buildPrefixedTag = (serviceTag: string, selectedTags: string[]) => {
   if (!selectedTags.includes('homeopathy') || serviceTag === 'homeopathy') {
     return serviceTag;
@@ -401,6 +452,27 @@ const toServicePayload = (
   };
 };
 
+const buildDoctorTimeSlotsPayload = (doctor: DoctorFormState) => {
+  const consultationPrice = Number(doctor.price) || 400;
+
+  return ALL_DAYS.reduce((accumulator, day) => {
+    const sanitizedSlots = (doctor.timeSlotsByDay[day] || [])
+      .filter((slot) => slot.start_time && slot.end_time)
+      .map((slot) => ({
+        label: slot.label,
+        start_time: slot.start_time,
+        end_time: slot.end_time,
+        price: consultationPrice,
+      }));
+
+    if (sanitizedSlots.length > 0) {
+      accumulator[day] = sanitizedSlots;
+    }
+
+    return accumulator;
+  }, {} as Record<string, Array<{ label: string; start_time: string; end_time: string; price: number }>>);
+};
+
 const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormProps> = ({
   mode,
   pageTitle,
@@ -414,27 +486,24 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [citySelection, setCitySelection] = useState('');
   const [location, setLocation] = useState('');
+  const [shortLocation, setShortLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
-  const [doctorQualifications, setDoctorQualifications] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([defaultConfig.tag]);
   const [services, setServices] = useState<ServiceFormState[]>(() => buildServicesForConfig(defaultConfig, businessType));
-  const [sharedWeekdaySlots, setSharedWeekdaySlots] = useState<TimeSlot[]>(() => cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS));
-  const [sharedSundaySlots, setSharedSundaySlots] = useState<TimeSlot[]>([]);
+  const [doctors, setDoctors] = useState<DoctorFormState[]>(() => (mode === 'healthcare' ? [createDoctorCard()] : []));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [recentlyAddedServiceId, setRecentlyAddedServiceId] = useState<string | null>(null);
+  const [recentlyAddedDoctorId, setRecentlyAddedDoctorId] = useState<string | null>(null);
   const serviceRowRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  const selectedConfigs = useMemo(() => {
-    if (!isHealthcare) return [PHYSIOTHERAPY_CONFIG];
-    return HEALTHCARE_SUBCATEGORIES.filter((config) => selectedTags.includes(config.tag));
-  }, [isHealthcare, selectedTags]);
+  const doctorCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const optionalServices = useMemo(
-    () => selectedConfigs.flatMap((config) => config.optionalServices.map((service) => ({ ...service, tag: config.tag }))),
-    [selectedConfigs]
+    () => PHYSIOTHERAPY_CONFIG.optionalServices.map((service) => ({ ...service, tag: PHYSIOTHERAPY_CONFIG.tag })),
+    []
   );
 
   const selectedServiceCount = useMemo(
@@ -455,41 +524,125 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     return () => window.clearTimeout(highlightTimeout);
   }, [recentlyAddedServiceId]);
 
+  useEffect(() => {
+    if (!recentlyAddedDoctorId) return;
+
+    const targetCard = doctorCardRefs.current[recentlyAddedDoctorId];
+    targetCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const highlightTimeout = window.setTimeout(() => {
+      setRecentlyAddedDoctorId(null);
+    }, 1800);
+
+    return () => window.clearTimeout(highlightTimeout);
+  }, [recentlyAddedDoctorId]);
+
   const updateService = (serviceId: string, updater: (service: ServiceFormState) => ServiceFormState) => {
     setServices((currentServices) =>
       currentServices.map((service) => (service.id === serviceId ? updater(service) : service))
     );
   };
 
-  const appendServicesForConfig = (config: ClinicalSubcategoryConfig) => {
-    setServices((currentServices) => {
-      const existingKeys = new Set(
-        currentServices.map((service) => `${service.subcategoryTag}:${service.name.trim().toLowerCase()}`)
-      );
-      const nextServices = buildServicesForConfig(config, businessType).filter(
-        (service) => !existingKeys.has(`${service.subcategoryTag}:${service.name.trim().toLowerCase()}`)
-      );
+  const updateDoctor = (doctorId: string, updater: (doctor: DoctorFormState) => DoctorFormState) => {
+    setDoctors((currentDoctors) =>
+      currentDoctors.map((doctor) => (doctor.id === doctorId ? updater(doctor) : doctor))
+    );
+  };
 
-      return [...currentServices, ...nextServices];
+  const addDoctor = () => {
+    const nextDoctor = createDoctorCard();
+    setDoctors((currentDoctors) => [...currentDoctors, nextDoctor]);
+    setRecentlyAddedDoctorId(nextDoctor.id);
+  };
+
+  const removeDoctor = (doctorId: string) => {
+    setDoctors((currentDoctors) => (currentDoctors.length === 1 ? currentDoctors : currentDoctors.filter((doctor) => doctor.id !== doctorId)));
+  };
+
+  const toggleDoctorSpecialization = (doctorId: string, specializationTag: string) => {
+    updateDoctor(doctorId, (currentDoctor) => {
+      const alreadySelected = currentDoctor.specializationTags.includes(specializationTag);
+      return {
+        ...currentDoctor,
+        specializationTags: alreadySelected
+          ? currentDoctor.specializationTags.filter((tag) => tag !== specializationTag)
+          : [...currentDoctor.specializationTags, specializationTag],
+      };
     });
   };
 
-  const handleHealthcareCategoryToggle = (config: ClinicalSubcategoryConfig) => {
-    setSelectedTags((currentTags) => {
-      const alreadySelected = currentTags.includes(config.tag);
-
-      if (alreadySelected && currentTags.length === 1) {
-        return currentTags;
-      }
-
-      if (alreadySelected) {
-        setServices((currentServices) => currentServices.filter((service) => service.subcategoryTag !== config.tag));
-        return currentTags.filter((tag) => tag !== config.tag);
-      }
-
-      appendServicesForConfig(config);
-      return [...currentTags, config.tag];
+  const toggleDoctorDay = (doctorId: string, day: DayOfWeek) => {
+    updateDoctor(doctorId, (currentDoctor) => {
+      const currentDaySlots = currentDoctor.timeSlotsByDay[day] || [];
+      return {
+        ...currentDoctor,
+        timeSlotsByDay: {
+          ...currentDoctor.timeSlotsByDay,
+          [day]: currentDaySlots.length > 0 ? [] : defaultSlotsForDay(day),
+        },
+      };
     });
+  };
+
+  const addDoctorTimeSlot = (doctorId: string, day: DayOfWeek) => {
+    updateDoctor(doctorId, (currentDoctor) => ({
+      ...currentDoctor,
+      timeSlotsByDay: {
+        ...currentDoctor.timeSlotsByDay,
+        [day]: [
+          ...(currentDoctor.timeSlotsByDay[day] || []),
+          { label: `Slot ${(currentDoctor.timeSlotsByDay[day] || []).length + 1}`, start_time: '', end_time: '' },
+        ],
+      },
+    }));
+  };
+
+  const updateDoctorTimeSlot = (
+    doctorId: string,
+    day: DayOfWeek,
+    slotIndex: number,
+    key: keyof TimeSlot,
+    value: string
+  ) => {
+    updateDoctor(doctorId, (currentDoctor) => {
+      const nextSlots = [...(currentDoctor.timeSlotsByDay[day] || [])];
+      nextSlots[slotIndex] = { ...nextSlots[slotIndex], [key]: value };
+      return {
+        ...currentDoctor,
+        timeSlotsByDay: {
+          ...currentDoctor.timeSlotsByDay,
+          [day]: nextSlots,
+        },
+      };
+    });
+  };
+
+  const removeDoctorTimeSlot = (doctorId: string, day: DayOfWeek, slotIndex: number) => {
+    updateDoctor(doctorId, (currentDoctor) => ({
+      ...currentDoctor,
+      timeSlotsByDay: {
+        ...currentDoctor.timeSlotsByDay,
+        [day]: (currentDoctor.timeSlotsByDay[day] || []).filter((_, index) => index !== slotIndex),
+      },
+    }));
+  };
+
+  const commitDoctorTags = (doctorId: string) => {
+    updateDoctor(doctorId, (currentDoctor) => {
+      const nextTags = Array.from(new Set([...currentDoctor.tags, ...extractTagsFromInput(currentDoctor.tagInput)]));
+      return {
+        ...currentDoctor,
+        tags: nextTags,
+        tagInput: '',
+      };
+    });
+  };
+
+  const removeDoctorTag = (doctorId: string, tagToRemove: string) => {
+    updateDoctor(doctorId, (currentDoctor) => ({
+      ...currentDoctor,
+      tags: currentDoctor.tags.filter((tag) => tag !== tagToRemove),
+    }));
   };
 
   const handleAddOptionalService = (template: ServiceTemplate & { tag?: string }) => {
@@ -517,12 +670,10 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
   const handleAddBlankService = () => {
     setServices((currentServices) => {
       const serviceTag = selectedTags[selectedTags.length - 1] || defaultConfig.tag;
-      const nextService = isHealthcare
-        ? createBlankHealthcareService(businessType, serviceTag)
-        : createServiceFromTemplate({ name: '', price: 400, durationMins: 15 }, businessType, serviceTag);
-      
+      const nextService = createServiceFromTemplate({ name: '', price: 400, durationMins: 15 }, businessType, serviceTag);
+
       setRecentlyAddedServiceId(nextService.id);
-      
+
       const insertAfterIndex = currentServices.reduce(
         (lastMatchedIndex, service, serviceIndex) =>
           service.subcategoryTag === serviceTag ? serviceIndex : lastMatchedIndex,
@@ -543,14 +694,15 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     setEmail('');
     setPhoneNumber('');
     setBusinessName('');
+    setCitySelection('');
     setLocation('');
+    setShortLocation('');
     setGoogleMapsLink('');
-    setDoctorQualifications('');
     setSelectedTags([defaultConfig.tag]);
     setServices(buildServicesForConfig(defaultConfig, businessType));
-    setSharedWeekdaySlots(cloneSlots(DEFAULT_SPLIT_SHIFT_SLOTS));
-    setSharedSundaySlots([]);
+    setDoctors(isHealthcare ? [createDoctorCard()] : []);
     setRecentlyAddedServiceId(null);
+    setRecentlyAddedDoctorId(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -559,22 +711,98 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     setError(null);
     setSuccess(null);
 
-    const sharedTimingSlots = isHealthcare
-      ? { weekdaySlots: sharedWeekdaySlots, sundaySlots: sharedSundaySlots }
-      : undefined;
-    const selectedServices = services
-      .filter((service) => service.enabled && service.name.trim())
-      .map((service) => toServicePayload(service, selectedTags, sharedTimingSlots));
-
-    if (selectedServices.length === 0) {
-      setError(`Select at least one ${categoryLabel.toLowerCase()} service before submitting.`);
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const { getApiUrl } = await import('../../utils/environmentUtils');
       const BACKEND_API_URL = getApiUrl();
+
+      if (isHealthcare) {
+        const activeDoctors = doctors.filter(
+          (doctor) =>
+            doctor.providerName.trim() ||
+            doctor.qualifications.trim() ||
+            doctor.specializationTags.length > 0 ||
+            doctor.tags.length > 0
+        );
+
+        if (activeDoctors.length === 0) {
+          setError('Add at least one doctor before submitting Healthcare onboarding.');
+          setIsLoading(false);
+          return;
+        }
+
+        const normalizedDoctors = activeDoctors.map((doctor, index) => {
+          const timeSlots = buildDoctorTimeSlotsPayload(doctor);
+          const operatingDays = Object.keys(timeSlots);
+          const doctorTags = Array.from(new Set([...doctor.tags, ...extractTagsFromInput(doctor.tagInput)]));
+
+          if (!doctor.providerName.trim()) {
+            throw new Error(`Doctor ${index + 1}: name is required.`);
+          }
+
+          if (!doctor.qualifications.trim()) {
+            throw new Error(`Doctor ${index + 1}: qualifications are required.`);
+          }
+
+          if (doctor.specializationTags.length === 0) {
+            throw new Error(`Doctor ${index + 1}: choose at least one core specialization.`);
+          }
+
+          if (operatingDays.length === 0) {
+            throw new Error(`Doctor ${index + 1}: select at least one available day and slot.`);
+          }
+
+          return {
+            providerName: doctor.providerName.trim(),
+            doctorQualifications: doctor.qualifications.trim(),
+            specializations: doctor.specializationTags,
+            tags: doctorTags,
+            price: Number(doctor.price) || 400,
+            durationMins: 15,
+            operatingDays,
+            timeSlots,
+          };
+        });
+
+        const response = await fetch(`${BACKEND_API_URL}/admin/onboard-business`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            phoneNumber,
+            businessName,
+            city: citySelection,
+            location,
+            shortLocation,
+            googleMapsLink,
+            bookingType: 'single',
+            businessType,
+            category: businessType,
+            doctors: normalizedDoctors,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to onboard clinic');
+        }
+
+        setSuccess(`${businessName || 'Clinic'} onboarded successfully. Tenant ID: ${data.tenantId}`);
+        handleReset();
+        return;
+      }
+
+      const selectedServices = services
+        .filter((service) => service.enabled && service.name.trim())
+        .map((service) => toServicePayload(service, selectedTags));
+
+      if (selectedServices.length === 0) {
+        setError(`Select at least one ${categoryLabel.toLowerCase()} service before submitting.`);
+        setIsLoading(false);
+        return;
+      }
 
       const response = await fetch(`${BACKEND_API_URL}/admin/onboard-business`, {
         method: 'POST',
@@ -587,7 +815,6 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
           businessName,
           location,
           googleMapsLink,
-          doctorQualifications: isHealthcare ? doctorQualifications : undefined,
           bookingType: 'single',
           businessType,
           category: businessType,
@@ -637,12 +864,8 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Manual Inputs</h2>
-                  <p className="text-sm text-slate-500">
-                    {isHealthcare
-                      ? 'Only these six fields require direct admin entry.'
-                      : 'Only these five fields require direct admin entry.'}
-                  </p>
+                  <h2 className="text-lg font-semibold text-slate-900">Clinic Details</h2>
+                  <p className="text-sm text-slate-500">These top-level fields save into `business_profiles`.</p>
                 </div>
                 <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
                   Business Type: {businessType}
@@ -686,38 +909,69 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                   />
                 </div>
 
+                {isHealthcare ? (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">City Location Selection</label>
+                    <select
+                      required
+                      value={citySelection}
+                      onChange={(event) => setCitySelection(event.target.value)}
+                      className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-white"
+                    >
+                      <option value="" disabled>Select a city...</option>
+                      {BANGALORE_FOCUS_CITIES.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">City Location Selection</label>
+                    <select
+                      required
+                      value={location}
+                      onChange={(event) => setLocation(event.target.value)}
+                      className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-white"
+                    >
+                      <option value="" disabled>Select a city...</option>
+                      {BANGALORE_FOCUS_CITIES.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 {isHealthcare && (
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700">
-                      Doctor&apos;s Educational Qualifications
-                    </label>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">Complete Location</label>
                     <input
                       required
                       type="text"
-                      value={doctorQualifications}
-                      onChange={(event) => setDoctorQualifications(event.target.value)}
-                      placeholder="MBBS, MD, DNB"
+                      value={location}
+                      onChange={(event) => setLocation(event.target.value)}
+                      placeholder="e.g. 2nd Floor, Outer Ring Rd, opposite to More, Mahadevapura, Bengaluru"
                       className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                     />
                   </div>
                 )}
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">City Location Selection</label>
-                  <select
-                    required
-                    value={location}
-                    onChange={(event) => setLocation(event.target.value)}
-                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-white"
-                  >
-                    <option value="" disabled>Select a city...</option>
-                    {BANGALORE_FOCUS_CITIES.map((city) => (
-                      <option key={city} value={city}>
-                        {city}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isHealthcare && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700">Short Location</label>
+                    <input
+                      required
+                      type="text"
+                      value={shortLocation}
+                      onChange={(event) => setShortLocation(event.target.value)}
+                      placeholder="e.g. Mahadevapura, Bengaluru"
+                      className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700">Google Maps Hyperlink</label>
@@ -735,204 +989,346 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
 
             {isHealthcare && (
               <section className="space-y-4">
-                <div className="border-b border-slate-200 pb-3">
-                  <h2 className="text-lg font-semibold text-slate-900">Healthcare Category Selection</h2>
-                  <p className="text-sm text-slate-500">
-                    Select one or more categories. Core services load instantly in the same order as selected.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {HEALTHCARE_SUBCATEGORIES.map((config) => {
-                    const selected = selectedTags.includes(config.tag);
-                    return (
-                      <button
-                        key={config.tag}
-                        type="button"
-                        onClick={() => handleHealthcareCategoryToggle(config)}
-                        className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
-                          selected
-                            ? 'border-sky-400 bg-sky-50 text-sky-900 shadow-sm'
-                            : 'border-slate-200 bg-white text-slate-700 hover:border-sky-200 hover:bg-slate-50'
-                        }`}
-                      >
-                        <span className="text-xl">{config.emoji}</span>
-                        <span>{config.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-                {selectedTags.includes('homeopathy') && selectedTags.length > 1 && (
-                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                    Homeopathy is selected with other categories, so those selected medical category tags will be saved with a homeopathy prefix in the backend payload.
-                  </div>
-                )}
-              </section>
-            )}
-
-            {isHealthcare && (
-              <section className="space-y-4">
                 <div className="flex flex-col gap-3 border-b border-slate-200 pb-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900">Clinic / Doctor Timings</h2>
+                    <h2 className="text-lg font-semibold text-slate-900">Doctors</h2>
                     <p className="text-sm text-slate-500">
-                      These timings are shared across every selected healthcare service and copied into each service slot payload.
+                      Add one card per doctor. If a doctor selects multiple core specializations, submission creates separate
+                      service rows while keeping each doctor&apos;s calendar isolated.
                     </p>
                   </div>
-                  <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                    Shared schedule
-                  </div>
+                  <button
+                    type="button"
+                    onClick={addDoctor}
+                    className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:bg-sky-100"
+                  >
+                    + Add Another Doctor
+                  </button>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <h3 className="text-sm font-semibold text-slate-900">Monday-Saturday Split Shift</h3>
-                  <p className="text-sm text-slate-500">Defaults to 09:00-13:00 and 16:00-20:00 for all selected services.</p>
-                  <div className="mt-4 space-y-3">
-                    {sharedWeekdaySlots.map((slot, slotIndex) => (
-                      <div
-                        key={`shared-weekday-${slot.label}-${slotIndex}`}
-                        className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-3 md:grid-cols-[56px_140px_1fr_1fr]"
-                      >
-                        <div className="flex items-center justify-center">
+                <div className="space-y-5">
+                  {doctors.map((doctor, doctorIndex) => (
+                    <div
+                      key={doctor.id}
+                      ref={(element) => {
+                        doctorCardRefs.current[doctor.id] = element;
+                      }}
+                      className={`rounded-3xl border bg-white p-5 shadow-sm transition ${
+                        recentlyAddedDoctorId === doctor.id ? 'border-sky-400 ring-2 ring-sky-200' : 'border-slate-200'
+                      }`}
+                    >
+                      <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                          <p className="text-lg font-semibold text-slate-900">Doctor {doctorIndex + 1}</p>
+                          <p className="mt-1 text-sm text-slate-500">
+                            Each specialization selected here becomes its own `business_services` row on submit.
+                          </p>
+                        </div>
+                        {doctors.length > 1 && (
                           <button
                             type="button"
-                            onClick={() => setSharedWeekdaySlots((currentSlots) => currentSlots.filter((_, index) => index !== slotIndex))}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-red-200 bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100"
-                            aria-label={`Remove ${slot.label} shared weekday timing`}
+                            onClick={() => removeDoctor(doctor.id)}
+                            className="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
                           >
-                            ✕
+                            Remove Doctor
                           </button>
-                        </div>
-                        <div className="flex items-center text-sm font-medium text-slate-600">{slot.label}</div>
+                        )}
+                      </div>
+
+                      <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                         <div>
-                          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">Start</label>
+                          <label className="block text-sm font-medium text-slate-700">Doctor Name</label>
                           <input
-                            type="time"
-                            value={slot.start_time}
+                            type="text"
+                            value={doctor.providerName}
                             onChange={(event) =>
-                              setSharedWeekdaySlots((currentSlots) => {
-                                const nextSlots = [...currentSlots];
-                                nextSlots[slotIndex] = { ...nextSlots[slotIndex], start_time: event.target.value };
-                                return nextSlots;
-                              })
+                              updateDoctor(doctor.id, (currentDoctor) => ({
+                                ...currentDoctor,
+                                providerName: event.target.value,
+                              }))
                             }
+                            placeholder="Dr. Rahul"
                             className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                           />
                         </div>
+
                         <div>
-                          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">End</label>
+                          <label className="block text-sm font-medium text-slate-700">Qualifications</label>
                           <input
-                            type="time"
-                            value={slot.end_time}
+                            type="text"
+                            value={doctor.qualifications}
                             onChange={(event) =>
-                              setSharedWeekdaySlots((currentSlots) => {
-                                const nextSlots = [...currentSlots];
-                                nextSlots[slotIndex] = { ...nextSlots[slotIndex], end_time: event.target.value };
-                                return nextSlots;
-                              })
+                              updateDoctor(doctor.id, (currentDoctor) => ({
+                                ...currentDoctor,
+                                qualifications: event.target.value,
+                              }))
                             }
+                            placeholder="MBBS, MD"
+                            className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700">Standard Consultation Price</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={doctor.price}
+                            onChange={(event) =>
+                              updateDoctor(doctor.id, (currentDoctor) => ({
+                                ...currentDoctor,
+                                price: event.target.value,
+                              }))
+                            }
+                            placeholder="400"
                             className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                           />
                         </div>
                       </div>
-                    ))}
-                  </div>
+
+                      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="border-b border-slate-200 pb-3">
+                          <h3 className="text-sm font-semibold text-slate-900">Core Specializations</h3>
+                          <p className="text-sm text-slate-500">
+                            Choose every department this doctor handles. Each checked option creates a separate service row.
+                          </p>
+                        </div>
+                        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                          {DOCTOR_SPECIALIZATION_OPTIONS.map((option) => {
+                            const checked = doctor.specializationTags.includes(option.value);
+
+                            return (
+                              <label
+                                key={`${doctor.id}-${option.value}`}
+                                className={`flex cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3 transition ${
+                                  checked
+                                    ? 'border-sky-300 bg-sky-50'
+                                    : 'border-slate-200 bg-white hover:border-sky-200 hover:bg-slate-50'
+                                }`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() => toggleDoctorSpecialization(doctor.id, option.value)}
+                                  className="mt-1 h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                                />
+                                <div>
+                                  <p className="text-sm font-medium text-slate-900">{option.serviceName}</p>
+                                  <p className="text-xs text-slate-500">Saved as `{option.value}` in `subcategory_tag`.</p>
+                                </div>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="border-b border-slate-200 pb-3">
+                          <h3 className="text-sm font-semibold text-slate-900">Operational Availability</h3>
+                          <p className="text-sm text-slate-500">
+                            Enable days and set doctor-specific slot timings. These get linked to each generated service row for this doctor.
+                          </p>
+                        </div>
+
+                        <div className="mt-4 space-y-4">
+                          {ALL_DAYS.map((day) => {
+                            const daySlots = doctor.timeSlotsByDay[day] || [];
+                            const dayEnabled = daySlots.length > 0;
+
+                            return (
+                              <div key={`${doctor.id}-${day}`} className="rounded-2xl border border-slate-200 bg-white p-4">
+                                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                  <label className="inline-flex items-center gap-3 text-sm font-medium text-slate-900">
+                                    <input
+                                      type="checkbox"
+                                      checked={dayEnabled}
+                                      onChange={() => toggleDoctorDay(doctor.id, day)}
+                                      className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                                    />
+                                    <span>{day}</span>
+                                  </label>
+
+                                  {dayEnabled && (
+                                    <button
+                                      type="button"
+                                      onClick={() => addDoctorTimeSlot(doctor.id, day)}
+                                      className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-100"
+                                    >
+                                      + Add Time Slot
+                                    </button>
+                                  )}
+                                </div>
+
+                                {dayEnabled ? (
+                                  <div className="mt-4 space-y-3">
+                                    {daySlots.map((slot, slotIndex) => (
+                                      <div
+                                        key={`${doctor.id}-${day}-${slotIndex}`}
+                                        className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[160px_1fr_1fr_56px]"
+                                      >
+                                        <div>
+                                          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
+                                            Slot Label
+                                          </label>
+                                          <input
+                                            type="text"
+                                            value={slot.label}
+                                            onChange={(event) =>
+                                              updateDoctorTimeSlot(doctor.id, day, slotIndex, 'label', event.target.value)
+                                            }
+                                            className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
+                                            Start
+                                          </label>
+                                          <input
+                                            type="time"
+                                            value={slot.start_time}
+                                            onChange={(event) =>
+                                              updateDoctorTimeSlot(doctor.id, day, slotIndex, 'start_time', event.target.value)
+                                            }
+                                            className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
+                                            End
+                                          </label>
+                                          <input
+                                            type="time"
+                                            value={slot.end_time}
+                                            onChange={(event) =>
+                                              updateDoctorTimeSlot(doctor.id, day, slotIndex, 'end_time', event.target.value)
+                                            }
+                                            className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                          />
+                                        </div>
+
+                                        <div className="flex items-end justify-center">
+                                          <button
+                                            type="button"
+                                            onClick={() => removeDoctorTimeSlot(doctor.id, day, slotIndex)}
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-red-200 bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                                            aria-label={`Remove ${day} slot ${slotIndex + 1}`}
+                                          >
+                                            ✕
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="mt-3 text-sm text-slate-500">This doctor is not available on {day}.</p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="border-b border-slate-200 pb-3">
+                          <h3 className="text-sm font-semibold text-slate-900">Specialized Treatment Keywords</h3>
+                          <p className="text-sm text-slate-500">
+                            Add comma-separated keywords such as diabetes, fever, acne, hairfall, pregnancy care.
+                          </p>
+                        </div>
+
+                        <div className="mt-4 flex flex-col gap-3 md:flex-row">
+                          <input
+                            type="text"
+                            value={doctor.tagInput}
+                            onChange={(event) =>
+                              updateDoctor(doctor.id, (currentDoctor) => ({
+                                ...currentDoctor,
+                                tagInput: event.target.value,
+                              }))
+                            }
+                            onBlur={() => commitDoctorTags(doctor.id)}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ',') {
+                                event.preventDefault();
+                                commitDoctorTags(doctor.id);
+                              }
+                            }}
+                            placeholder="diabetes, fever, acne"
+                            className="block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => commitDoctorTags(doctor.id)}
+                            className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-100"
+                          >
+                            Add Keywords
+                          </button>
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {doctor.tags.map((tag) => (
+                            <span
+                              key={`${doctor.id}-${tag}`}
+                              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white"
+                            >
+                              <span>{tag}</span>
+                              <button
+                                type="button"
+                                onClick={() => removeDoctorTag(doctor.id, tag)}
+                                className="text-white/80 transition hover:text-white"
+                                aria-label={`Remove keyword ${tag}`}
+                              >
+                                ✕
+                              </button>
+                            </span>
+                          ))}
+                          {doctor.tags.length === 0 && (
+                            <p className="text-sm text-slate-500">No keywords added yet for this doctor.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                {sharedSundaySlots.length === 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setSharedSundaySlots(cloneSlots(DEFAULT_SUNDAY_SLOTS))}
-                    className="inline-flex rounded-full border border-dashed border-sky-300 bg-sky-50 px-4 py-2 text-sm font-medium text-sky-700 transition hover:bg-sky-100"
-                  >
-                    + Add Sunday Timings
-                  </button>
-                )}
-
-                {sharedSundaySlots.length > 0 && (
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <h3 className="text-sm font-semibold text-slate-900">Sunday Timings</h3>
-                    <p className="text-sm text-slate-500">Sunday uses a separate doctor-average default for the full clinic schedule.</p>
-                    <div className="mt-4 space-y-3">
-                      {sharedSundaySlots.map((slot, slotIndex) => (
-                        <div
-                          key={`shared-sunday-${slot.label}-${slotIndex}`}
-                          className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-3 md:grid-cols-[56px_140px_1fr_1fr]"
-                        >
-                          <div className="flex items-center justify-center">
-                            <button
-                              type="button"
-                              onClick={() => setSharedSundaySlots((currentSlots) => currentSlots.filter((_, index) => index !== slotIndex))}
-                              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-red-200 bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100"
-                              aria-label={`Remove ${slot.label} shared Sunday timing`}
-                            >
-                              ✕
-                            </button>
-                          </div>
-                          <div className="flex items-center text-sm font-medium text-slate-600">{slot.label}</div>
-                          <div>
-                            <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">Start</label>
-                            <input
-                              type="time"
-                              value={slot.start_time}
-                              onChange={(event) =>
-                                setSharedSundaySlots((currentSlots) => {
-                                  const nextSlots = [...currentSlots];
-                                  nextSlots[slotIndex] = { ...nextSlots[slotIndex], start_time: event.target.value };
-                                  return nextSlots;
-                                })
-                              }
-                              className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">End</label>
-                            <input
-                              type="time"
-                              value={slot.end_time}
-                              onChange={(event) =>
-                                setSharedSundaySlots((currentSlots) => {
-                                  const nextSlots = [...currentSlots];
-                                  nextSlots[slotIndex] = { ...nextSlots[slotIndex], end_time: event.target.value };
-                                  return nextSlots;
-                                })
-                              }
-                              className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <button
+                  type="button"
+                  onClick={addDoctor}
+                  className="inline-flex items-center justify-center rounded-full border border-dashed border-sky-300 bg-sky-50 px-5 py-3 text-sm font-semibold text-sky-700 transition hover:bg-sky-100"
+                >
+                  + Add Another Doctor
+                </button>
               </section>
             )}
 
-            <section className="space-y-4">
-              <div className="flex flex-col gap-3 border-b border-slate-200 pb-3 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Auto-Populated Services</h2>
-                  <p className="text-sm text-slate-500">
-                    Defaults use Monday-Saturday operating days, split-shift timings, and single booking.
-                  </p>
-                </div>
-                <div className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">
-                  {selectedServiceCount} service{selectedServiceCount === 1 ? '' : 's'} selected
-                </div>
-              </div>
-
-              <div className="relative z-10 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <button
-                  type="button"
-                  onClick={handleAddBlankService}
-                  className="text-sm font-medium text-sky-600 hover:text-sky-700 hover:underline cursor-pointer focus:outline-none"
-                >
-                  + Add Additional Popular Services
-                </button>
-                {optionalServices.length > 0 && (
-                  <>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Click any option below to append a pre-configured service row, or click above for a blank one.
+            {!isHealthcare && (
+              <section className="space-y-4">
+                <div className="flex flex-col gap-3 border-b border-slate-200 pb-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900">Auto-Populated Services</h2>
+                    <p className="text-sm text-slate-500">
+                      Defaults use Monday-Saturday operating days, split-shift timings, and single booking.
                     </p>
+                  </div>
+                  <div className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">
+                    {selectedServiceCount} service{selectedServiceCount === 1 ? '' : 's'} selected
+                  </div>
+                </div>
+
+                <div className="relative z-10 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <button
+                    type="button"
+                    onClick={handleAddBlankService}
+                    className="cursor-pointer text-sm font-medium text-sky-600 hover:text-sky-700 hover:underline focus:outline-none"
+                  >
+                    + Add Services
+                  </button>
+                  <p className="text-sm text-slate-500">
+                    Click any option below to append a pre-configured service row, or click above for a blank one.
+                  </p>
+                {optionalServices.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {optionalServices.map((service) => {
                         return (
@@ -947,13 +1343,12 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                         );
                       })}
                     </div>
-                  </>
                 )}
               </div>
 
               <div className="space-y-5">
                 {services.map((service) => {
-                  const sundayEnabled = isHealthcare ? sharedSundaySlots.length > 0 : service.sundaySlots.length > 0;
+                  const sundayEnabled = service.sundaySlots.length > 0;
 
                   return (
                     <div
@@ -1226,7 +1621,8 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                   );
                 })}
               </div>
-            </section>
+              </section>
+            )}
 
             <div className="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-sm text-slate-500">

@@ -4,6 +4,12 @@ const crypto = require('crypto');
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const DEFAULT_OPERATING_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DEFAULT_BUSINESS_TYPE = 'Fitness & Gym';
+const DOCTOR_SPECIALIZATION_SERVICE_NAMES = {
+  general_physician: 'General Physician Consultation',
+  dermatologist: 'Skin, Hair & Nails Consultation',
+  dental: 'Dental Consultation',
+  gynecologist: 'Gynecologist & Obstetrics Consultation',
+};
 
 const normalizeString = (value) => (typeof value === 'string' ? value.trim() : '');
 
@@ -11,6 +17,9 @@ const toNumber = (value, fallback = 0) => {
   const numericValue = Number(value);
   return Number.isFinite(numericValue) ? numericValue : fallback;
 };
+
+const sanitizeTextArray = (value) =>
+  Array.isArray(value) ? Array.from(new Set(value.map((item) => normalizeString(item)).filter(Boolean))) : [];
 
 function calculateSlotDuration(startTime, endTime) {
   if (!startTime || !endTime) return 60;
@@ -205,10 +214,12 @@ exports.onboardBusiness = async (req, res) => {
       phoneNumber,
       businessName,
       location,
+      shortLocation,
       googleMapsLink,
       doctorQualifications,
       bookingType, // 'single' or 'multi'
       services, // Array of { name, price, durationMins }
+      doctors, // Array of doctor blocks for Healthcare multi-doctor onboarding
       slots, // Array of { day, times: [{ start_time, end_time, price }] }
       operatingDays, // Array of strings (e.g. ['Monday', 'Tuesday'])
       businessType,
@@ -230,28 +241,35 @@ exports.onboardBusiness = async (req, res) => {
     const hasDoctorQualifications = typeof doctorQualifications === 'string';
     const normalizedDoctorQualifications = normalizeString(doctorQualifications);
     const fallbackOperatingDays = Array.isArray(operatingDays) ? operatingDays : [];
+    const hasDoctorPayload = Array.isArray(doctors) && doctors.length > 0;
 
     // Basic validation
-    if (!normalizedBusinessName || !Array.isArray(services) || services.length === 0) {
-      return res.status(400).json({ success: false, message: 'Missing required fields: businessName or services' });
+    if (!normalizedBusinessName) {
+      return res.status(400).json({ success: false, message: 'Missing required field: businessName' });
     }
 
-    const activeServices = services.filter((service) => {
-      if (service?.enabled === false) {
-        return false;
-      }
+    if (!hasDoctorPayload && (!Array.isArray(services) || services.length === 0)) {
+      return res.status(400).json({ success: false, message: 'Missing required fields: businessName or services/doctors' });
+    }
 
-      return Boolean(normalizeString(service?.name));
-    });
+    const activeServices = hasDoctorPayload
+      ? []
+      : services.filter((service) => {
+          if (service?.enabled === false) {
+            return false;
+          }
 
-    if (activeServices.length === 0) {
+          return Boolean(normalizeString(service?.name));
+        });
+
+    if (!hasDoctorPayload && activeServices.length === 0) {
       return res.status(400).json({ success: false, message: 'At least one valid service is required' });
     }
 
     // 1. Check if business already exists
     const { data: existingProfile, error: fetchError } = await supabase
       .from('business_profiles')
-      .select('id, tenant_id, business_type')
+      .select('id, tenant_id, business_type, location, short_location, google_maps_profile, email, doctor_qualifications')
       .ilike('business_name', normalizedBusinessName)
       .maybeSingle();
 
@@ -268,26 +286,51 @@ exports.onboardBusiness = async (req, res) => {
     let tenantId;
     let profileId;
 
+    // Prepare payload for business profile.
     const businessProfilePayload = {
       phone_number: normalizedPhoneNumber,
+      business_name: normalizedBusinessName,
       email: normalizedEmail,
       location: normalizedLocation,
+      short_location: normalizeString(shortLocation) || null,
       google_maps_profile: normalizedGoogleMapsLink,
       multiorsinglebooking: resolvedBookingType,
       business_type: resolvedBusinessType,
+      rating: 4.8,
+      review_count: 124,
       onboarding_completed: true,
-      ...(hasDoctorQualifications ? { doctor_qualifications: normalizedDoctorQualifications } : {}),
+      ...(!hasDoctorPayload && hasDoctorQualifications ? { doctor_qualifications: normalizedDoctorQualifications } : {}),
     };
 
-    if (existingProfile) {
-      console.log('Business exists. Updating services for Tenant:', existingProfile.tenant_id);
-      tenantId = existingProfile.tenant_id;
-      profileId = existingProfile.id;
+    let targetProfile = existingProfile;
 
-      const { error: profileUpdateError } = await supabase
-        .from('business_profiles')
-        .update(businessProfilePayload)
-        .eq('id', profileId);
+    if (targetProfile) {
+      console.log('Business exists. Updating services for Tenant:', targetProfile.tenant_id);
+      tenantId = targetProfile.tenant_id;
+      profileId = targetProfile.id;
+
+      const updatePayload = {};
+      
+      if (normalizedLocation && targetProfile.location !== normalizedLocation) {
+        updatePayload.location = normalizedLocation;
+      }
+      
+      if (normalizeString(shortLocation) && targetProfile.short_location !== normalizeString(shortLocation)) {
+        updatePayload.short_location = normalizeString(shortLocation);
+      }
+      
+      if (normalizedGoogleMapsLink && targetProfile.google_maps_profile !== normalizedGoogleMapsLink) {
+        updatePayload.google_maps_profile = normalizedGoogleMapsLink;
+      }
+
+      let profileUpdateError = null;
+      if (Object.keys(updatePayload).length > 0) {
+        const { error } = await supabase
+          .from('business_profiles')
+          .update(updatePayload)
+          .eq('id', profileId);
+        profileUpdateError = error;
+      }
 
       if (profileUpdateError) {
         throw new Error(`Profile update failed: ${profileUpdateError.message}`);
@@ -394,41 +437,143 @@ exports.onboardBusiness = async (req, res) => {
       console.log('[admin onboarding] created profileId:', profileId);
     }
 
-    // 2. Create Services and Weekly Slots
-    for (const svc of activeServices) {
-      const serviceName = normalizeString(svc.name);
-      const servicePrice = toNumber(svc.price ?? svc.slotPrice, 0);
-      const serviceTimeSlots = buildServiceTimeSlots(svc, slots, servicePrice);
-      const serviceOperatingDays = determineOperatingDays(svc, serviceTimeSlots, fallbackOperatingDays);
-      const serviceDuration = determineServiceDuration(svc, serviceTimeSlots);
-      const serviceSubcategoryTag =
-        normalizeString(svc.subcategoryTag ?? svc.subcategory_tag) || resolvedSubcategoryTag;
-      const serviceCategory = resolveServiceCategory(svc.category, resolvedCategory, serviceSubcategoryTag);
+    const serviceEntries = hasDoctorPayload
+      ? doctors.reduce((accumulator, doctor, doctorIndex) => {
+          const providerName = normalizeString(doctor?.providerName ?? doctor?.provider_name);
+          const qualifications = normalizeString(
+            doctor?.doctorQualifications ?? doctor?.doctor_qualifications ?? doctor?.qualifications
+          );
+          const specializations = sanitizeTextArray(doctor?.specializations);
+          const doctorPrice = toNumber(doctor?.price, 400);
+          const doctorDuration = toNumber(doctor?.durationMins ?? doctor?.duration_mins, 15) || 15;
+          const doctorTimeSlots = buildServiceTimeSlots(doctor, [], doctorPrice);
+          const doctorOperatingDays = determineOperatingDays(doctor, doctorTimeSlots, fallbackOperatingDays);
+          const doctorTags = sanitizeTextArray(doctor?.tags);
 
-      const { data: existingService, error: existingServiceError } = await supabase
+          if (!providerName) {
+            throw new Error(`Doctor ${doctorIndex + 1}: provider_name is required`);
+          }
+
+          if (!qualifications) {
+            throw new Error(`Doctor ${doctorIndex + 1}: doctor_qualifications is required`);
+          }
+
+          if (specializations.length === 0) {
+            throw new Error(`Doctor ${doctorIndex + 1}: at least one specialization is required`);
+          }
+
+          if (doctorOperatingDays.length === 0 || Object.keys(doctorTimeSlots).length === 0) {
+            throw new Error(`Doctor ${doctorIndex + 1}: at least one operational slot is required`);
+          }
+
+          specializations.forEach((specialization) => {
+            const serviceName = DOCTOR_SPECIALIZATION_SERVICE_NAMES[specialization];
+
+            if (!serviceName) {
+              throw new Error(`Doctor ${doctorIndex + 1}: unsupported specialization "${specialization}"`);
+            }
+
+            accumulator.push({
+              serviceName,
+              servicePrice: doctorPrice,
+              serviceDuration: doctorDuration,
+              serviceCategory: 'HealthCare',
+              serviceSubcategoryTag: specialization,
+              serviceOperatingDays: doctorOperatingDays,
+              serviceTimeSlots: doctorTimeSlots,
+              providerName,
+              doctorQualifications: qualifications,
+              tags: doctorTags,
+              isDoctorGenerated: true,
+            });
+          });
+
+          return accumulator;
+        }, [])
+      : activeServices.map((svc) => {
+          const serviceName = normalizeString(svc.name);
+          const servicePrice = toNumber(svc.price ?? svc.slotPrice, 0);
+          const serviceTimeSlots = buildServiceTimeSlots(svc, slots, servicePrice);
+          const serviceOperatingDays = determineOperatingDays(svc, serviceTimeSlots, fallbackOperatingDays);
+          const serviceDuration = determineServiceDuration(svc, serviceTimeSlots);
+          const serviceSubcategoryTag =
+            normalizeString(svc.subcategoryTag ?? svc.subcategory_tag) || resolvedSubcategoryTag;
+          const serviceCategory = resolveServiceCategory(svc.category, resolvedCategory, serviceSubcategoryTag);
+
+          return {
+            serviceName,
+            servicePrice,
+            serviceDuration,
+            serviceCategory,
+            serviceSubcategoryTag,
+            serviceOperatingDays,
+            serviceTimeSlots,
+            providerName: null,
+            doctorQualifications: null,
+            tags: [],
+            isDoctorGenerated: false,
+          };
+        });
+
+    if (serviceEntries.length === 0) {
+      return res.status(400).json({ success: false, message: 'At least one valid service row is required' });
+    }
+
+    // 2. Create Services and Weekly Slots
+    for (const serviceEntry of serviceEntries) {
+      const {
+        serviceName,
+        servicePrice,
+        serviceDuration,
+        serviceCategory,
+        serviceSubcategoryTag,
+        serviceOperatingDays,
+        serviceTimeSlots,
+        providerName,
+        doctorQualifications: entryDoctorQualifications,
+        tags,
+        isDoctorGenerated,
+      } = serviceEntry;
+
+      let existingServiceQuery = supabase
         .from('business_services')
         .select('id')
         .eq('profile_id', profileId)
         .eq('name', serviceName)
-        .eq('category', serviceCategory)
-        .maybeSingle();
+        .eq('category', serviceCategory);
+
+      if (isDoctorGenerated) {
+        existingServiceQuery = existingServiceQuery
+          .eq('subcategory_tag', serviceSubcategoryTag)
+          .eq('provider_name', providerName);
+      }
+
+      const { data: existingService, error: existingServiceError } = await existingServiceQuery.maybeSingle();
 
       if (existingServiceError && existingServiceError.code !== 'PGRST116') {
         throw new Error(`Existing service lookup failed: ${existingServiceError.message}`);
       }
 
       let service;
+      const serviceWritePayload = {
+        price: servicePrice,
+        duration_mins: serviceDuration,
+        category: serviceCategory,
+        subcategory_tag: serviceSubcategoryTag,
+        operating_days: serviceOperatingDays,
+        ...(isDoctorGenerated
+          ? {
+              provider_name: providerName,
+              doctor_qualifications: entryDoctorQualifications,
+              tags,
+            }
+          : {}),
+      };
 
       if (existingService) {
         const { data: updatedService, error: updateServiceError } = await supabase
           .from('business_services')
-          .update({
-            price: servicePrice,
-            duration_mins: serviceDuration,
-            category: serviceCategory,
-            subcategory_tag: serviceSubcategoryTag,
-            operating_days: serviceOperatingDays,
-          })
+          .update(serviceWritePayload)
           .eq('id', existingService.id)
           .select()
           .single();
@@ -453,11 +598,7 @@ exports.onboardBusiness = async (req, res) => {
           .insert({
             profile_id: profileId,
             name: serviceName,
-            price: servicePrice,
-            duration_mins: serviceDuration,
-            category: serviceCategory,
-            subcategory_tag: serviceSubcategoryTag,
-            operating_days: serviceOperatingDays,
+            ...serviceWritePayload,
           })
           .select()
           .single();
