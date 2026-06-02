@@ -14,8 +14,8 @@ function normalizePublicListing(service, profile, weeklySlots = []) {
     businessName: profile?.business_name || service.name,
     location: profile?.location || '',
     googleMapsLink: profile?.google_maps_profile || null,
-    rating: typeof profile?.rating === 'number' ? profile.rating : null,
-    reviewCount: typeof profile?.review_count === 'number' ? profile.review_count : null,
+    rating: null,
+    reviewCount: null,
     email: profile?.email || null,
     providerName: service.provider_name || null,
     doctorQualifications: service.doctor_qualifications || null,
@@ -61,7 +61,7 @@ async function fetchPublicListingsData({ subcategoryTag, serviceId }) {
   ] = await Promise.all([
     supabase
       .from('business_profiles')
-      .select('id, business_name, location, short_location, google_maps_profile, rating, review_count, email')
+      .select('id, business_name, location, short_location, google_maps_profile, email')
       .in('id', profileIds),
     supabase
       .from('service_weekly_slots')
