@@ -1,0 +1,3262 @@
+[
+  {
+    "email": "rohini.sports@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Rohini Sports Complex",
+    "phoneNumber": "+919811234567",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Rohini, Delhi",
+    "location": "Sector 14, Rohini, Near Swarn Jayanti Park, New Delhi, 110085",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.8,
+    "review_count": 482,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "racketclub.dwarka@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "The Racket Club",
+    "phoneNumber": "+919560123456",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Dwarka, Delhi",
+    "location": "Sector 11, Dwarka, Near Dwarka Sector 11 Metro Station, New Delhi, 110075",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.7,
+    "review_count": 312,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "23:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "23:00",
+              "start_time": "07:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "07:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "07:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "playzone.west@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "PlayZone Sports Complex",
+    "phoneNumber": "+919958112233",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Rajouri Garden, Delhi",
+    "location": "Main Najafgarh Road, Rajouri Garden, West Delhi, New Delhi, 110027",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.9,
+    "review_count": 840,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "yamuna.central@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Yamuna Sports Complex",
+    "phoneNumber": "+919873445566",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Anand Vihar, Delhi",
+    "location": "Surajmal Vihar, Near Anand Vihar, Central Delhi, New Delhi, 110092",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.6,
+    "review_count": 1240,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "sirifort.rackets@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Siri Fort Sports Complex",
+    "phoneNumber": "+919910998877",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "South Ext, Delhi",
+    "location": "August Kranti Marg, Siri Fort, New Delhi, 110049",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.9,
+    "review_count": 2150,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "pankh.saket@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Pankh Badminton Academy",
+    "phoneNumber": "+919899112233",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Saket, Delhi",
+    "location": "J-Block, Saket, Near PVR Anupam, New Delhi, 110017",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.7,
+    "review_count": 620,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 850,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 850,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "kickoff.paschimvihar@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "KickOff Arena",
+    "phoneNumber": "+919711223344",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Paschim Vihar, Delhi",
+    "location": "A-Block, Paschim Vihar, Near Radisson Blu, New Delhi, 110063",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.8,
+    "review_count": 910,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "eliteturf.vasantkunj@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Elite Turf & Cricket",
+    "phoneNumber": "+919650334455",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Vasant Kunj, Delhi",
+    "location": "Nelson Mandela Road, Vasant Kunj, New Delhi, 110070",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.5,
+    "review_count": 435,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "rkpuram.rackets@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "RK Sports Hub",
+    "phoneNumber": "+919810011223",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "RK Puram, Delhi",
+    "location": "Sector 9, RK Puram, New Delhi, 110022",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.6,
+    "review_count": 310,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "lajpat.arena@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Lajpat Racket Arena",
+    "phoneNumber": "+919958113344",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Lajpat Nagar, Delhi",
+    "location": "Part 2, Lajpat Nagar, Near Central Market, New Delhi, 110024",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.8,
+    "review_count": 542,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "05:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "greenpark.smash@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Green Park Smashers",
+    "phoneNumber": "+919871004455",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Green Park, Delhi",
+    "location": "Aurobindo Marg, Green Park Main, New Delhi, 110016",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.9,
+    "review_count": 810,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 750,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "janakpuri.sports@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Janakpuri Sports Complex",
+    "phoneNumber": "+919711556677",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Janakpuri, Delhi",
+    "location": "B-Block, Janakpuri, Near District Centre, New Delhi, 110058",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.5,
+    "review_count": 425,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 450,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 550,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "mayurvihar.club@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Mayur Badminton Club",
+    "phoneNumber": "+919650223388",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Mayur Vihar, Delhi",
+    "location": "Phase 1, Mayur Vihar, Near Metro Station, New Delhi, 110091",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.7,
+    "review_count": 290,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 350,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 600,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 700,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "pitampura.academy@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Racket Courts",
+    "category": "Racket Courts",
+    "businessName": "Pitampura Racket Academy",
+    "phoneNumber": "+919818445566",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Pitampura, Delhi",
+    "location": "Netaji Subhash Place, Pitampura, New Delhi, 110034",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.6,
+    "review_count": 675,
+    "services": [
+      {
+        "name": "Badminton Court",
+        "subcategory_tag": "badminton",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 400,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      },
+      {
+        "name": "Pickleball Court",
+        "subcategory_tag": "pickleball",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 650,
+              "end_time": "22:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Racket Courts"
+      }
+    ]
+  },
+  {
+    "email": "chhatarpur.estate@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Chhatarpur Sports Estate",
+    "phoneNumber": "+919999001122",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Chhatarpur, Delhi",
+    "location": "Main Chhatarpur Road, South Delhi, New Delhi, 110074",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.9,
+    "review_count": 1050,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 2200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 2200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "okhla.arena@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Okhla Active Arena",
+    "phoneNumber": "+919811778899",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Okhla, Delhi",
+    "location": "Okhla Phase 2, Industrial Area, New Delhi, 110020",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.5,
+    "review_count": 520,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 800,
+              "end_time": "23:00",
+              "start_time": "17:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "kirtinagar.turf@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Kirti Nagar Turf",
+    "phoneNumber": "+919711889900",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Kirti Nagar, Delhi",
+    "location": "Industrial Area, Kirti Nagar, Near Metro Station, New Delhi, 110015",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.7,
+    "review_count": 830,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1700,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1700,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1000,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "01:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "punjabibagh.box@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Punjabi Bagh Box Cricket",
+    "phoneNumber": "+919899332211",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Punjabi Bagh, Delhi",
+    "location": "Club Road, Punjabi Bagh Extension, New Delhi, 110026",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.8,
+    "review_count": 915,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 2000,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 2000,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "02:00",
+              "start_time": "16:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1400,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "karolbagh.kick@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Karol Bagh Kick & Pitch",
+    "phoneNumber": "+919560554433",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Karol Bagh, Delhi",
+    "location": "DB Gupta Road, Karol Bagh, New Delhi, 110005",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.6,
+    "review_count": 610,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1300,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1600,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 900,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1100,
+              "end_time": "23:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  },
+  {
+    "email": "defcol.sports@toriate.com",
+    "tenantId": "c3b1a8d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "businessType": "Turf / Cricket",
+    "category": "Turf / Cricket",
+    "businessName": "Defence Colony Sports Ground",
+    "phoneNumber": "+919811665544",
+    "bookingSystemType": "2",
+    "city": "Delhi",
+    "short_location": "Defence Colony, Delhi",
+    "location": "A-Block, Defence Colony, South Delhi, New Delhi, 110024",
+    "googleMapsLink": "https://maps.app.goo.gl/LPFykt8dk7GPmDng8",
+    "rating": 4.9,
+    "review_count": 1420,
+    "services": [
+      {
+        "name": "Football Turf",
+        "subcategory_tag": "turf",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1800,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 2200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 2200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      },
+      {
+        "name": "Box Cricket",
+        "subcategory_tag": "cricket",
+        "duration_mins": 60,
+        "operatingDays": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "timeSlots": {
+          "Monday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Tuesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Wednesday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Thursday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Friday": [
+            {
+              "label": "Hourly Session",
+              "price": 1200,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Saturday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ],
+          "Sunday": [
+            {
+              "label": "Hourly Session",
+              "price": 1500,
+              "end_time": "02:00",
+              "start_time": "06:00"
+            }
+          ]
+        },
+        "category": "Turf / Cricket"
+      }
+    ]
+  }
+]

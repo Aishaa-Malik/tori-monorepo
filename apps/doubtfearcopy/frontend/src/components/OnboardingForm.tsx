@@ -79,7 +79,9 @@ const OnboardingForm: React.FC = () => {
   const [step, setStep] = useState(1);
   const [userType, setUserType] = useState<'Healthcare' | 'SportsVenue' | 'Fitness' | 'SpaSalon' | null>(null);
   const [bookingSystemType, setBookingSystemType] = useState<'1' | '2' | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [rating, setRating] = useState('4.8');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
   
@@ -501,11 +503,13 @@ const OnboardingForm: React.FC = () => {
           email: user.email,
           tenantId: user.tenantId,
           businessType: resolvedBusinessType,
+          phoneNumber,
           businessName: businessName,
           services: formattedServices,
           bookingSystemType: bookingSystemType,
           location: location,
-          googleMapsLink: googleMapsLink
+          googleMapsLink: googleMapsLink,
+          rating: Number(rating)
         })
       });
       
@@ -595,6 +599,27 @@ const OnboardingForm: React.FC = () => {
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 placeholder="Enter your business name"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Enter your contact number"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <input
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                placeholder="Enter your rating"
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               />
             </div>

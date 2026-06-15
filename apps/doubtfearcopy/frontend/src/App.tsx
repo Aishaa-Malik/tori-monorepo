@@ -33,6 +33,7 @@ import PaymentPage from './components/PaymentPage';
 import ToriEmployeeOnboarding from './components/admin/ToriEmployeeOnboarding';
 import ToriEmployeePhysiotherapyOnboarding from './components/admin/ToriEmployeePhysiotherapyOnboarding';
 import ToriEmployeeHealthcareOnboarding from './components/admin/ToriEmployeeHealthcareOnboarding';
+import ToriEmployeeSportsVenueOnboarding from './components/admin/ToriEmployeeSportsVenueOnboarding';
 
 // Turf owner components
 import TurfDashboardLayout from './components/turf/TurfDashboardLayout';
@@ -154,6 +155,8 @@ function App() {
             <Route path="/Tori-employee/Physiotherapy" element={<ToriEmployeePhysiotherapyOnboarding />} />
             <Route path="/tori-employee/healthcare" element={<ToriEmployeeHealthcareOnboarding />} />
             <Route path="/Tori-employee/Healthcare" element={<ToriEmployeeHealthcareOnboarding />} />
+            <Route path="/tori-employee/sports-venues" element={<ToriEmployeeSportsVenueOnboarding />} />
+            <Route path="/Tori-employee/Sports-Venues" element={<ToriEmployeeSportsVenueOnboarding />} />
 
             
             {/* Public Services Directory */}

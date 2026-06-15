@@ -21,6 +21,69 @@ const toNumber = (value, fallback = 0) => {
 const sanitizeTextArray = (value) =>
   Array.isArray(value) ? Array.from(new Set(value.map((item) => normalizeString(item)).filter(Boolean))) : [];
 
+function sanitizeSettlementAccount(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  const settlementAccount = {
+    legalBusinessName: normalizeString(value.legalBusinessName),
+    settlementEmail: normalizeString(value.settlementEmail),
+    bankAccountNumber: normalizeString(value.bankAccountNumber),
+    ifscCode: normalizeString(value.ifscCode).toUpperCase(),
+  };
+
+  return Object.values(settlementAccount).some(Boolean) ? settlementAccount : null;
+}
+
+async function saveSettlementAccount({ tenantId, profileId, settlementAccount }) {
+  if (!settlementAccount) {
+    return;
+  }
+
+  const integrationPayload = {
+    legal_business_name: settlementAccount.legalBusinessName,
+    settlement_email: settlementAccount.settlementEmail,
+    bank_account_number: settlementAccount.bankAccountNumber,
+    ifsc_code: settlementAccount.ifscCode,
+    profile_id: profileId,
+    provider: 'razorpay_route',
+    updated_at: new Date().toISOString(),
+  };
+
+  const { data: updatedIntegrations, error: updateError } = await supabase
+    .from('tenant_integrations')
+    .update({
+      integration_data: integrationPayload,
+      updated_at: integrationPayload.updated_at,
+    })
+    .eq('tenant_id', tenantId)
+    .eq('integration_type', 'razorpay_route_settlement')
+    .select('tenant_id');
+
+  if (updateError) {
+    throw new Error(`Settlement profile update failed: ${updateError.message}`);
+  }
+
+  if (Array.isArray(updatedIntegrations) && updatedIntegrations.length > 0) {
+    return;
+  }
+
+  const { error: insertError } = await supabase
+    .from('tenant_integrations')
+    .insert({
+      tenant_id: tenantId,
+      integration_type: 'razorpay_route_settlement',
+      integration_data: integrationPayload,
+      is_connected: false,
+      updated_at: integrationPayload.updated_at,
+    });
+
+  if (insertError) {
+    throw new Error(`Settlement profile insert failed: ${insertError.message}`);
+  }
+}
+
 function calculateSlotDuration(startTime, endTime) {
   if (!startTime || !endTime) return 60;
 
@@ -225,6 +288,8 @@ exports.onboardBusiness = async (req, res) => {
       businessType,
       category,
       subcategoryTag,
+      rating,
+      settlementAccount,
     } = req.body;
 
     console.log('Received admin onboarding request for:', email);
@@ -242,6 +307,9 @@ exports.onboardBusiness = async (req, res) => {
     const normalizedDoctorQualifications = normalizeString(doctorQualifications);
     const fallbackOperatingDays = Array.isArray(operatingDays) ? operatingDays : [];
     const hasDoctorPayload = Array.isArray(doctors) && doctors.length > 0;
+    const normalizedSettlementAccount = sanitizeSettlementAccount(settlementAccount);
+    const hasRatingProvided = rating !== undefined && rating !== null && String(rating).trim() !== '';
+    const normalizedRating = toNumber(rating, 4.8);
 
     // Basic validation
     if (!normalizedBusinessName) {
@@ -296,7 +364,7 @@ exports.onboardBusiness = async (req, res) => {
       google_maps_profile: normalizedGoogleMapsLink,
       multiorsinglebooking: resolvedBookingType,
       business_type: resolvedBusinessType,
-      rating: 4.8,
+      rating: normalizedRating,
       review_count: 124,
       onboarding_completed: true,
       ...(!hasDoctorPayload && hasDoctorQualifications ? { doctor_qualifications: normalizedDoctorQualifications } : {}),
@@ -321,6 +389,10 @@ exports.onboardBusiness = async (req, res) => {
       
       if (normalizedGoogleMapsLink && targetProfile.google_maps_profile !== normalizedGoogleMapsLink) {
         updatePayload.google_maps_profile = normalizedGoogleMapsLink;
+      }
+      
+      if (hasRatingProvided) {
+        updatePayload.rating = normalizedRating;
       }
 
       let profileUpdateError = null;
@@ -633,6 +705,12 @@ exports.onboardBusiness = async (req, res) => {
         }
       }
     }
+
+    await saveSettlementAccount({
+      tenantId,
+      profileId,
+      settlementAccount: normalizedSettlementAccount,
+    });
 
     // 3. Update Discovery Summary (business_type_summary)
     await upsertBusinessTypeSummary({

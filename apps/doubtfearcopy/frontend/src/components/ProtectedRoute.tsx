@@ -50,7 +50,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     'healthcare': '/dashboard', 
     'healthcare & physiotherapy': '/dashboard',
     'physiotherapy': '/dashboard',
-    'turf': '/healthwellness-dashboard', 
+    'turf': '/healthwellness-dashboard',
+    'turf / cricket': '/healthwellness-dashboard',
+    'racket courts': '/healthwellness-dashboard',
     'fitness & gym': '/healthwellness-dashboard', 
     'fitness': '/healthwellness-dashboard', 
     'events': '/healthwellness-dashboard',
@@ -64,8 +66,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   if (user && !isExcludedRoute) {
     // 2. Inside your ProtectedRoute logic: 
-    const userType = (user.businessType || '').toLowerCase().trim(); 
-    let targetPath = DASHBOARD_MAP[userType]; 
+    const userType = (user.businessType || '').toLowerCase().trim();
+    const userEmail = (user.email || '').toLowerCase().trim();
+    let targetPath = userEmail === 'torieate@gmail.com'
+      ? '/healthwellness-dashboard'
+      : DASHBOARD_MAP[userType];
     
     // Debug logging for routing
     console.log(`ProtectedRoute routing: user.email='${user.email}', userType='${userType}', role='${user.role}', targetPath='${targetPath}'`);

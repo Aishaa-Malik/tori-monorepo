@@ -1,6 +1,8 @@
+const crypto = require('crypto');
 const { supabase } = require('../config');
 
 const normalizeBusinessType = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+const normalizeString = (value) => (typeof value === 'string' ? value.trim() : '');
 
 function resolveBusinessType({ incomingBusinessType, existingBusinessType, services = [] }) {
   const normalizedIncomingType = normalizeBusinessType(incomingBusinessType);
@@ -63,21 +65,6 @@ exports.checkOnboardingStatus = async (req, res) => {
     });
   }
 };
-
-/**
- * Helper to calculate duration in minutes between two time strings (HH:MM)
- * @param {string} startTime - "HH:MM"
- * @param {string} endTime - "HH:MM"
- * @returns {number} Duration in minutes
- */
-function calculateSlotDuration(startTime, endTime) {
-  if (!startTime || !endTime) return 60;
-  const [startH, startM] = startTime.split(':').map(Number);
-  const [endH, endM] = endTime.split(':').map(Number);
-  let duration = (endH * 60 + endM) - (startH * 60 + startM);
-  if (duration < 0) duration += 24 * 60; // Handle overnight crossing midnight
-  return duration;
-}
 
 function normalizePublicListing(service, profile, weeklySlots = []) {
   return {
@@ -237,30 +224,73 @@ exports.saveOnboardingData = async (req, res) => {
   
   const { 
     email, 
-    tenantId, 
-    businessType, 
+    businessType,
+    category,
+    phoneNumber,
     businessName, 
     services, // Array of { name, subcategoryTag, operatingDays, timeSlots, slotPrice }
     bookingSystemType,
     location,
     googleMapsLink,
+    city,
+    short_location,
+    shortLocation,
     rating,
     review_count
   } = req.body;
   
-  if (!email || !tenantId || !businessType) {
+  if (!email || !businessName || !businessType) {
     return res.status(400).json({ error: 'Required fields are missing' });
   }
   
   try {
-    const { data: existingProfile, error: existingProfileError } = await supabase
+    // 1. Check for existing business profile by email first
+    const { data: existingProfileByEmail, error: fetchByEmailError } = await supabase
       .from('business_profiles')
-      .select('id, business_type')
-      .eq('tenant_id', tenantId)
+      .select('id, tenant_id, business_type')
+      .eq('email', email)
       .maybeSingle();
 
-    if (existingProfileError && existingProfileError.code !== 'PGRST116') {
-      throw existingProfileError;
+    if (fetchByEmailError && fetchByEmailError.code !== 'PGRST116') {
+      throw fetchByEmailError;
+    }
+
+    let tenantId;
+    let existingProfile;
+
+    if (existingProfileByEmail) {
+      // Existing profile found! Use its tenant ID
+      tenantId = existingProfileByEmail.tenant_id;
+      existingProfile = existingProfileByEmail;
+      console.log('Found existing business profile for email:', { email, tenantId });
+    } else {
+      // NEW profile: Generate tenant, create tenant record, create profile
+      tenantId = crypto.randomUUID();
+      console.log('Creating new business and tenant:', { businessName, tenantId });
+
+      // Create the tenant FIRST
+      const { error: tenantInsertError } = await supabase
+        .from('tenants')
+        .insert({ id: tenantId, name: businessName });
+
+      if (tenantInsertError) {
+        throw new Error(`Tenant creation failed: ${tenantInsertError.message}`);
+      }
+
+      // Also add to approved_users for consistency
+      if (email) {
+        const { error: approvedUserError } = await supabase.from('approved_users').insert({
+          email: email,
+          role: 'BUSINESS_OWNER',
+          tenant_id: tenantId
+        });
+
+        if (approvedUserError) {
+          console.error('Warning: Could not insert into approved_users:', approvedUserError.message);
+        }
+      }
+
+      existingProfile = null;
     }
 
     const resolvedBusinessType = resolveBusinessType({
@@ -269,25 +299,66 @@ exports.saveOnboardingData = async (req, res) => {
       services,
     });
 
-    // 1. Save business profile
-    const { data: profileData, error: profileError } = await supabase
-      .from('business_profiles')
-      .upsert({
-        email: email,
-        tenant_id: tenantId,
+    // 2. Save business profile
+    const normalizedPhoneNumber = normalizeString(phoneNumber);
+    const normalizedCity = normalizeString(city);
+    const normalizedShortLocation = normalizeString(short_location ?? shortLocation);
+    const numericRating = Number(rating);
+    const numericReviewCount = Number(review_count);
+
+    let profileData;
+    let profileError;
+
+    if (existingProfile) {
+      // Update existing profile
+      const updatePayload = {
         business_type: resolvedBusinessType,
         business_name: businessName,
+        ...(normalizedPhoneNumber ? { phone_number: normalizedPhoneNumber } : {}),
         multiorsinglebooking: bookingSystemType === '1' ? 'single' : 'multi',
         onboarding_completed: true,
         location: location,
         google_maps_profile: googleMapsLink,
-        rating: rating,
-        review_count: review_count
-      }, { 
-        onConflict: 'email'
-      })
-      .select()
-      .single();
+        ...(normalizedCity ? { city: normalizedCity } : {}),
+        ...(normalizedShortLocation ? { short_location: normalizedShortLocation } : {}),
+        ...(Number.isFinite(numericRating) ? { rating: numericRating } : {}),
+        ...(Number.isFinite(numericReviewCount) ? { review_count: numericReviewCount } : {})
+      };
+
+      const result = await supabase
+        .from('business_profiles')
+        .update(updatePayload)
+        .eq('id', existingProfile.id)
+        .select()
+        .single();
+
+      profileData = result.data;
+      profileError = result.error;
+    } else {
+      // Insert new profile
+      const result = await supabase
+        .from('business_profiles')
+        .insert({
+          email: email,
+          tenant_id: tenantId,
+          business_type: resolvedBusinessType,
+          business_name: businessName,
+          ...(normalizedPhoneNumber ? { phone_number: normalizedPhoneNumber } : {}),
+          multiorsinglebooking: bookingSystemType === '1' ? 'single' : 'multi',
+          onboarding_completed: true,
+          location: location,
+          google_maps_profile: googleMapsLink,
+          ...(normalizedCity ? { city: normalizedCity } : {}),
+          ...(normalizedShortLocation ? { short_location: normalizedShortLocation } : {}),
+          ...(Number.isFinite(numericRating) ? { rating: numericRating } : {}),
+          ...(Number.isFinite(numericReviewCount) ? { review_count: numericReviewCount } : {})
+        })
+        .select()
+        .single();
+
+      profileData = result.data;
+      profileError = result.error;
+    }
     
     if (profileError) throw profileError;
     console.log("Business Profile saved:", profileData);
@@ -328,9 +399,10 @@ exports.saveOnboardingData = async (req, res) => {
       for (const service of services) {
         const selectedSubcategoryTag = service.subcategoryTag ?? service.subcategory_tag ?? null;
         
-        // Calculate min price and duration from slots
+        // Calculate min price from slots and preserve explicit service duration
         let minPrice = Infinity;
-        let durationForMinPrice = 60; // Default
+        const explicitDuration = Number(service.duration_mins ?? service.durationMins);
+        const durationForMinPrice = Number.isFinite(explicitDuration) && explicitDuration > 0 ? explicitDuration : 60;
         
         if (service.timeSlots) {
           Object.values(service.timeSlots).forEach(slots => {
@@ -339,8 +411,6 @@ exports.saveOnboardingData = async (req, res) => {
                 const price = Number(slot.price);
                 if (!isNaN(price) && price < minPrice) {
                   minPrice = price;
-                  // Calculate duration
-                  durationForMinPrice = calculateSlotDuration(slot.start_time, slot.end_time);
                 }
               });
             }
@@ -353,7 +423,7 @@ exports.saveOnboardingData = async (req, res) => {
         const servicePayload = {
           profile_id: profileId,
           name: service.name || `${resolvedBusinessType} Service`,
-          category: resolvedBusinessType,
+          category: service.category ?? category ?? resolvedBusinessType,
           subcategory_tag: selectedSubcategoryTag,
           price: minPrice,
           operating_days: service.operatingDays,
@@ -376,7 +446,8 @@ exports.saveOnboardingData = async (req, res) => {
           service_id: serviceId,
           day_of_week: day,
           is_open: Array.isArray(slots) && slots.length > 0,
-          time_slots: slots // JSONB array
+          time_slots: slots, // JSONB array
+          created_at: new Date().toISOString()
         }));
 
         if (weeklySlotsData.length > 0) {

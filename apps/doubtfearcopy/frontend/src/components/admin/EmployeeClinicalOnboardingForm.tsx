@@ -486,6 +486,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [rating, setRating] = useState('4.8');
   const [citySelection, setCitySelection] = useState('');
   const [location, setLocation] = useState('');
   const [shortLocation, setShortLocation] = useState('');
@@ -694,6 +695,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
     setEmail('');
     setPhoneNumber('');
     setBusinessName('');
+    setRating('4.8');
     setCitySelection('');
     setLocation('');
     setShortLocation('');
@@ -772,6 +774,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
             email,
             phoneNumber,
             businessName,
+            rating: Number(rating),
             city: citySelection,
             location,
             shortLocation,
@@ -813,6 +816,7 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
           email,
           phoneNumber,
           businessName,
+          rating: Number(rating),
           location,
           googleMapsLink,
           bookingType: 'single',
@@ -905,6 +909,20 @@ const EmployeeClinicalOnboardingForm: React.FC<EmployeeClinicalOnboardingFormPro
                     value={businessName}
                     onChange={(event) => setBusinessName(event.target.value)}
                     placeholder="Relieve Physiotherapy"
+                    className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Rating</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={rating}
+                    onChange={(event) => setRating(event.target.value)}
+                    placeholder="4.8"
                     className="mt-1 block w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                   />
                 </div>

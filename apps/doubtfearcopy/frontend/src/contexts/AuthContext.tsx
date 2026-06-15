@@ -25,6 +25,9 @@ export interface User {
   businessType?:
     | 'doctor'
     | 'turf'
+    | 'Turf'
+    | 'Turf / Cricket'
+    | 'Racket Courts'
     | 'Fitness & Gym'
     | 'HealthCare'
     | 'Healthcare'
@@ -245,7 +248,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const tenantId = await getUserTenant(userId);
 
       const { getUserBusinessType } = await import('../services/supabaseService');
-      const businessType = await getUserBusinessType(userId);
+      const businessType = await getUserBusinessType(userId, session.user.email || email);
 
       const userData: User = {
         id: userId,
@@ -294,7 +297,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const tenantId = await getUserTenant(userId);
       const role = await getUserRole(userId);
-      const businessType = await getUserBusinessType(userId);
+      const businessType = await getUserBusinessType(userId, userObj.email || '');
 
       console.log(`[loginFromSession] Fetched businessType from supabaseService:`, businessType);
 
@@ -357,7 +360,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const tenantId = await getUserTenant(userId);
 
             const { getUserBusinessType } = await import('../services/supabaseService');
-            const businessType = await getUserBusinessType(userId);
+            const businessType = await getUserBusinessType(userId, session.user.email || '');
 
             console.log(`[checkAuthStatus] Fetched businessType from supabaseService:`, businessType);
 

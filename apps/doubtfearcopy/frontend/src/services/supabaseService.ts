@@ -220,11 +220,28 @@ export const getRevenueData = async (tenantId: string, startDate: string, endDat
   return data;
 };
 
-export const getUserBusinessType = async (userId: string) => {
+export const getUserBusinessType = async (userId: string, userEmail?: string) => {
   try {
-    console.log(`[getUserBusinessType] Starting fetch for userId: ${userId}`);
+    console.log(`[getUserBusinessType] Starting fetch for userId: ${userId}, email: ${userEmail || 'none'}`);
+
+    if (userEmail) {
+      const { data: profileByEmail, error: emailProfileError } = await supabase
+        .from('business_profiles')
+        .select('business_type')
+        .eq('email', userEmail)
+        .maybeSingle();
+
+      if (emailProfileError && emailProfileError.code !== 'PGRST116') {
+        console.error(`[getUserBusinessType] Error getting business profile for email ${userEmail}:`, emailProfileError);
+      }
+
+      if (profileByEmail?.business_type) {
+        console.log(`[getUserBusinessType] Fetched business type '${profileByEmail.business_type}' from business_profiles.email for ${userEmail}.`);
+        return profileByEmail.business_type;
+      }
+    }
     
-    // First, get the tenant_id for the user
+    // Fallback: get the tenant_id for the user
     const { data: userTenant, error: tenantError } = await supabase
       .from('user_tenants')
       .select('tenant_id')

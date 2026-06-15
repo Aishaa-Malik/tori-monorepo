@@ -77,6 +77,7 @@ const ToriEmployeeOnboarding = () => {
   const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [googleMapsLink, setGoogleMapsLink] = useState('');
+  const [rating, setRating] = useState('4.8');
   const [bookingType, setBookingType] = useState('multi');
   
   // Multiple services state
@@ -208,6 +209,7 @@ const ToriEmployeeOnboarding = () => {
           email,
           phoneNumber,
           businessName,
+          rating: Number(rating),
           location,
           googleMapsLink,
           bookingType,
@@ -230,6 +232,7 @@ const ToriEmployeeOnboarding = () => {
       setBusinessName('');
       setLocation('');
       setGoogleMapsLink('');
+      setRating('4.8');
       setBookingType('multi');
       setServices(createPrefilledServices());
       setSelectedDays([...DAYS_OF_WEEK]);
@@ -325,6 +328,19 @@ const ToriEmployeeOnboarding = () => {
                   value={googleMapsLink}
                   onChange={(e) => setGoogleMapsLink(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Rating</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+                  placeholder="4.8"
                 />
               </div>
             </div>
