@@ -40,7 +40,7 @@ interface AuthContextType {
   tenant: Tenant | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   hasPermission: (requiredRoles: UserRole[]) => boolean;
   loginFromSession: (token: string, user: any) => Promise<void>;
@@ -233,7 +233,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // --- Login by email/password ---
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
     try {
       const { signIn, getCurrentSession, getUserRole, getUserTenant } = await import('../services/supabaseService');
@@ -273,6 +273,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('authToken', session.access_token);
       setUser(userData);
       setIsAuthenticated(true);
+      return userData;
     } catch (error) {
       localStorage.removeItem('authToken');
       setUser(null);

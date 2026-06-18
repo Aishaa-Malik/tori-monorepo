@@ -5,7 +5,7 @@ export interface Transaction {
   id: string;
   booking_date: string;
   payment_method: string;
-  total_amount: number;
+  amount: number;
   currency: string;
   status: string;
   created_at: string;

@@ -1,8 +1,12 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
-const TurfEmployeeDashboard: React.FC = () => {
+interface EmployeeDashboardHomeProps {
+  bookingsPath: string;
+}
+
+const EmployeeDashboardHome: React.FC<EmployeeDashboardHomeProps> = ({ bookingsPath }) => {
   const { user, tenant } = useAuth();
 
   return (
@@ -17,7 +21,6 @@ const TurfEmployeeDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Recent Appointments */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Recent Appointments</h3>
           <ul className="divide-y">
@@ -37,25 +40,14 @@ const TurfEmployeeDashboard: React.FC = () => {
           </ul>
         </div>
 
-        {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="space-y-3">
-            <Link to="/healthwellness-dashboard/employee/bookings">
+            <Link to={bookingsPath}>
               <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300">
                 View Appointments
               </button>
             </Link>
-            {/* <Link to="/healthwellness-dashboard/employee/revenue">
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-colors duration-300">
-                View Revenue
-              </button>
-            </Link> */}
-            {/* <Link to="/healthwellness-dashboard/employee/users">
-              <button className="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded transition-colors duration-300">
-                Manage Staff
-              </button>
-            </Link> */}
           </div>
         </div>
       </div>
@@ -63,4 +55,4 @@ const TurfEmployeeDashboard: React.FC = () => {
   );
 };
 
-export default TurfEmployeeDashboard;
+export default EmployeeDashboardHome;

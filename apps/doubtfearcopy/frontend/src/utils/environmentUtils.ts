@@ -42,7 +42,13 @@ export const getRedirectUrl = (path: string): string => {
  * @returns The API URL for the current environment
  */
 export const getApiUrl = (): string => {
-  return isDevelopment() 
-    ? 'http://localhost:5001/api' 
-    : 'https://vercel-backend2-qj8e.vercel.app/api';
+  const envUrl = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '');
+
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  }
+
+  return isDevelopment()
+    ? 'http://localhost:5001/api'
+    : 'https://vercel-backend2-omega.vercel.app/api';
 };

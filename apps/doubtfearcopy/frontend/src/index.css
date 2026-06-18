@@ -1,6 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Tori Garamond Narrow';
+  src: url('../../../tori-website-main/fonts/itc-garamond-std-light-narrow.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tori Garamond Narrow';
+  src: url('../../../tori-website-main/fonts/itc-garamond-std-light-narrow-italic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Resist Sans Display';
+  src: url('../../../tori-website-main/fonts/resist-sans-display-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-tori-garamond {
+  font-family: 'Tori Garamond Narrow', Garamond, Georgia, serif;
+}
+
+.font-resist-sans {
+  font-family: 'Resist Sans Display', Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.tori-google-button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(66, 133, 244, 0.55), rgba(52, 168, 83, 0.45), rgba(251, 188, 5, 0.45), rgba(234, 67, 53, 0.5));
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity 220ms ease;
+}
+
+.tori-google-button:hover::before {
+  opacity: 0.8;
+}
+
+.tori-google-shine {
+  animation: toriGoogleShine 2.8s ease-in-out infinite;
+}
+
+@keyframes toriGoogleShine {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  52%, 100% {
+    transform: translateX(180%) skewX(-18deg);
+  }
+}
+
 /*body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

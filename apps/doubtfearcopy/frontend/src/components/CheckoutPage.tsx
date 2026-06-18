@@ -11,7 +11,7 @@ declare global {
 }
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems, removeFromCart, totaltotal_amount, clearCart } = useCart();
+  const { cartItems, removeFromCart, totalamount, clearCart } = useCart();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -28,7 +28,7 @@ const CheckoutPage: React.FC = () => {
     try {
       // 1. Create Order
       const { data } = await axios.post('http://localhost:5001/api/create-order', {
-        total_amount: totaltotal_amount,
+        amount: totalamount,
         currency: 'INR'
       });
 
@@ -37,7 +37,7 @@ const CheckoutPage: React.FC = () => {
       // 2. Initialize Razorpay
       const options = {
         key: 'rzp_live_S3MicoHBoS9C24', // Live Key ID
-        total_amount: data.order.total_amount,
+        amount: data.order.amount,
         currency: data.order.currency,
         name: 'Tori',
         description: 'Service Booking',
@@ -194,7 +194,7 @@ const CheckoutPage: React.FC = () => {
                  <div className="pt-6 border-t border-gray-100 mt-6 space-y-3">
                    <div className="flex justify-between text-gray-600">
                      <span>Subtotal</span>
-                     <span>₹{totaltotal_amount}</span>
+                     <span>₹{totalamount}</span>
                    </div>
                    <div className="flex justify-between text-gray-600">
                      <span>Taxes & Fees</span>
@@ -202,7 +202,7 @@ const CheckoutPage: React.FC = () => {
                    </div>
                    <div className="flex justify-between text-2xl font-bold text-gray-900 pt-4 border-t border-gray-100 border-dashed">
                      <span>Total</span>
-                     <span>₹{totaltotal_amount}</span>
+                     <span>₹{totalamount}</span>
                    </div>
                  </div>
 

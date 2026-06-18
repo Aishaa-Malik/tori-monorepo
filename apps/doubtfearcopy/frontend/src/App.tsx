@@ -7,13 +7,14 @@ import './App.css';
 // Components
 import Header from './components/Header';
 import LoginPage from './components/LoginPage';
-import DashboardLayout from './components/dashboard/DashboardLayout';
-import DashboardHome from './components/dashboard/DashboardHome';
-import RevenuePage from './components/dashboard/RevenuePage';
+import UnifiedDashboardLayout from './components/common/UnifiedDashboardLayout';
+import UnifiedEmployeeDashboardLayout from './components/common/UnifiedEmployeeDashboardLayout';
+import UnifiedDashboardHome from './components/common/UnifiedDashboardHome';
+import UnifiedRevenuePage from './components/common/UnifiedRevenuePage';
+import UnifiedBookingPage from './components/common/UnifiedBookingPage';
+import UnifiedSettingsPage from './components/common/UnifiedSettingsPage';
+import UnifiedUserManagement from './components/common/UnifiedUserManagement';
 import TenantsManagement from './components/dashboard/TenantsManagement';
-import UserManagement from './components/dashboard/UserManagement';
-import SettingsPage from './components/dashboard/SettingsPage';
-import AppointmentsPage from './components/dashboard/AppointmentsPage';
 import UnifiedSchedulePage from './components/common/UnifiedSchedulePage';
 import OAuthCallback from './components/OAuthCallback';
 import PaymentCallback from './components/PaymentCallback';
@@ -34,16 +35,6 @@ import ToriEmployeeOnboarding from './components/admin/ToriEmployeeOnboarding';
 import ToriEmployeePhysiotherapyOnboarding from './components/admin/ToriEmployeePhysiotherapyOnboarding';
 import ToriEmployeeHealthcareOnboarding from './components/admin/ToriEmployeeHealthcareOnboarding';
 import ToriEmployeeSportsVenueOnboarding from './components/admin/ToriEmployeeSportsVenueOnboarding';
-
-// Turf owner components
-import TurfDashboardLayout from './components/turf/TurfDashboardLayout';
-import TurfDashboardHome from './components/turf/TurfDashboardHome';
-import TurfRevenuePage from './components/turf/TurfRevenuePage';
-import TurfUserManagement from './components/turf/TurfUserManagement';
-import TurfAppointmentsPage from './components/turf/TurfAppointmentsPage';
-import TurfEmployeeDashboard from './components/turf/TurfEmployeeDashboard';
-import TurfEmployeeDashboardLayout from './components/turf/TurfEmployeeDashboardLayout';
-import TurfSettingsPage from './components/turf/TurfSettingsPage';
 
 import PrivacyPolicy from './components/PrivacyPolicy';
 import DeleteAccount from './components/DeleteAccount';
@@ -192,89 +183,76 @@ function App() {
               element={
                 <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER, UserRole.DOCTOR, UserRole.EMPLOYEE]}>
                   <OnboardingCheck>
-                    <DashboardLayout />
+                    <UnifiedDashboardLayout serviceType="doctor" />
                   </OnboardingCheck>
                 </ProtectedRoute>
               }
             >
-              <Route index element={<DashboardHome />} />
-              <Route path="appointments" element={<AppointmentsPage />} />
+              <Route index element={<UnifiedDashboardHome serviceType="doctor" />} />
+              <Route path="appointments" element={<UnifiedBookingPage serviceType="doctor" />} />
               <Route path="schedule" element={<UnifiedSchedulePage serviceType="doctor" />} />
-              <Route path="revenue" element={<RevenuePage />} />
+              <Route path="revenue" element={<UnifiedRevenuePage serviceType="doctor" />} />
               <Route path="tenants" element={<TenantsManagement />} />
-              <Route path="employees" element={<UserManagement />} />
-              <Route path="settings" element={<SettingsPage />} />
+              <Route path="employees" element={<UnifiedUserManagement serviceType="doctor" />} />
+              <Route path="settings" element={<UnifiedSettingsPage serviceType="doctor" />} />
             </Route>
 
             {/* Direct routes for Revenue and User Management */}
             <Route path="/revenue" element={
               <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER, UserRole.DOCTOR]}>
                 <OnboardingCheck>
-                  <DashboardLayout />
+                  <UnifiedDashboardLayout serviceType="doctor" />
                 </OnboardingCheck>
               </ProtectedRoute>
             }>
-              <Route index element={<RevenuePage />} />
+              <Route index element={<UnifiedRevenuePage serviceType="doctor" />} />
             </Route>
             
             <Route path="/employees" element={
               <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER, UserRole.DOCTOR]}>
                 <OnboardingCheck>
-                  <DashboardLayout />
+                  <UnifiedDashboardLayout serviceType="doctor" />
                 </OnboardingCheck>
               </ProtectedRoute>
             }>
-              <Route index element={<UserManagement />} />
-            </Route>
-            
-            {/* Additional route for /users */}
-            <Route path="/employees" element={
-              <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER, UserRole.DOCTOR]}>
-                <OnboardingCheck>
-                  <DashboardLayout />
-                </OnboardingCheck>
-              </ProtectedRoute>
-            }>
-              <Route index element={<UserManagement />} />
+              <Route index element={<UnifiedUserManagement serviceType="doctor" />} />
             </Route>
 
             <Route path="/refund-policy" element={<RefundPolicy />} />
 
-            {/* Turf Owner Dashboard Routes */}
+            {/* Health & Wellness Dashboard Routes (turf, fitness, sports venues, etc.) */}
             <Route
-              path="/healthwellness-dashboard"
+              path="/fitness-sports-dashboard"
               element={
                 <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER]}>
                   <OnboardingCheck>
-                    <TurfDashboardLayout />
+                    <UnifiedDashboardLayout serviceType="turf" />
                   </OnboardingCheck>
                 </ProtectedRoute>
               }
             >
-              <Route index element={<TurfDashboardHome />} />
-              <Route path="revenue" element={<TurfRevenuePage/>} />
-              <Route path="bookings" element={<TurfAppointmentsPage/>} />
+              <Route index element={<UnifiedDashboardHome serviceType="turf" />} />
+              <Route path="revenue" element={<UnifiedRevenuePage serviceType="turf" />} />
+              <Route path="bookings" element={<UnifiedBookingPage serviceType="turf" />} />
               <Route path="schedule" element={<UnifiedSchedulePage serviceType="turf" />} />
-              <Route path="users" element={<TurfUserManagement />} />
-              <Route path="settings" element={<TurfSettingsPage />} />
+              <Route path="users" element={<UnifiedUserManagement serviceType="turf" />} />
+              <Route path="settings" element={<UnifiedSettingsPage serviceType="turf" />} />
             </Route>
             
-            {/* Turf Employee Dashboard Routes */}
+            {/* Health & Wellness Employee Dashboard Routes */}
             <Route
-              path="/healthwellness-dashboard/employee"
+              path="/fitness-sports-dashboard/employee"
               element={
                 <ProtectedRoute requiredRoles={[UserRole.BUSINESS_OWNER, UserRole.EMPLOYEE]}>
                   <OnboardingCheck>
-                    <TurfEmployeeDashboardLayout />
+                    <UnifiedEmployeeDashboardLayout serviceType="turf" />
                   </OnboardingCheck>
                 </ProtectedRoute>
               }
             >
-              <Route index element={<TurfEmployeeDashboard />} />
-              <Route path="bookings" element={<TurfAppointmentsPage/>} />
+              <Route path="bookings" element={<UnifiedBookingPage serviceType="turf" />} />
               <Route path="schedule" element={<UnifiedSchedulePage serviceType="turf" />} />
-              {/* <Route path="revenue" element={<TurfRevenuePage/>} /> */}
-              <Route path="users" element={<TurfUserManagement />} />
+              <Route path="users" element={<UnifiedUserManagement serviceType="turf" />} />
             </Route>
           </Routes>
         </div>

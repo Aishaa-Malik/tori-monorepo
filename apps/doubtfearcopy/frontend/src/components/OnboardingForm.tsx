@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getApiUrl } from '../utils/environmentUtils';
+import { resolveDashboardPath } from '../config/dashboardConfig';
 
 interface TimeSlot {
   start_time: string;
@@ -518,10 +519,10 @@ const OnboardingForm: React.FC = () => {
         throw new Error(errorData.error || 'Failed to save onboarding data');
       }
       
-      // window.location.href = userType === 'Healthcare' 
-      //   ? '/dashboard' 
-      //   : '/SportsVenue-dashboard';
-      window.location.href = '/healthwellness-dashboard' ;
+      const dashboardPath =
+        resolveDashboardPath(resolvedBusinessType ?? undefined, user.email, user.role) ??
+        '/fitness-sports-dashboard';
+      window.location.href = dashboardPath;
         
     } catch (err: any) {
       console.error('Error saving onboarding data:', err);

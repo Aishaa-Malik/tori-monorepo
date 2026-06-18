@@ -22,7 +22,7 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
         };
       case 'turf':
         return {
-          settingsPath: '/healthwellness-dashboard/settings',
+          settingsPath: '/fitness-sports-dashboard/settings',
           title: 'Schedule',
           description: 'View and manage your calendar'
         };

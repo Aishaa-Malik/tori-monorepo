@@ -7,7 +7,7 @@ export interface Payment {
   payment_id: string;
   order_id: string;
   user_id: string;
-  total_amount: number;
+  amount: number;
   status: 'pending' | 'completed' | 'failed';
   payment_date: string;
 }

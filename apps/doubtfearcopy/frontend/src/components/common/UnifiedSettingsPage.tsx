@@ -158,7 +158,7 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
       setConnectSuccess('Google Calendar connected successfully!');
 
       // Clean URL based on service type
-      const basePath = serviceType === 'turf' ? '/healthwellness-dashboard/settings' : '/dashboard/settings';
+      const basePath = serviceType === 'turf' ? '/fitness-sports-dashboard/settings' : '/dashboard/settings';
       window.history.replaceState({}, '', basePath);
     }
 
@@ -173,7 +173,7 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
       setConnectError(errorMessages[error as keyof typeof errorMessages] || 'Failed to connect Google Calendar. Please try again.');
       
       // Clean URL based on service type
-      const basePath = serviceType === 'turf' ? '/healthwellness-dashboard/settings' : '/dashboard/settings';
+      const basePath = serviceType === 'turf' ? '/fitness-sports-dashboard/settings' : '/dashboard/settings';
       window.history.replaceState({}, '', basePath);
     }
   }, [serviceType]);

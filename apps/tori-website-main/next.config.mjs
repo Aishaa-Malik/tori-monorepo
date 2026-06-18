@@ -35,7 +35,7 @@ const nextConfig = {
       { source: '/onboarding', destination: `${DASHBOARD_URL}/onboarding` },
       { source: '/revenue/:path*', destination: `${DASHBOARD_URL}/revenue/:path*` },
       { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },
-      { source: '/healthwellness-dashboard/:path*', destination: `${DASHBOARD_URL}/healthwellness-dashboard/:path*` },
+      { source: '/fitness-sports-dashboard/:path*', destination: `${DASHBOARD_URL}/fitness-sports-dashboard/:path*` },
       { source: '/tori-employee/:path*', destination: `${DASHBOARD_URL}/tori-employee/:path*` },
       
       // 2. Folder Mappings (Assets)

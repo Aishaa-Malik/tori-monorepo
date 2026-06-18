@@ -3,9 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../services/supabaseService';
-
-// Use Vercel backend URL
-const BACKEND_API_URL = 'https://vercel-backend2-qj8e.vercel.app/api';
+import { getApiUrl } from '../utils/environmentUtils';
 
 const PaymentCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -67,7 +65,7 @@ const PaymentCallback: React.FC = () => {
         console.log('Sending payment verification request:', paymentData);
 
         // Call backend API to verify payment
-        const response = await axios.post(`${BACKEND_API_URL}/verify-payment`, paymentData, {
+        const response = await axios.post(`${getApiUrl()}/verify-payment`, paymentData, {
           headers: {
             'Content-Type': 'application/json'
           }

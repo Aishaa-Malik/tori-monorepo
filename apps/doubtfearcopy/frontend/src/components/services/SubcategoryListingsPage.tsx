@@ -43,10 +43,18 @@ const SubcategoryListingsPage: React.FC = () => {
         }));
 
         setListings(mappedListings);
-      } catch (error) {
-        if (!isMounted) return;
-        setLoadError(error instanceof Error ? error.message : 'Unable to load listings right now.');
-      } finally {
+  } catch (error) {
+    if (!isMounted) return;
+
+    const message =
+      error instanceof TypeError
+        ? 'Unable to reach the listings service. Please try again shortly.'
+        : error instanceof Error
+          ? error.message
+          : 'Unable to load listings right now.';
+
+    setLoadError(message);
+  } finally {
         if (isMounted) {
           setIsLoading(false);
         }

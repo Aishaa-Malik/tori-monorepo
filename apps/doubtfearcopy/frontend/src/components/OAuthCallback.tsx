@@ -34,7 +34,7 @@ const OAuthCallback: React.FC = () => {
           setStatus('error');
           setMessage('Authentication failed.');
           setTimeout(() => {
-            const basePath = window.location.href.includes('turf') ? '/healthwellness-dashboard' : '/dashboard';
+            const basePath = window.location.href.includes('turf') ? '/fitness-sports-dashboard' : '/dashboard';
             navigate(`${basePath}?error=oauth_failed`, { replace: true });
           }, 2000);
           return;
@@ -170,7 +170,7 @@ const OAuthCallback: React.FC = () => {
             
             // Redirect after success with delay
             setTimeout(() => {
-              const basePath = window.location.href.includes('turf') ? '/healthwellness-dashboard' : '/dashboard';
+              const basePath = window.location.href.includes('turf') ? '/fitness-sports-dashboard' : '/dashboard';
               navigate(`${basePath}?connected=google_calendar`, { replace: true });
             }, 1500);
             
@@ -188,7 +188,7 @@ const OAuthCallback: React.FC = () => {
             }
             
             setTimeout(() => {
-              const redirectPath = window.location.href.includes('turf') ? '/healthwellness-dashboard' : '/dashboard';
+              const redirectPath = window.location.href.includes('turf') ? '/fitness-sports-dashboard' : '/dashboard';
               navigate(`${redirectPath}?error=calendar_integration_failed`, { replace: true });
             }, 3000);
           }
@@ -208,7 +208,7 @@ const OAuthCallback: React.FC = () => {
         setMessage('An unexpected error occurred during authentication.');
         
         setTimeout(() => {
-          const redirectPath = window.location.href.includes('turf') ? '/healthwellness-dashboard' : '/login';
+          const redirectPath = window.location.href.includes('turf') ? '/fitness-sports-dashboard' : '/login';
           navigate(`${redirectPath}?error=callback_handler_failed`, { replace: true });
         }, 2000);
       }

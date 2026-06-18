@@ -1,9 +1,5 @@
 import axios from 'axios';
-
-// Use local backend for development and testing
-const BACKEND_API_URL = process.env.NODE_ENV === 'development' 
-  ? 'http://localhost:5001/api' 
-  : 'https://vercel-backend2-qj8e.vercel.app/api';
+import { getApiUrl } from '../utils/environmentUtils';
 
 // Function to verify payment and update user role
 export const verifyPaymentAndUpdateRole = async (
@@ -13,7 +9,7 @@ export const verifyPaymentAndUpdateRole = async (
   email: string
 ) => {
   try {
-    const response = await axios.post(`${BACKEND_API_URL}/verify-payment`, {
+    const response = await axios.post(`${getApiUrl()}/verify-payment`, {
       razorpay_payment_id: paymentId,
       razorpay_order_id: orderId,
       razorpay_signature: signature,
