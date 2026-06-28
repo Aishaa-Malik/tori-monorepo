@@ -20,6 +20,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  avatarUrl?: string;
   role: UserRole;
   tenantId?: string;
   businessType?:
@@ -52,6 +53,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+const getGoogleAvatarUrl = (authUser: any): string | undefined =>
+  authUser?.user_metadata?.avatar_url ??
+  authUser?.user_metadata?.picture ??
+  authUser?.identities?.find((identity: any) => identity?.provider === 'google')?.identity_data?.avatar_url ??
+  authUser?.identities?.find((identity: any) => identity?.provider === 'google')?.identity_data?.picture;
 
 // ==================== Invitation/Onboarding Logic ====================
 const handleUserInvitationSetup = async (userId: string, userEmail: string) => {
@@ -254,6 +261,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: userId,
         email: session.user.email ?? email,
         name: session.user.user_metadata?.full_name ?? email.split('@')[0],
+        avatarUrl: getGoogleAvatarUrl(session.user),
         role: role ?? UserRole.EMPLOYEE,
         tenantId: tenantId ?? undefined,
         businessType: businessType // TypeScript will now allow 'Fitness & Gym'
@@ -306,6 +314,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: userId,
         email: userObj.email ?? '',
         name: userObj.user_metadata?.full_name ?? userObj.email?.split('@')[0] ?? 'User',
+        avatarUrl: getGoogleAvatarUrl(userObj),
         role: role ?? UserRole.EMPLOYEE,
         tenantId: tenantId ?? undefined,
         businessType: businessType as any
@@ -369,6 +378,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               id: userId,
               email: session.user.email ?? '',
               name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
+              avatarUrl: getGoogleAvatarUrl(session.user),
               role: role ?? UserRole.EMPLOYEE,
               tenantId: tenantId ?? undefined,
               businessType: businessType as any

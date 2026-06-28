@@ -27,6 +27,7 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
     dateRange: ''
   });
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('daily');
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [customDateRange, setCustomDateRange] = useState<CustomDateRange>({
     startDate: '',
     endDate: ''
@@ -298,7 +299,18 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
     if (filter !== 'custom') {
       setCustomDateRange({ startDate: '', endDate: '' });
     }
+    setFilterMenuOpen(false);
   };
+
+  const filterOptions: Array<{ value: FilterType; label: string }> = [
+    { value: 'daily', label: 'Daily' },
+    { value: 'weekly', label: 'Weekly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'custom', label: 'Custom' },
+  ];
+
+  const selectedFilterLabel =
+    filterOptions.find((filter) => filter.value === selectedFilter)?.label || 'Daily';
 
   if (isLoading) {
     return (
@@ -312,21 +324,23 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="font-tori-garamond container mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">{config.displayName}</h1>
-          <p className="text-gray-600">Track revenue and financial metrics for {tenant?.name || 'your organization'}</p>
+          <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.displayName}</h1>
+          <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">Track booking revenue and venue performance for {tenant?.name || 'your sports venue'}</p>
         </div>
         <div className="mt-4 md:mt-0">
           <button 
             onClick={() => fetchRevenueData()}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors flex items-center"
+            className="tori-unstyled-button inline-flex items-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 text-xl font-light text-white transition hover:bg-white/[0.11]"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
+            </span>
             Refresh
           </button>
         </div>
@@ -345,50 +359,60 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
       )}
 
       {/* Date Filter Controls */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          <div className="flex-1">
-            <label className="text-sm font-medium text-gray-700 mb-3 block">Filter by Period</label>
-            <div className="flex flex-wrap gap-3">
-              {(['daily', 'weekly', 'monthly', 'custom'] as FilterType[]).map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => handleFilterChange(filter)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    selectedFilter === filter
-                      ? 'bg-blue-500 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                  {filter === 'daily' && ' (Today)'}
-                  {filter === 'weekly' && ' (7 Days)'}
-                  {filter === 'monthly' && ' (30 Days)'}
-                </button>
-              ))}
-            </div>
+      <div className="mb-6 rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-2xl">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setFilterMenuOpen((open) => !open)}
+              className="tori-unstyled-button flex h-11 min-w-[10rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-5 pr-4 text-2xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1]"
+            >
+              <span>{selectedFilterLabel}</span>
+              <svg className={`ml-4 h-4 w-4 text-blue-100/75 transition ${filterMenuOpen ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6 8 10l4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {filterMenuOpen && (
+              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/90 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+                {filterOptions.map((filter) => (
+                  <button
+                    key={filter.value}
+                    type="button"
+                    onClick={() => handleFilterChange(filter.value)}
+                    className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                      selectedFilter === filter.value
+                        ? 'bg-[#9ed3ff]/16 text-white'
+                        : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
+                    }`}
+                  >
+                    {filter.label}
+                    {selectedFilter === filter.value && <span className="h-1.5 w-1.5 rounded-full bg-[#bfe4ff]" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           
           {/* Custom Date Range Inputs */}
           {selectedFilter === 'custom' && (
             <div className="flex flex-col sm:flex-row gap-3 items-end">
               <div>
-                <label className="text-sm font-medium text-gray-700 block mb-1">Start Date</label>
+                <label className="mb-1 block text-xl font-light text-blue-100/60">Start Date</label>
                 <input
                   type="date"
                   value={customDateRange.startDate}
                   onChange={(e) => handleCustomDateChange('startDate', e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-sm text-white focus:border-[#9ed3ff]/45 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 block mb-1">End Date</label>
+                <label className="mb-1 block text-xl font-light text-blue-100/60">End Date</label>
                 <input
                   type="date"
                   value={customDateRange.endDate}
                   onChange={(e) => handleCustomDateChange('endDate', e.target.value)}
                   min={customDateRange.startDate}
-                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-sm text-white focus:border-[#9ed3ff]/45 focus:outline-none"
                 />
               </div>
             </div>
@@ -397,55 +421,44 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
       </div>
 
       {/* Revenue Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-3 md:grid-cols-3">
         {/* Total Revenue for Selected Period */}
-        <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
-          <div className="flex items-center justify-between">
+        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#dbeafe]/95 to-[#9ec7ff]/80 p-4 text-[#07111f] shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
+          <div className="relative flex w-full flex-col">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue - {metrics.period}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {formatCurrency(metrics.revenue)}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                From {metrics.count} {config.entityNamePlural}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                {metrics.dateRange}
+              <p className="text-2xl font-light normal-case opacity-72">Total Revenue</p>
+              <p className="mt-1 text-lg font-light opacity-58">
+                {metrics.period} · {metrics.count} {config.entityNamePlural}
               </p>
             </div>
-            <div className="flex items-center text-green-600">
-              <svg className="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
+            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
+              {formatCurrency(metrics.revenue)}
+            </p>
           </div>
         </div>
 
         {/* Average per appointment/booking */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div>
-            <p className="text-sm font-medium text-gray-600">Average per {config.entityName}</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">
+        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#111827]/95 to-[#17233a]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
+          <div className="relative flex w-full flex-col">
+            <p className="text-2xl font-light normal-case text-blue-100/72">Average per {config.entityName}</p>
+            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
               {metrics.count > 0 
                 ? formatCurrency(Math.round(metrics.revenue / metrics.count))
                 : formatCurrency(0)
               }
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              {selectedFilter} average
-            </p>
           </div>
         </div>
 
         {/* Transaction Count */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div>
-            <p className="text-sm font-medium text-gray-600">Total Transactions</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">
+        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
+          <div className="relative flex w-full flex-col">
+            <p className="text-2xl font-light normal-case text-blue-100/72">Total Transactions</p>
+            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
               {metrics.count}
-            </p>
-            <p className="text-sm text-gray-500 mt-1">
-              {metrics.period}
             </p>
           </div>
         </div>

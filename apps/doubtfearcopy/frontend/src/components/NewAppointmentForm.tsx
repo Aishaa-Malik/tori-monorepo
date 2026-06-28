@@ -40,8 +40,12 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
 
   // Safe role checking that works with any UserRole type
   const userRoleString = (user?.role ?? '').toString().toLowerCase();
-  const isDoctor = ['doctor'].includes(userRoleString);
-  const isTurfUser = ['turf'].includes(userRoleString);
+  const businessType = (user?.businessType ?? '').toString().toLowerCase();
+  const isDoctor = businessType.includes('doctor') || businessType.includes('health');
+  const isTurfUser = !isDoctor || ['turf'].includes(userRoleString);
+  const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-[0.08em] text-blue-100/58';
+  const inputClass =
+    'w-full rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3 text-sm text-white outline-none shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] transition placeholder:text-blue-100/30 focus:border-blue-200/35 focus:bg-white/[0.1]';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -153,13 +157,17 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">New Appointment</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#02060d]/72 p-4 backdrop-blur-xl">
+      <div className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[2rem] border border-white/16 bg-[linear-gradient(145deg,rgba(25,39,61,0.86),rgba(5,10,18,0.94))] p-6 text-white shadow-[0_30px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.14)]">
+        <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_20%_0%,rgba(220,238,255,0.18),transparent_18rem),linear-gradient(120deg,rgba(255,255,255,0.08),transparent_34%,rgba(255,255,255,0.035))]" />
+        <div className="relative flex justify-between items-start mb-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-blue-100/45">Manual booking</p>
+            <h2 className="font-tori-garamond text-4xl font-light leading-none">Add venue slot</h2>
+          </div>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="tori-unstyled-button flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-blue-100/65 transition hover:bg-white/12 hover:text-white"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -168,14 +176,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 mb-4">
+          <div className="relative mb-4 rounded-2xl border border-red-300/20 bg-red-500/12 p-3 text-sm text-red-100">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="relative">
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+            <label className={labelClass} htmlFor="name">
               {isDoctor ? 'Patient Name *' : 'Customer Name *'}
             </label>
             <input
@@ -185,12 +193,12 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
               value={formData.name}
               onChange={handleChange}
               required
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className={inputClass}
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label className={labelClass} htmlFor="email">
               {isDoctor ? 'Patient Email *' : 'Customer Email *'}
             </label>
             <input
@@ -200,12 +208,12 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
               value={formData.email}
               onChange={handleChange}
               required
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className={inputClass}
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
+            <label className={labelClass} htmlFor="phone">
               {isDoctor ? 'Patient Contact' : 'Customer Contact'}
             </label>
             <input
@@ -214,13 +222,13 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
               type="tel"
               value={formData.phone}
               onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className={inputClass}
             />
           </div>
 
           {isDoctor && (
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="doctor">
+              <label className={labelClass} htmlFor="doctor">
                 Doctor Name *
               </label>
               <input
@@ -230,14 +238,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
                 value={formData.doctor}
                 onChange={handleChange}
                 required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className={inputClass}
               />
             </div>
           )}
 
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
+              <label className={labelClass} htmlFor="date">
                 Date *
               </label>
               <input
@@ -247,11 +255,11 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
                 value={formData.date}
                 onChange={handleChange}
                 required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="time">
+              <label className={labelClass} htmlFor="time">
                 Time *
               </label>
               <input
@@ -261,13 +269,13 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
                 value={formData.time}
                 onChange={handleChange}
                 required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className={inputClass}
               />
             </div>
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="paymentId">
+            <label className={labelClass} htmlFor="paymentId">
               Payment ID
             </label>
             <input
@@ -276,14 +284,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
               type="text"
               value={formData.paymentId}
               onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className={inputClass}
             />
           </div>
 
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
-                amount
+              <label className={labelClass} htmlFor="amount">
+                Amount
               </label>
               <input
                 id="amount"
@@ -291,11 +299,11 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
                 type="number"
                 value={formData.amount}
                 onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="paymentMethod">
+              <label className={labelClass} htmlFor="paymentMethod">
                 Payment Method
               </label>
               <input
@@ -304,26 +312,26 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
                 type="text"
                 value={formData.paymentMethod}
                 onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className={inputClass}
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end mt-6">
+          <div className="flex items-center justify-end gap-2 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+              className="tori-btn-secondary tori-btn-compact"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="tori-btn-primary tori-btn-compact"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Creating...' : 'Create Appointment'}
+              {isSubmitting ? 'Creating...' : 'Create Booking'}
             </button>
           </div>
         </form>

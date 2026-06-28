@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, UserRole } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseService';
-import { UserData, UserProfile, ApprovedUser, UserManagementProps } from '../../types/userManagement.types';
+import { UserData, UserManagementProps } from '../../types/userManagement.types';
 import { getServiceConfig } from '../../config/userManagementConfig';
 
 const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, config }) => {
@@ -12,6 +12,7 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
   const [users, setUsers] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [removeTarget, setRemoveTarget] = useState<UserData | null>(null);
 
   const { tenant, user } = useAuth();
   const serviceConfig = { ...getServiceConfig(serviceType), ...config };
@@ -234,16 +235,7 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
     }
   };
 
-  const handleDelete = async (userId: string) => {
-    const targetUser = users.find(u => u.id === userId);
-    if (!targetUser) return;
-
-    const confirmMessage = targetUser.status === 'pending' 
-      ? 'Are you sure you want to cancel this invitation?' 
-      : 'Are you sure you want to remove this user?';
-      
-    if (!window.confirm(confirmMessage)) return;
-
+  const handleDelete = async (targetUser: UserData) => {
     try {
       if (targetUser.status === 'pending') {
         // Delete from the appropriate approved_users table for pending invitations
@@ -260,13 +252,14 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
         const { error: tenantError } = await supabase
           .from('user_tenants')  
           .delete()
-          .eq('user_id', userId);
+          .eq('user_id', targetUser.id);
 
         if (tenantError) throw tenantError;
       }
 
       // Update local state
-      setUsers(users.filter(user => user.id !== userId));
+      setUsers(users.filter(user => user.id !== targetUser.id));
+      setRemoveTarget(null);
     } catch (err) {
       console.error('Error deleting user:', err);
       setError(targetUser.status === 'pending' ? 'Failed to cancel invitation' : 'Failed to delete user');
@@ -281,7 +274,7 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
   const getRoleDisplayName = (role: UserRole) => {
     switch (role) {
       case UserRole.DOCTOR:
-        return 'Doctor';
+        return 'Coach';
       case UserRole.BUSINESS_OWNER:
         return 'Business Owner';
       case UserRole.EMPLOYEE:
@@ -296,129 +289,141 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
   };
 
   return (
-    <div>
+    <div className="space-y-4 px-1 py-4 sm:px-2 lg:px-3">
       {/* Header section */}
-      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-5">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">{serviceConfig.title}</h2>
+          <h2 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">
+            {serviceConfig.title}
+          </h2>
           {serviceConfig.description && (
-            <p className="text-gray-600">{serviceConfig.description}</p>
+            <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">
+              {serviceConfig.description}
+            </p>
           )}
         </div>
-        <button
-          onClick={() => setShowInviteModal(true)}
-          className="mt-4 md:mt-0 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          Invite User
-        </button>
       </div>
 
       {/* Error message */}
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-md p-4">
+        <div className="rounded-2xl border border-red-300/20 bg-red-500/10 p-4 text-red-100">
           {error}
         </div>
       )}
 
       {/* Loading state */}
       {isLoading && (
-        <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-4">
+        <div className="rounded-2xl border border-[#b9ddff]/18 bg-[#9ed3ff]/10 p-4 text-blue-100/80">
           Loading users...
         </div>
       )}
 
       {/* Search and filters */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex-1">
-            <input
-              type="search"
-              placeholder="Search users by name or email"
-              className="w-full px-4 py-2 border rounded-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
+      <div className="flex flex-col gap-3 rounded-[1.2rem] border border-white/10 bg-[#030812]/68 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-xl md:flex-row md:items-center">
+        <input
+          type="search"
+          placeholder="Search users by name or email"
+          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-2.5 text-sm text-white placeholder:text-blue-100/38 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 md:w-[40%]"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button
+          onClick={() => setShowInviteModal(true)}
+          className="tori-unstyled-button inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] py-2 pl-2 pr-4 text-sm font-semibold normal-case text-white transition hover:bg-white/[0.1] md:ml-auto"
+        >
+          <span className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+            </svg>
+          </span>
+          Invite User
+        </button>
       </div>
 
       {/* Users table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-[#030812]/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+        <table className="min-w-full table-fixed divide-y divide-white/8">
+          <colgroup>
+            <col className="w-[36%]" />
+            <col className="w-[18%]" />
+            <col className="w-[16%]" />
+            <col className="w-[18%]" />
+            <col className="w-[12%]" />
+          </colgroup>
+          <thead className="bg-white/[0.035]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Added</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">User</th>
+              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Role</th>
+              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Status</th>
+              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Date Added</th>
+              <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-white/8">
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={5} className="px-6 py-8 text-center text-blue-100/50">
                   {isLoading ? 'Loading users...' : 'No users found'}
                 </td>
               </tr>
             ) : (
               filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td className="px-6 py-4">
+                <tr key={user.id} className="transition hover:bg-white/[0.025]">
+                  <td className="px-6 py-5 align-middle">
                     <div className="flex items-center">
-                      <div className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${
-                        user.status === 'active' ? 'bg-blue-100' : 'bg-yellow-100'
+                      <div className={`flex-shrink-0 h-11 w-11 rounded-full flex items-center justify-center ${
+                        user.status === 'active' ? 'bg-[#d8ecff]' : 'bg-[#f3efe8]'
                       }`}>
                         <span className={`font-medium ${
-                          user.status === 'active' ? 'text-blue-800' : 'text-yellow-800'
+                          user.status === 'active' ? 'text-[#2d4c74]' : 'text-[#3a332a]'
                         }`}>
                           {(user.full_name || user.email).charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                      <div className="ml-4 min-w-0 text-left">
+                        <div className="truncate text-base font-semibold text-white">
                           {user.full_name || user.email.split('@')[0]}
                         </div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="mt-1 truncate text-sm text-blue-100/34">{user.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center align-middle">
                     {user.status === 'active' ? (
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
-                        className="border rounded-md py-1 px-2"
+                        className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-sm text-white focus:border-[#9ed3ff]/45 focus:outline-none"
                       >
                         {serviceConfig.availableRoles.map(role => (
                           <option key={role} value={role}>{getRoleDisplayName(role)}</option>
                         ))}
                       </select>
                     ) : (
-                      <span className="text-sm text-gray-600">{getRoleDisplayName(user.role)}</span>
+                      <span className="text-sm text-blue-100/58">{getRoleDisplayName(user.role)}</span>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center align-middle">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       user.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-emerald-300/14 text-emerald-100' 
+                        : 'bg-[#f3efe8]/12 text-[#f3efe8]'
                     }`}>
                       {user.status === 'active' ? 'Active' : 'Pending Invitation'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-center align-middle text-sm text-blue-100/52">
                     {user.status === 'pending' ? user.invitation_date : user.created_at}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium">
+                  <td className="px-6 py-4 text-right align-middle text-sm font-medium">
                     <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-red-600 hover:text-red-900"
+                      onClick={() => setRemoveTarget(user)}
+                      className="tori-unstyled-button inline-flex h-9 w-9 items-center justify-center rounded-full border border-red-200/16 bg-red-400/8 text-red-100/80 transition hover:bg-red-400/14 hover:text-white"
+                      aria-label={`${user.status === 'pending' ? 'Cancel invitation for' : 'Remove'} ${user.full_name || user.email}`}
                     >
-                      {user.status === 'pending' ? 'Cancel' : 'Remove'}
+                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M4.25 4.25 11.75 11.75M11.75 4.25 4.25 11.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
                     </button>
                   </td>
                 </tr>
@@ -430,12 +435,13 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium mb-4">Invite New User</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-6 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <h3 className="font-tori-garamond text-4xl font-light">Invite User</h3>
+            <p className="mt-1 text-sm text-blue-100/55">Add a team member to your sports venue dashboard.</p>
             <form onSubmit={handleInviteSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="mt-5">
+                <label className="mb-2 block text-sm font-medium text-blue-100/70">
                   Email Address
                 </label>
                 <input
@@ -443,29 +449,29 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
                   required
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.065] px-4 py-3 text-sm text-white placeholder:text-blue-100/38 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18"
                   placeholder="user@example.com"
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-blue-100/70">
                   Role
                 </label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as UserRole)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.065] px-4 py-3 text-sm text-white focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18"
                 >
                   {serviceConfig.availableRoles.map(role => (
                     <option key={role} value={role}>{getRoleDisplayName(role)}</option>
                   ))}
                 </select>
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="mt-6 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowInviteModal(false)}
-                  className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
+                  className="tori-unstyled-button rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-blue-100/80 transition hover:bg-white/[0.08] hover:text-white"
                   disabled={isLoading}
                 >
                   Cancel
@@ -473,12 +479,43 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+                  className="tori-unstyled-button rounded-full bg-[#f3efe8] px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-white disabled:opacity-50"
                 >
                   {isLoading ? 'Sending...' : 'Send Invitation'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {removeTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <h3 className="text-lg font-semibold">
+              {removeTarget.status === 'pending' ? 'Cancel invitation?' : 'Remove user?'}
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-blue-100/62">
+              Are you sure you want to {removeTarget.status === 'pending' ? 'cancel the invitation for' : 'remove'}{' '}
+              <span className="font-semibold text-white">{removeTarget.full_name || removeTarget.email}</span>
+              {removeTarget.status === 'active' ? ' from this venue?' : '?'}
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setRemoveTarget(null)}
+                className="tori-unstyled-button flex-1 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-blue-100/80 transition hover:bg-white/[0.08] hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDelete(removeTarget)}
+                className="tori-unstyled-button flex-1 rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-900 transition hover:bg-white"
+              >
+                {removeTarget.status === 'pending' ? 'Cancel Invite' : 'Remove'}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -123,8 +123,8 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{config.title}</h1>
-          <p className="text-gray-600 dark:text-gray-400">{config.description}</p>
+          <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.title}</h1>
+          <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">{config.description}</p>
         </div>
       </div>
 

@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseService';
 import NewAppointmentForm from '../NewAppointmentForm';
 
-// Data Interfaces
 interface Transaction {
-  patient: string;
+  customer: string;
   timestamp: string;
   amount: number;
 }
 
-interface Appointment {
-  patient: string;
+interface Booking {
+  customer: string;
   time: string;
   status: string;
 }
@@ -20,486 +20,496 @@ interface DashboardProps {
   serviceType: 'doctor' | 'turf';
 }
 
+type DashboardFilter = 'today' | 'past' | 'upcoming' | 'custom';
+
+const dashboardFilterOptions: Array<{ value: DashboardFilter; label: string }> = [
+  { value: 'today', label: 'Today' },
+  { value: 'past', label: 'Past' },
+  { value: 'upcoming', label: 'Upcoming' },
+  { value: 'custom', label: 'Custom' },
+];
+
+const formatDate = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+const formatBookingTime = (bookingDate: string, startTime?: string | null) => {
+  const date = new Date(bookingDate);
+  const dateLabel =
+    date.toDateString() === new Date().toDateString()
+      ? 'Today'
+      : date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+
+  if (!startTime) return dateLabel;
+
+  const [rawHours, minutes = '00'] = startTime.split(':');
+  const hours = Number(rawHours);
+
+  if (Number.isNaN(hours)) {
+    return `${dateLabel}, ${startTime}`;
+  }
+
+  const displayHours = hours % 12 || 12;
+  const meridiem = hours >= 12 ? 'PM' : 'AM';
+
+  return `${dateLabel}, ${displayHours}:${minutes} ${meridiem}`;
+};
+
+const getDateInputValue = (date: Date) => date.toISOString().split('T')[0];
+
+const getDateFilter = (filter: DashboardFilter, customStart: string, customEnd: string) => {
+  const today = new Date();
+  const todayValue = getDateInputValue(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  if (filter === 'today') {
+    return { from: todayValue, to: todayValue, label: 'Today' };
+  }
+
+  if (filter === 'past') {
+    return { to: getDateInputValue(yesterday), label: 'Past' };
+  }
+
+  if (filter === 'upcoming') {
+    return { from: todayValue, label: 'Upcoming' };
+  }
+
+  return {
+    from: customStart || todayValue,
+    to: customEnd || customStart || todayValue,
+    label: 'Custom',
+  };
+};
+
+const applyBookingDateFilter = <T,>(query: T, from?: string, to?: string): T => {
+  let nextQuery: any = query;
+
+  if (from) {
+    nextQuery = nextQuery.gte('booking_date', from);
+  }
+
+  if (to) {
+    nextQuery = nextQuery.lte('booking_date', to);
+  }
+
+  return nextQuery as T;
+};
+
+const DashboardCard: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className = '' }) => (
+  <div className={`tori-dashboard-card rounded-[1.35rem] ${className}`}>{children}</div>
+);
+
 const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
   const { user, tenant } = useAuth();
-
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalAppointments, setTotalAppointments] = useState(0);
-  const [todayAppointments, setTodayAppointments] = useState(0);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [todayBookings, setTodayBookings] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [transactionsLoading, setTransactionsLoading] = useState(true);
-  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
   const [showNewAppointmentForm, setShowNewAppointmentForm] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>('today');
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [customStart, setCustomStart] = useState(getDateInputValue(new Date()));
+  const [customEnd, setCustomEnd] = useState(getDateInputValue(new Date()));
 
-  // Get service-specific configuration
-  const getServiceConfig = () => {
-    switch (serviceType) {
-      case 'doctor':
-        return {
-          welcomeMessage: 'Welcome back,',
-          bookingLabel: 'Bookings',
-          staffLabel: 'Staff',
-          showNewAppointmentButton: true,
-          defaultStaffCount: 3
-        };
-      case 'turf':
-        return {
-          welcomeMessage: 'Welcome back',
-          bookingLabel: 'Bookings',
-          staffLabel: 'Staff',
-          showNewAppointmentButton: true,
-          defaultStaffCount: 2
-        };
-      default:
-        return {
-          welcomeMessage: 'Welcome back,',
-          bookingLabel: 'Bookings',
-          staffLabel: 'Staff',
-          showNewAppointmentButton: false,
-          defaultStaffCount: 0
-        };
-    }
-  };
-
-  const config = getServiceConfig();
+  const defaultStaffCount = serviceType === 'turf' ? 2 : 3;
+  const venueName = tenant?.name || user?.name || 'your venue';
+  const dateFilter = getDateFilter(selectedFilter, customStart, customEnd);
+  const dashboardBasePath = serviceType === 'turf' ? '/fitness-sports-dashboard' : '/dashboard';
+  const selectedFilterLabel =
+    dashboardFilterOptions.find((filter) => filter.value === selectedFilter)?.label || 'Today';
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      if (!user?.tenantId || !user?.id) return;
+      if (!user?.tenantId) return;
+
       try {
         setIsLoading(true);
-        const today = new Date().toISOString().split('T')[0];
 
-        // Fetch total appointments
-        const { count: totalCount, error: totalError } = await supabase
+        const totalQuery = supabase
           .from('appointments')
           .select('*', { count: 'exact', head: true })
           .eq('tenant_id', user.tenantId);
+        const { count: totalCount, error: totalError } = await applyBookingDateFilter(
+          totalQuery,
+          dateFilter.from,
+          dateFilter.to
+        );
         if (totalError) throw totalError;
-        
-        setTotalAppointments(totalCount || 0);
 
-        // Fetch today's appointments (for turf dashboard)
-        const { count: todayCount, error: todayError } = await supabase
-          .from('appointments')
-          .select('*', { count: 'exact', head: true })
-          .eq('tenant_id', user.tenantId)
-          .eq('booking_date', today);
-        if (todayError) throw todayError;
-        
-        setTodayAppointments(todayCount || 0);
-
-        // Fetch total revenue
-        const { data: revenueData, error: revenueError } = await supabase
+        const revenueQuery = supabase
           .from('appointments')
           .select('amount')
           .eq('tenant_id', user.tenantId);
+        const { data: revenueData, error: revenueError } = await applyBookingDateFilter(
+          revenueQuery,
+          dateFilter.from,
+          dateFilter.to
+        );
         if (revenueError) throw revenueError;
-        
-        const revenue = revenueData?.reduce((sum, appointment) => {
-          return sum + (appointment.amount || 0);
-        }, 0) || 0;
-        
-        setTotalRevenue(revenue);
 
-        // Fetch staff count for tenant (doctors + employees)
         const { count: staffCountResult, error: staffError } = await supabase
           .from('approved_users')
           .select('*', { count: 'exact', head: true })
           .eq('tenant_id', user.tenantId)
           .in('role', ['DOCTOR', 'EMPLOYEE']);
         if (staffError) throw staffError;
-        setStaffCount(staffCountResult || config.defaultStaffCount);
 
+        const revenue =
+          revenueData?.reduce((sum, appointment) => sum + (appointment.amount || 0), 0) || 0;
+
+        setTotalBookings(totalCount || 0);
+        setTodayBookings(totalCount || 0);
+        setTotalRevenue(revenue);
+        setStaffCount(staffCountResult || defaultStaffCount);
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error('Error fetching venue dashboard data:', error);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchDashboardData();
-  }, [user?.tenantId, user?.id, config.defaultStaffCount]);
-  
-  // Fetch recent transactions
+  }, [user?.tenantId, defaultStaffCount, dateFilter.from, dateFilter.to]);
+
   useEffect(() => {
     const fetchRecentTransactions = async () => {
       if (!user?.tenantId) return;
-      
+
       try {
         setTransactionsLoading(true);
-        
-        const { data, error } = await supabase
+
+        const transactionQuery = supabase
           .from('appointments')
-          .select('id, customer_name, booking_date, amount, status')
+          .select('customer_name, booking_date, amount')
           .eq('tenant_id', user.tenantId)
           .not('amount', 'is', null)
           .order('booking_date', { ascending: false })
-          .limit(3);
-        
+          .limit(4);
+        const { data, error } = await applyBookingDateFilter(
+          transactionQuery,
+          dateFilter.from,
+          dateFilter.to
+        );
+
         if (error) throw error;
-        
-        // Format the data for display
-        const formattedTransactions = data?.map(item => {
-          // Convert UTC date to IST for display
-          const date = new Date(item.booking_date);
-          const istOffset = 5.5 * 60 * 60 * 1000;
-          const istDate = new Date(date.getTime() + istOffset);
-          
-          const formattedDate = istDate.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          });
-          
-          return {
-            patient: item.customer_name,
-            timestamp: formattedDate,
-            amount: item.amount || 0
-          };
-        }) || [];
-        
-        setTransactions(formattedTransactions);
-      } catch (err: any) {
-        console.error('Error fetching recent transactions:', err);
+
+        setTransactions(
+          data?.map((item) => ({
+            customer: item.customer_name || 'Guest player',
+            timestamp: formatDate(item.booking_date),
+            amount: item.amount || 0,
+          })) || []
+        );
+      } catch (error) {
+        console.error('Error fetching venue transactions:', error);
       } finally {
         setTransactionsLoading(false);
       }
     };
-    
+
     fetchRecentTransactions();
-  }, [user?.tenantId]);
-  
-  // Fetch upcoming appointments
-  useEffect(() => {
-    const fetchUpcomingAppointments = async () => {
-      if (!user?.tenantId) return;
-      
-      try {
-        setAppointmentsLoading(true);
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        const { data, error } = await supabase
-          .from('appointments')
-          .select('id, customer_name, booking_date, start_time, status')
-          .eq('tenant_id', user.tenantId)
-          .gte('booking_date', today.toISOString().split('T')[0])
-          .eq('status', 'Scheduled')
-          .order('booking_date', { ascending: true })
-          .order('start_time', { ascending: true })
-          .limit(3);
-        
-        if (error) throw error;
-        
-        // Format the data for display
-        const formattedAppointments = data?.map(item => {
-          // Check if the appointment is today
-          const appointmentDate = new Date(item.booking_date);
-          const isToday = appointmentDate.toDateString() === today.toDateString();
-          
-          // Format the time (assuming start_time is in HH:MM format)
-          const timeParts = item.start_time.split(':');
-          const hours = parseInt(timeParts[0]);
-          const minutes = timeParts[1];
-          const ampm = hours >= 12 ? 'PM' : 'AM';
-          const formattedHours = hours % 12 || 12;
-          const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
-          
-          // Format the date display
-          const dateDisplay = isToday ? 'Today' : appointmentDate.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          });
-          
-          return {
-            patient: item.customer_name,
-            time: `${dateDisplay}, ${formattedTime}`,
-            status: 'Confirmed'
-          };
-        }) || [];
-        
-        setAppointments(formattedAppointments);
-      } catch (err: any) {
-        console.error('Error fetching upcoming appointments:', err);
-      } finally {
-        setAppointmentsLoading(false);
-      }
-    };
-    
-    fetchUpcomingAppointments();
-  }, [user?.tenantId]);
+  }, [user?.tenantId, dateFilter.from, dateFilter.to]);
 
-  const refreshAppointments = async () => {
+  const fetchUpcomingBookings = async () => {
     if (!user?.tenantId) return;
-    
+
     try {
-      setAppointmentsLoading(true);
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const { data, error } = await supabase
+      setBookingsLoading(true);
+
+      const bookingsQuery = supabase
         .from('appointments')
-        .select('id, customer_name, booking_date, start_time, status')
+        .select('customer_name, booking_date, start_time, status')
         .eq('tenant_id', user.tenantId)
-        .gte('booking_date', today.toISOString().split('T')[0])
-        .eq('status', 'Scheduled')
-        .order('booking_date', { ascending: true })
+        .order('booking_date', { ascending: selectedFilter !== 'past' })
         .order('start_time', { ascending: true })
-        .limit(3);
-      
-      if (error) throw error;
-      
-      // Format the data for display
-      const formattedAppointments = data?.map(item => {
-        // Check if the appointment is today
-        const appointmentDate = new Date(item.booking_date);
-        const isToday = appointmentDate.toDateString() === today.toDateString();
-        
-        // Format the time (assuming start_time is in HH:MM format)
-        const timeParts = item.start_time.split(':');
-        const hours = parseInt(timeParts[0]);
-        const minutes = timeParts[1];
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const formattedHours = hours % 12 || 12;
-        const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
-        
-        // Format the date display
-        const dateDisplay = isToday ? 'Today' : appointmentDate.toLocaleDateString('en-IN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-        
-        return {
-          patient: item.customer_name,
-          time: `${dateDisplay}, ${formattedTime}`,
-          status: 'Confirmed'
-        };
-      }) || [];
-      
-      setAppointments(formattedAppointments);
-    } catch (err: any) {
-      console.error('Error fetching upcoming appointments:', err);
-    } finally {
-      setAppointmentsLoading(false);
-    }
-  };
-
-  // Render different layouts based on service type
-  const renderDashboard = () => {
-    if (serviceType === 'turf') {
-      return (
-        <div className="h-full w-full p-0 pt-0 flex flex-col items-center justify-start overflow-auto">
-          <div className="w-full max-w-5xl mx-auto flex justify-between items-center mb-2 px-0 pt-2">
-            <div className="flex flex-col items-start">
-              <div className="text-1xl text-gray-300 opacity-70 pl-0 text-left">{config.welcomeMessage}</div>
-              <div className="flex items-center">
-                <h1 className="text-6xl font-bold text-white">{user?.name || 'Aisha'}</h1>
-                <span className="text-5xl ml-2">👋🏻</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="bg-black bg-opacity-70 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm">
-                Home
-              </div>
-              <div className="bg-black bg-opacity-70 backdrop-blur-md rounded-full px-4 py-2 text-white text-sm">
-                Page 1
-              </div>
-            </div>
-          </div>
-          
-          <div className="w-full max-w-6xl mx-auto rounded-2xl p-0 pt-3 overflow-auto">
-            <div className="grid grid-cols-12 gap-3 w-full">
-              {renderStatsCards()}
-            </div>
-          </div>
-        </div>
+        .limit(4);
+      const { data, error } = await applyBookingDateFilter(
+        bookingsQuery,
+        dateFilter.from,
+        dateFilter.to
       );
-    }
 
-    // Doctor dashboard layout
-    return (
-      <div className="grid grid-cols-12 gap-3 max-w-6xl mx-auto w-full">
-        {/* Welcome Message */}
-        <div className="col-span-12 mb-4">
-          <div className="flex items-center">
-            <h1 className="text-3xl font-bold text-white">{config.welcomeMessage}</h1>
-            <h1 className="text-3xl font-bold text-white ml-2">{user?.name || 'Aisha'}</h1>
-            <span className="text-3xl ml-2">👋🏻</span>
-          </div>
-        </div>
-        {renderStatsCards()}
-      </div>
-    );
+      if (error) throw error;
+
+      setBookings(
+        data?.map((item) => ({
+          customer: item.customer_name || 'Guest player',
+          time: formatBookingTime(item.booking_date, item.start_time),
+          status: item.status || 'Confirmed',
+        })) || []
+      );
+    } catch (error) {
+      console.error('Error fetching upcoming venue bookings:', error);
+    } finally {
+      setBookingsLoading(false);
+    }
   };
 
-  const renderStatsCards = () => {
-    return (
-      <>
-        {/* STATS CARDS */}
-        <div className="col-span-12 sm:col-span-6 md:col-span-3 h-40 bg-white bg-opacity-60 backdrop-blur-md rounded-xl p-4 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-lg font-medium text-black">Revenue</div>
-            <div className="bg-white bg-opacity-10 px-2 py-1 rounded-full text-xs text-gray-300">Total earnings</div>
-          </div>
-          <div className="mt-auto mb-2 self-start">
-            <div className="text-6xl font-bold text-black">
-              {isLoading ? <div className="animate-pulse h-12 w-32 bg-gray-700 rounded"></div> : `₹${totalRevenue.toLocaleString()}`}
-            </div>
-          </div>
-        </div>
+  useEffect(() => {
+    fetchUpcomingBookings();
+  }, [user?.tenantId, dateFilter.from, dateFilter.to, selectedFilter]);
 
-        <div className="col-span-12 sm:col-span-6 md:col-span-3 h-40 bg-black bg-opacity-60 backdrop-blur-md rounded-xl p-4 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-lg font-medium text-white">{config.bookingLabel}</div>
-            <div className="bg-white bg-opacity-10 px-2 py-1 rounded-full text-xs text-gray-300">All time</div>
-          </div>
-          <div className="mt-auto mb-2 self-start">
-            <div className="text-6xl font-bold text-white">
-              {isLoading ? <div className="animate-pulse h-12 w-24 bg-gray-700 rounded"></div> : totalAppointments}
-            </div>
-          </div>
-        </div>
+  const statCards = [
+    {
+      label: 'Paid Revenue',
+      value: isLoading ? '...' : `₹${totalRevenue.toLocaleString()}`,
+      meta: `${dateFilter.label} revenue`,
+      tone: 'from-[#dbeafe]/95 to-[#9ec7ff]/80 text-[#07111f]',
+    },
+    {
+      label: 'Total Bookings',
+      value: isLoading ? '...' : totalBookings.toString(),
+      meta: `${dateFilter.label} slots`,
+      tone: 'from-[#111827]/95 to-[#17233a]/90 text-white',
+    },
+    {
+      label: 'Active Staff',
+      value: isLoading ? '...' : staffCount.toString(),
+      meta: 'Coaches and operators',
+      tone: 'from-[#0c141f]/95 to-[#142033]/90 text-white',
+    },
+  ];
 
-        <div className="col-span-12 sm:col-span-6 md:col-span-3 h-40 bg-black bg-opacity-60 backdrop-blur-md rounded-xl p-4 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-lg font-medium text-white">{config.staffLabel}</div>
-            <div className="bg-white bg-opacity-10 px-2 py-1 rounded-full text-xs text-gray-300">
-              {serviceType === 'turf' ? 'Today' : 'Total'}
-            </div>
+  return (
+    <div className="h-full overflow-auto text-white">
+      <div className="mx-auto flex min-h-full w-full max-w-[96rem] flex-col gap-3 px-1 pb-2 pt-1 sm:gap-4 sm:px-2 lg:pb-3">
+        <header className="flex flex-col gap-4 px-1 py-2 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-4xl">
+            <h1 className="font-tori-garamond mt-2 text-5xl font-light leading-[0.92] text-white sm:text-6xl xl:text-7xl">
+              Welcome back, {user?.name || 'venue owner'}
+            </h1>
           </div>
-          <div className="mt-auto mb-2 self-start">
-            <div className="text-6xl font-bold text-white">
-              {isLoading ? (
-                <div className="animate-pulse h-12 w-24 bg-gray-700 rounded"></div>
-              ) : (
-                serviceType === 'turf' ? todayAppointments : staffCount
-              )}
-            </div>
-          </div>
-        </div>
 
-        {config.showNewAppointmentButton ? (
-          <div 
-            className="col-span-12 sm:col-span-6 md:col-span-3 h-40 bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-white hover:bg-opacity-20 transition-all"
-            onClick={() => setShowNewAppointmentForm(true)}
-          >
-            <div className="relative w-20 h-20">
-              <div className="absolute top-1/2 left-0 w-full h-2 bg-white transform -translate-y-1/2"></div>
-              <div className="absolute left-1/2 top-0 w-2 h-full bg-white transform -translate-x-1/2"></div>
-            </div>
-          </div>
-        ) : (
-          <div className="col-span-12 sm:col-span-6 md:col-span-3 h-40 bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-4 flex items-center justify-center cursor-pointer hover:bg-white hover:bg-opacity-20 transition-all">
-            <div className="relative w-20 h-20">
-              <div className="absolute top-1/2 left-0 w-full h-2 bg-white transform -translate-y-1/2"></div>
-              <div className="absolute left-1/2 top-0 w-2 h-full bg-white transform -translate-x-1/2"></div>
-            </div>
-          </div>
-        )}
-        
-        {showNewAppointmentForm && (
-          <NewAppointmentForm
-            onClose={() => setShowNewAppointmentForm(false)}
-            onSuccess={() => {
-              setShowNewAppointmentForm(false);
-              refreshAppointments();
-            }}
-          />
-        )}
-
-        {/* RECENT TRANSACTIONS */}
-        <div className="col-span-6">
-          <div className="bg-black bg-opacity-60 backdrop-blur-md rounded-xl p-5 h-full">
-            <div className="flex justify-between items-center mb-2">
-              <div className="text-lg font-medium text-white">Recent Transactions</div>
-              <div className="text-sm text-gray-400">View All</div>
-            </div>
-            <div className="space-y-3">
-              {transactionsLoading ? (
-                [...Array(3)].map((_, i) => (
-                  <div key={i} className="animate-pulse flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-full bg-gray-700 mr-3"></div>
-                      <div>
-                        <div className="h-4 w-24 bg-gray-700 rounded mb-2"></div>
-                        <div className="h-3 w-16 bg-gray-700 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="h-4 w-16 bg-gray-700 rounded"></div>
-                  </div>
-                ))
-              ) : transactions.length > 0 ? (
-                transactions.map((transaction, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white text-xs mr-3">
-                        {String.fromCharCode(65 + index)}
-                      </div>
-                      <div>
-                        <div className="text-xl text-white">{transaction.patient}</div>
-                        <div className="text-sm text-gray-400">{transaction.timestamp}</div>
-                      </div>
-                    </div>
-                    <div className="text-xl text-white">₹{transaction.amount}</div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-gray-400">No transactions found</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* UPCOMING APPOINTMENTS */}
-        <div className="col-span-6">
-          <div className="bg-white bg-opacity-60 backdrop-blur-md rounded-xl p-4 h-full">
-            <div className="flex justify-between items-center mb-4">
-              <div className="text-lg font-medium text-black">Upcoming Appointments</div>
-              <div className="text-sm text-gray-400">View All</div>
-            </div>
-            {appointmentsLoading ? (
-              <div className="animate-pulse space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex justify-between">
-                    <div className="space-y-2">
-                      <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                      <div className="h-3 w-32 bg-gray-200 rounded"></div>
-                    </div>
-                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
-                  </div>
+          <div className="relative flex -translate-x-6 flex-col gap-2 lg:items-end">
+            <button
+              type="button"
+              onClick={() => setFilterMenuOpen((open) => !open)}
+              className="tori-unstyled-button font-tori-garamond flex h-12 min-w-[12rem] items-center justify-between rounded-[1.15rem] border border-white/12 bg-white/[0.09] py-2 pl-5 pr-4 text-3xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:bg-white/[0.12]"
+            >
+              <span>{selectedFilterLabel}</span>
+              <svg
+                className={`ml-4 h-4 w-4 text-blue-100/80 transition ${filterMenuOpen ? 'rotate-180' : ''}`}
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M4 6 8 10l4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {filterMenuOpen && (
+              <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/88 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+                {dashboardFilterOptions.map((filter) => (
+                  <button
+                    key={filter.value}
+                    type="button"
+                    onClick={() => {
+                      setSelectedFilter(filter.value);
+                      setFilterMenuOpen(false);
+                    }}
+                    className={`tori-unstyled-button font-tori-garamond flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                      selectedFilter === filter.value
+                        ? 'bg-[#9ed3ff]/16 text-white'
+                        : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
+                    }`}
+                  >
+                    {filter.label}
+                    {selectedFilter === filter.value && <span className="h-1.5 w-1.5 rounded-full bg-[#bfe4ff]" />}
+                  </button>
                 ))}
               </div>
-            ) : appointments.length > 0 ? (
-              appointments.map((appointment, index) => (
-                <div key={index} className="flex items-center justify-between mb-3">
-                  <div>
-                    <div className="text-xl text-black">{appointment.patient}</div>
-                    <div className="text-sm text-gray-500">{appointment.time}</div>
-                  </div>
-                  <div className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                    {appointment.status}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="h-[calc(100%-2rem)] flex items-center justify-center">
-                <div className="text-gray-500 text-xl">No appointments scheduled</div>
+            )}
+            {selectedFilter === 'custom' && (
+              <div className="flex flex-wrap gap-2">
+                <input
+                  type="date"
+                  value={customStart}
+                  onChange={(event) => setCustomStart(event.target.value)}
+                  className="h-9 rounded-full border border-white/10 bg-white/[0.07] px-3 text-xs text-white"
+                />
+                <input
+                  type="date"
+                  value={customEnd}
+                  onChange={(event) => setCustomEnd(event.target.value)}
+                  className="h-9 rounded-full border border-white/10 bg-white/[0.07] px-3 text-xs text-white"
+                />
               </div>
             )}
           </div>
-        </div>
-      </>
-    );
-  };
+        </header>
 
-  return renderDashboard();
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {statCards.map((card, index) => (
+            <div
+              key={card.label}
+              className={`relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br ${card.tone} p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]`}
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
+              <div className="relative flex w-full flex-col">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-tori-garamond text-2xl font-light normal-case opacity-72">
+                    {card.label}
+                  </p>
+                  <span className="font-tori-garamond rounded-full bg-white/12 px-2 py-1 text-lg font-light normal-case opacity-70">
+                    {dateFilter.label}
+                  </span>
+                </div>
+                <p className="font-tori-garamond mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
+                  {card.value}
+                </p>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setShowNewAppointmentForm(true)}
+            className="tori-unstyled-button group relative min-h-[10.25rem] !rounded-[1.35rem] overflow-hidden border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition hover:from-[#111d2c]/95 hover:to-[#1a2a42]/90"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-80" />
+            <div className="relative flex h-full flex-col">
+              <div className="flex items-start gap-3">
+                <p className="font-tori-garamond text-2xl font-light normal-case text-blue-100/78">
+                  Add manual booking
+                </p>
+              </div>
+              <div className="flex flex-1 items-center justify-center">
+                <svg className="h-24 w-24 text-white/92 transition duration-700 group-hover:rotate-[360deg] group-hover:scale-105" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                  <path d="M32 12v40M12 32h40" stroke="currentColor" strokeWidth="4.8" strokeLinecap="round" />
+                </svg>
+              </div>
+              <span className="sr-only">
+                Add manual booking
+              </span>
+            </div>
+          </button>
+        </section>
+
+        <section className="grid flex-1 grid-cols-1 gap-3 xl:grid-cols-[1.05fr_0.95fr]">
+          <DashboardCard className="p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="font-resist-sans text-xs uppercase tracking-[0.14em] text-blue-100/50">
+                  Revenue stream
+                </p>
+                <h2 className="font-tori-garamond text-3xl font-light text-white">
+                  Recent paid bookings
+                </h2>
+              </div>
+              <Link to={`${dashboardBasePath}/revenue`} className="rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
+                View all
+              </Link>
+            </div>
+
+            <div className="space-y-2">
+              {transactionsLoading ? (
+                [...Array(4)].map((_, index) => (
+                  <div key={index} className="h-14 animate-pulse rounded-2xl bg-white/8" />
+                ))
+              ) : transactions.length > 0 ? (
+                transactions.map((transaction, index) => (
+                  <div
+                    key={`${transaction.customer}-${index}`}
+                    className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.045] px-3 py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-200/12 text-sm text-blue-100">
+                        {transaction.customer.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm text-white">{transaction.customer}</p>
+                        <p className="text-xs text-blue-100/45">{transaction.timestamp}</p>
+                      </div>
+                    </div>
+                    <p className="font-tori-garamond text-2xl text-white">₹{transaction.amount}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-white/8 bg-white/[0.045] p-6 text-center">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#bfe4ff]/12 text-3xl">
+                    ₹
+                  </div>
+                  <p className="font-tori-garamond mt-3 text-2xl font-light text-white">No paid bookings yet</p>
+                  <p className="mt-1 text-sm text-blue-100/45">Your first paid slot will light this board up.</p>
+                </div>
+              )}
+            </div>
+          </DashboardCard>
+
+          <DashboardCard className="p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="font-resist-sans text-xs uppercase tracking-[0.14em] text-blue-100/50">
+                  Upcoming slots
+                </p>
+                <h2 className="font-tori-garamond text-3xl font-light text-white">
+                  Next venue bookings
+                </h2>
+              </div>
+              <Link to={`${dashboardBasePath}/schedule`} className="rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
+                View all
+              </Link>
+            </div>
+
+            <div className="space-y-2">
+              {bookingsLoading ? (
+                [...Array(4)].map((_, index) => (
+                  <div key={index} className="h-14 animate-pulse rounded-2xl bg-white/8" />
+                ))
+              ) : bookings.length > 0 ? (
+                bookings.map((booking, index) => (
+                  <div
+                    key={`${booking.customer}-${index}`}
+                    className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.045] px-3 py-3"
+                  >
+                    <div>
+                      <p className="text-sm text-white">{booking.customer}</p>
+                      <p className="text-xs text-blue-100/45">{booking.time}</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-300/12 px-2.5 py-1 text-xs text-emerald-100">
+                      {booking.status}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-white/8 bg-white/[0.045] p-6 text-center">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-300/12 text-2xl">
+                    ◷
+                  </div>
+                  <p className="font-tori-garamond mt-3 text-2xl font-light text-white">No upcoming slots</p>
+                  <p className="mt-1 text-sm text-blue-100/45">Invite customers or add a manual booking to start.</p>
+                </div>
+              )}
+            </div>
+          </DashboardCard>
+        </section>
+      </div>
+
+      {showNewAppointmentForm && (
+        <NewAppointmentForm
+          onClose={() => setShowNewAppointmentForm(false)}
+          onSuccess={() => {
+            setShowNewAppointmentForm(false);
+            fetchUpcomingBookings();
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default UnifiedDashboardHome;

@@ -37,8 +37,8 @@ export const DASHBOARD_CONFIGS: Record<DashboardServiceType, DashboardConfig> = 
   doctor: {
     serviceType: 'doctor',
     basePath: '/dashboard',
-    title: 'Doctor Dashboard',
-    defaultUserLabel: 'Doctor',
+    title: 'Venue Dashboard',
+    defaultUserLabel: 'Venue Owner',
   },
   turf: {
     serviceType: 'turf',
@@ -68,24 +68,24 @@ const doctorNavByRole: Partial<Record<UserRole, NavItem[]>> = {
   ],
   [UserRole.BUSINESS_OWNER]: [
     { name: 'Dashboard', segment: '', icon: 'home' },
-    { name: 'Appointments', segment: 'appointments', icon: 'calendar' },
+    { name: 'Bookings', segment: 'appointments', icon: 'calendar' },
     { name: 'Schedule', segment: 'schedule', icon: 'clock' },
-    { name: 'Employee Management', segment: 'employees', icon: 'users' },
+    { name: 'Staff Management', segment: 'employees', icon: 'users' },
     { name: 'Revenue', segment: 'revenue', icon: 'chart-bar' },
     { name: 'Settings', segment: 'settings', icon: 'cog' },
   ],
   [UserRole.DOCTOR]: [
     { name: 'Dashboard', segment: '', icon: 'home' },
-    { name: 'Appointments', segment: 'appointments', icon: 'calendar' },
+    { name: 'Bookings', segment: 'appointments', icon: 'calendar' },
     { name: 'Schedule', segment: 'schedule', icon: 'clock' },
-    { name: 'Patients', segment: 'patients', icon: 'user-md' },
+    { name: 'Members', segment: 'patients', icon: 'user-md' },
     { name: 'Settings', segment: 'settings', icon: 'cog' },
   ],
 };
 
 const defaultDoctorNav: NavItem[] = [
   { name: 'Dashboard', segment: '', icon: 'home' },
-  { name: 'Appointments', segment: 'appointments', icon: 'calendar' },
+  { name: 'Bookings', segment: 'appointments', icon: 'calendar' },
   { name: 'Schedule', segment: 'schedule', icon: 'clock' },
 ];
 

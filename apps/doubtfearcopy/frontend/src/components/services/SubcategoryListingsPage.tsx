@@ -3,6 +3,11 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import ListingCard, { Listing } from './ListingCard';
 import { fetchPublicListings, getListingImage, humanizeSlug } from '../../services/publicListings';
 
+const debugSubcategoryListings = (hypothesisId: string, message: string, data: Record<string, unknown>) => {
+  // #region agent log
+  fetch('http://127.0.0.1:7936/ingest/92ede0b0-b5da-4b2a-b38e-ceee586e37ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'00f974'},body:JSON.stringify({sessionId:'00f974',runId:'public-listings-initial',hypothesisId,location:'src/components/services/SubcategoryListingsPage.tsx',message,data,timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+};
 
 const SubcategoryListingsPage: React.FC = () => {
   const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
@@ -14,6 +19,15 @@ const SubcategoryListingsPage: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
+
+    // #region agent log
+    debugSubcategoryListings('H1_H4', 'subcategory listings route mounted', {
+      category,
+      subcategory,
+      pageOrigin: window.location.origin,
+      pagePath: window.location.pathname,
+    });
+    // #endregion
 
     if (!subcategory) {
       setListings([]);
@@ -52,6 +66,16 @@ const SubcategoryListingsPage: React.FC = () => {
         : error instanceof Error
           ? error.message
           : 'Unable to load listings right now.';
+
+    // #region agent log
+    debugSubcategoryListings('H1_H2_H3', 'subcategory listings ui error set', {
+      category,
+      subcategory,
+      errorName: error instanceof Error ? error.name : typeof error,
+      errorMessage: error instanceof Error ? error.message : String(error),
+      uiMessage: message,
+    });
+    // #endregion
 
     setLoadError(message);
   } finally {

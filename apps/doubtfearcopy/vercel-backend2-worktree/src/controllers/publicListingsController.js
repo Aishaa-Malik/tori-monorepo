@@ -1,13 +1,4 @@
 const { supabase } = require('../config');
-const fs = require('fs');
-
-function debugPublicListingsBackend(hypothesisId, message, data) {
-  try {
-    // #region agent log
-    fs.appendFileSync('/Users/aisha/tori-monorepo/.cursor/debug-00f974.log', `${JSON.stringify({ sessionId: '00f974', runId: 'public-listings-initial', hypothesisId, location: 'backend/src/controllers/publicListingsController.js', message, data, timestamp: Date.now() })}\n`);
-    // #endregion
-  } catch (_) {}
-}
 
 function normalizePublicListing(service, profile, weeklySlots = []) {
   return {
@@ -116,13 +107,6 @@ async function fetchPublicListingsData({ subcategoryTag, serviceId }) {
 exports.getPublicListings = async (req, res) => {
   const { subcategoryTag } = req.query;
 
-  debugPublicListingsBackend('H2_H3_DEPLOY', 'public listings controller entered', {
-    origin: req.get('origin') || null,
-    path: req.path,
-    originalUrl: req.originalUrl,
-    subcategoryTag: typeof subcategoryTag === 'string' ? subcategoryTag : null,
-  });
-
   if (!subcategoryTag) {
     return res.status(400).json({ error: 'subcategoryTag is required' });
   }
@@ -130,22 +114,11 @@ exports.getPublicListings = async (req, res) => {
   try {
     const listings = await fetchPublicListingsData({ subcategoryTag });
 
-    debugPublicListingsBackend('H3_DEPLOY', 'public listings controller success', {
-      subcategoryTag,
-      count: listings.length,
-    });
-
     return res.status(200).json({
       success: true,
       data: listings,
     });
   } catch (error) {
-    debugPublicListingsBackend('H3_DEPLOY', 'public listings controller error', {
-      subcategoryTag,
-      errorName: error instanceof Error ? error.name : typeof error,
-      errorMessage: error instanceof Error ? error.message : String(error),
-    });
-
     return res.status(500).json({ error: error.message });
   }
 };

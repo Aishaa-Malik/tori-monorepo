@@ -248,146 +248,167 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
   };
 
   if (isLoading) {
-    return <div className="p-6">Loading settings...</div>;
+    return (
+      <div className="flex min-h-full items-center justify-center p-6 text-blue-100/70">
+        Loading settings...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 dark:text-white text-left">Settings</h1>
+    <div className="min-h-full px-4 py-5 sm:px-6 lg:px-7">
+      <div className="mx-auto max-w-6xl space-y-5 pb-10">
+      <div className="rounded-[1.4rem] border border-white/10 bg-white/[0.045] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9fc4de]/70">
+          Dashboard Controls
+        </p>
+        <h1 className="font-tori-garamond mt-2 text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">Settings</h1>
+        <p className="font-tori-garamond mt-2 max-w-4xl text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">
+          Manage your plan, booking limits, and integrations from one place.
+        </p>
+      </div>
       
       {config.features.showSubscriptionDetails && (
-        <div className="bg-black bg-opacity-80 rounded-lg shadow p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-white">Subscription Details</h2>
-          <div className="mb-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-            <p className="text-gray-700 dark:text-gray-300 mb-1">Current Plan</p>
-            <p className="text-2xl font-medium dark:text-white flex items-center">
-              <span className={`bg-${config.theme.primaryColor}-100 dark:bg-${config.theme.primaryColor}-900 text-${config.theme.primaryColor}-800 dark:text-${config.theme.primaryColor}-200 px-3 py-1 rounded-full mr-2`}>
-                {planName}
-              </span>
-              <span className="text-green-600 dark:text-green-400 text-sm">Active</span>
-            </p>
+        <section className="rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9fc4de]/68">Subscription</p>
+              <h2 className="mt-2 text-xl font-semibold text-white">Current plan</h2>
+              <p className="mt-1 text-sm text-blue-100/52">Track your active plan and monthly usage.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-[#edf6ff] px-3 py-1 text-sm font-semibold text-[#2d4c74]">
+                  {planName}
+                </span>
+                <span className="text-xs font-semibold text-emerald-300">Active</span>
+              </div>
+            </div>
           </div>
           
           {config.features.showUsageLimit && (
-            <>
-              <button 
+            <div className="mt-5">
+              <button
                 onClick={toggleUsageLimit}
-                className={`bg-${config.theme.primaryColor}-500 hover:bg-${config.theme.primaryColor}-600 text-white py-2 px-4 rounded transition-colors duration-300 flex items-center`}
+                className="inline-flex items-center rounded-full border border-[#b9ddff]/18 bg-white/[0.055] px-4 py-2 text-xs font-semibold uppercase tracking-[0.04em] text-blue-100/80 transition hover:bg-[#9ed3ff]/12 hover:text-white"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                </svg>
-                Check {config.usageTerminology.plural} Usage Limit
+                <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">→</span>
+                Check {config.usageTerminology.plural} usage limit
               </button>
               
               {showUsageLimit && (
-                <div className={`bg-${config.theme.primaryColor}-50 dark:bg-${config.theme.primaryColor}-900/30 border border-${config.theme.primaryColor}-200 dark:border-${config.theme.primaryColor}-800 rounded-md p-4 mt-4`}>
-                  <div className="flex items-center justify-between">
+                <div className="mt-4 rounded-2xl border border-[#b9ddff]/16 bg-[#9ed3ff]/[0.065] p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <h3 className={`text-sm font-medium text-${config.theme.primaryColor}-800 dark:text-${config.theme.primaryColor}-200`}>
+                      <h3 className="text-sm font-semibold text-white">
                         Monthly {config.usageTerminology.plural.charAt(0).toUpperCase() + config.usageTerminology.plural.slice(1)} Usage
                       </h3>
-                      <p className={`text-sm text-${config.theme.primaryColor}-600 dark:text-${config.theme.primaryColor}-300`}>
+                      <p className="mt-1 text-sm text-blue-100/58">
                         {usageData.used} / {usageData.total} {config.usageTerminology.plural} used this month
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className={`text-lg font-bold ${(usageData.total - usageData.used) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {usageData.total - usageData.used} remaining
-                      </div>
+                    <div className={`text-lg font-semibold ${(usageData.total - usageData.used) > 0 ? 'text-emerald-300' : 'text-red-300'}`}>
+                      {usageData.total - usageData.used} remaining
                     </div>
                   </div>
-                  <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div 
-                      className={`bg-${config.theme.primaryColor}-600 dark:bg-${config.theme.primaryColor}-500 h-2 rounded-full`}
+                  <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#bfe4ff] to-[#5d90b8]"
                       style={{ width: `${Math.min((usageData.used / Math.max(usageData.total, 1)) * 100, 100)}%` }}
-                    ></div>
+                    />
                   </div>
                   {usageData.used >= usageData.total && (
-                    <p className="text-sm text-red-600 dark:text-red-400 mt-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded">
-                      <span className="font-medium">Limit reached:</span> You've reached your monthly {config.usageTerminology.singular} limit. Please upgrade your plan to {config.usageTerminology.action} more {config.usageTerminology.plural}.
+                    <p className="mt-3 rounded-xl border border-red-300/20 bg-red-500/10 p-3 text-sm text-red-100">
+                      <span className="font-semibold">Limit reached:</span> You've reached your monthly {config.usageTerminology.singular} limit. Please upgrade your plan to {config.usageTerminology.action} more {config.usageTerminology.plural}.
                     </p>
                   )}
                 </div>
               )}
-            </>
+            </div>
           )}
-        </div>
+        </section>
       )}
       
       {config.features.showIntegrations && (
-        <div className="bg-black bg-opacity-80 rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-white">Integrations</h2>
+        <section className="rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+          <div className="mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9fc4de]/68">Integrations</p>
+            <h2 className="mt-2 text-xl font-semibold text-white">Connected tools</h2>
+            <p className="mt-1 text-sm text-blue-100/52">Sync calendars and external tools used by your venue.</p>
+          </div>
           
-          {integrations.map((integration) => (
-            <div key={integration.type} className="mb-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h3 className="font-medium mb-2 dark:text-white flex items-center">
-                {integration.icon}
-                {integration.name}
-              </h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                {integration.description}
-              </p>
-              
-              {integration.isConnected ? (
-                <div>
-                  <div className="flex items-center">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Connected
-                    </span>
-                    <button 
-                      className="ml-4 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200"
-                      onClick={() => handleDisconnectIntegration(integration.type)}
-                    >
-                      Disconnect
-                    </button>
+          <div className="grid gap-4">
+            {integrations.map((integration) => (
+              <div key={integration.type} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 transition hover:border-[#b9ddff]/18 hover:bg-white/[0.05]">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="min-w-0">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+                      {integration.icon}
+                      {integration.name}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-blue-100/58">
+                      {integration.description}
+                    </p>
                   </div>
-                  {connectSuccess && integration.type === 'google_calendar' && (
-                    <p className="text-sm text-green-600 dark:text-green-400 mt-2 font-medium">{connectSuccess}</p>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <button 
-                    onClick={integration.type === 'google_calendar' ? handleConnectGoogleCalendar : undefined}
-                    disabled={isConnecting}
-                    className="inline-flex items-center bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                  >
-                    {isConnecting && integration.type === 'google_calendar' ? (
+                  
+                  <div className="flex flex-shrink-0 items-center gap-3">
+                    {integration.isConnected ? (
                       <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Connecting...
+                        <span className="inline-flex items-center rounded-full border border-emerald-300/18 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
+                          Connected
+                        </span>
+                        <button 
+                          className="rounded-full border border-red-300/18 bg-red-400/10 px-3 py-1.5 text-xs font-semibold text-red-100 transition hover:bg-red-400/16"
+                          onClick={() => handleDisconnectIntegration(integration.type)}
+                        >
+                          Disconnect
+                        </button>
                       </>
                     ) : (
-                      <>
-                        {integration.icon}
-                        Connect with {integration.name}
-                      </>
+                      <button 
+                        onClick={integration.type === 'google_calendar' ? handleConnectGoogleCalendar : undefined}
+                        disabled={isConnecting}
+                        className="inline-flex items-center rounded-full border border-[#b9ddff]/18 bg-white/[0.055] px-4 py-2 text-xs font-semibold uppercase tracking-[0.04em] text-blue-100/80 transition hover:bg-[#9ed3ff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {isConnecting && integration.type === 'google_calendar' ? (
+                          <>
+                            <svg className="-ml-1 mr-2 h-4 w-4 animate-spin text-blue-100/80" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Connecting...
+                          </>
+                        ) : (
+                          <>
+                            <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">→</span>
+                            Connect with {integration.name}
+                          </>
+                        )}
+                      </button>
                     )}
-                  </button>
-                  {connectError && integration.type === 'google_calendar' && (
-                    <p className="text-sm text-red-600 dark:text-red-400 mt-2">{connectError}</p>
-                  )}
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
+
+                {connectSuccess && integration.type === 'google_calendar' && (
+                  <p className="mt-3 text-sm font-medium text-emerald-200">{connectSuccess}</p>
+                )}
+                {connectError && integration.type === 'google_calendar' && !integration.isConnected && (
+                  <p className="mt-3 text-sm text-red-200">{connectError}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
       )}
       
       {config.features.customSections && (
-        <div className="mt-6">
+        <div className="space-y-5">
           {config.features.customSections.map((section, index) => (
             <div key={index}>{section}</div>
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 };

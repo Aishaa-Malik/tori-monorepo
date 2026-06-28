@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Tori Garamond Narrow';
-  src: url('../../../tori-website-main/fonts/itc-garamond-std-light-narrow.otf') format('opentype');
+  src: url('../public/fonts/formula/itc-garamond-std-light-narrow.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: 'Tori Garamond Narrow';
-  src: url('../../../tori-website-main/fonts/itc-garamond-std-light-narrow-italic.otf') format('opentype');
+  src: url('../public/fonts/formula/itc-garamond-std-light-narrow-italic.otf') format('opentype');
   font-weight: 300;
   font-style: italic;
   font-display: swap;
@@ -20,18 +20,372 @@
 
 @font-face {
   font-family: 'Resist Sans Display';
-  src: url('../../../tori-website-main/fonts/resist-sans-display-regular.ttf') format('truetype');
+  src: url('../public/fonts/formula/resist-sans-display-regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 .font-tori-garamond {
-  font-family: 'Tori Garamond Narrow', Garamond, Georgia, serif;
+  font-family: 'Tori Garamond Narrow' !important;
 }
 
-.font-resist-sans {
-  font-family: 'Resist Sans Display', Inter, ui-sans-serif, system-ui, sans-serif;
+.font-resist-sans,
+.tori-dashboard-font {
+  font-family: 'Resist Sans Display' !important;
+}
+
+body {
+  font-family: 'Resist Sans Display' !important;
+}
+
+.tori-dashboard-shell {
+  background:
+    radial-gradient(circle at 82% 14%, rgba(232, 244, 255, 0.18), transparent 24rem),
+    radial-gradient(circle at 8% 88%, rgba(42, 92, 164, 0.22), transparent 24rem),
+    linear-gradient(135deg, rgba(2, 6, 12, 0.72), rgba(3, 8, 15, 0.74)),
+    url('../public/features-bg2.png') center/cover no-repeat;
+}
+
+.tori-dashboard-panel {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  background:
+    radial-gradient(circle at 76% 0%, rgba(255, 255, 255, 0.08), transparent 22rem),
+    linear-gradient(135deg, rgba(3, 8, 15, 0.14), rgba(4, 10, 18, 0.1));
+  box-shadow: none;
+}
+
+.tori-dashboard-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.08), transparent 28%, rgba(255, 255, 255, 0.035) 54%, transparent 74%),
+    radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1.2px);
+  background-size: auto, 18px 18px;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.tori-dashboard-panel::after {
+  display: none;
+}
+
+.tori-dashboard-card {
+  border: 1px solid rgba(188, 214, 255, 0.13);
+  background:
+    linear-gradient(145deg, rgba(229, 243, 255, 0.09), rgba(7, 18, 33, 0.42)),
+    radial-gradient(circle at 18% 0%, rgba(218, 236, 255, 0.2), transparent 16rem),
+    rgba(3, 10, 20, 0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 22px 60px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(34px) saturate(1.55);
+  -webkit-backdrop-filter: blur(34px) saturate(1.55);
+}
+
+.tori-btn-primary,
+.tori-btn-secondary {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  min-height: 3.35rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 999px !important;
+  padding: 0.85rem 1.75rem 0.85rem 4.65rem;
+  font-family: 'Resist Sans Display' !important;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.tori-btn-primary::before,
+.tori-btn-secondary::before {
+  content: '';
+  position: absolute;
+  left: 0.42rem;
+  top: 50%;
+  z-index: -1;
+  height: 2.52rem;
+  width: 2.52rem;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  transition: transform 220ms ease, background 220ms ease;
+}
+
+.tori-btn-primary::after,
+.tori-btn-secondary::after {
+  content: '→';
+  position: absolute;
+  left: 1.18rem;
+  top: 50%;
+  transform: translateY(-54%);
+  font-family: 'Resist Sans Display' !important;
+  font-size: 1.34rem;
+  line-height: 1;
+  transition: transform 220ms ease;
+}
+
+.tori-btn-primary {
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: linear-gradient(135deg, #f1f0ed, #bebdbb);
+  color: #1f1e1d !important;
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.tori-btn-primary::before {
+  background: #1f1d1d;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+.tori-btn-primary::after {
+  color: #ffffff;
+}
+
+.tori-btn-secondary {
+  border: 1px solid rgba(230, 240, 255, 0.22);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(5, 10, 18, 0.42);
+  color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(22px) saturate(1.35);
+}
+
+.tori-btn-secondary::before {
+  background: #f5f0e8;
+  box-shadow: 0 10px 28px rgba(255, 255, 255, 0.1);
+}
+
+.tori-btn-secondary::after {
+  color: #171615;
+}
+
+.tori-btn-primary:hover,
+.tori-btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.tori-btn-primary:hover::before,
+.tori-btn-secondary:hover::before {
+  transform: translateY(-50%) scale(1.04);
+}
+
+.tori-btn-primary:hover::after,
+.tori-btn-secondary:hover::after {
+  transform: translate(2px, -54%);
+}
+
+.tori-btn-compact {
+  min-height: 2.55rem;
+  padding: 0.65rem 1.05rem 0.65rem 3.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tori-btn-compact::before {
+  left: 0.32rem;
+  height: 1.9rem;
+  width: 1.9rem;
+}
+
+.tori-btn-compact::after {
+  left: 0.88rem;
+  font-size: 1rem;
+}
+
+.tori-dashboard-panel main button:not(.tori-btn-primary):not(.tori-btn-secondary):not(.tori-unstyled-button) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  min-height: 2.55rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(230, 240, 255, 0.22) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(5, 10, 18, 0.42) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  padding: 0.65rem 1.05rem 0.65rem 3.4rem !important;
+  font-family: 'Resist Sans Display' !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase;
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(22px) saturate(1.35);
+  transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.tori-dashboard-panel main button:not(.tori-btn-primary):not(.tori-btn-secondary):not(.tori-unstyled-button)::before {
+  content: '';
+  position: absolute;
+  left: 0.32rem;
+  top: 50%;
+  z-index: -1;
+  height: 1.9rem;
+  width: 1.9rem;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: #f5f0e8;
+}
+
+.tori-dashboard-panel main button:not(.tori-btn-primary):not(.tori-btn-secondary):not(.tori-unstyled-button)::after {
+  content: '→';
+  position: absolute;
+  left: 0.88rem;
+  top: 50%;
+  transform: translateY(-54%);
+  color: #171615;
+  font-family: 'Resist Sans Display' !important;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.tori-dashboard-panel main button:not(.tori-btn-primary):not(.tori-btn-secondary):not(.tori-unstyled-button):hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03)),
+    rgba(5, 10, 18, 0.5) !important;
+}
+
+.tori-dashboard-panel,
+.tori-dashboard-panel *:not(svg):not(path):not(circle),
+.tori-dashboard-shell,
+.tori-dashboard-shell *:not(svg):not(path):not(circle) {
+  font-family: 'Resist Sans Display' !important;
+}
+
+.tori-dashboard-panel h1,
+.tori-dashboard-panel h2,
+.tori-dashboard-panel h3,
+.tori-dashboard-panel .font-tori-garamond,
+.tori-dashboard-shell h1,
+.tori-dashboard-shell h2,
+.tori-dashboard-shell h3,
+.tori-dashboard-shell .font-tori-garamond {
+  font-family: 'Tori Garamond Narrow' !important;
+  font-weight: 300 !important;
+}
+
+.tori-dashboard-panel main,
+.tori-dashboard-panel .tori-dashboard-content {
+  color: rgba(245, 249, 255, 0.92);
+}
+
+.tori-dashboard-panel .bg-white,
+.tori-dashboard-panel .bg-gray-50,
+.tori-dashboard-panel .bg-gray-100,
+.tori-dashboard-panel .bg-gray-200,
+.tori-dashboard-panel .dark\:bg-gray-800,
+.tori-dashboard-panel .dark\:bg-gray-900 {
+  background:
+    linear-gradient(145deg, rgba(232, 244, 255, 0.1), rgba(5, 11, 20, 0.72)) !important;
+  border-color: rgba(201, 226, 255, 0.14) !important;
+  color: rgba(245, 249, 255, 0.92) !important;
+  backdrop-filter: blur(24px) saturate(1.35);
+}
+
+.tori-dashboard-panel .bg-black,
+.tori-dashboard-panel .dark\:bg-black {
+  background: rgba(3, 8, 15, 0.72) !important;
+}
+
+.tori-dashboard-panel .text-black,
+.tori-dashboard-panel .text-gray-900,
+.tori-dashboard-panel .text-gray-800,
+.tori-dashboard-panel .text-gray-700 {
+  color: rgba(245, 249, 255, 0.92) !important;
+}
+
+.tori-dashboard-panel .text-gray-600,
+.tori-dashboard-panel .text-gray-500,
+.tori-dashboard-panel .text-gray-400,
+.tori-dashboard-panel .dark\:text-gray-400 {
+  color: rgba(203, 221, 245, 0.62) !important;
+}
+
+.tori-dashboard-panel .border,
+.tori-dashboard-panel .border-gray-100,
+.tori-dashboard-panel .border-gray-200,
+.tori-dashboard-panel .border-gray-300,
+.tori-dashboard-panel .border-gray-700 {
+  border-color: rgba(201, 226, 255, 0.14) !important;
+}
+
+.tori-dashboard-panel .shadow,
+.tori-dashboard-panel .shadow-sm,
+.tori-dashboard-panel .shadow-md,
+.tori-dashboard-panel .shadow-lg,
+.tori-dashboard-panel .shadow-xl,
+.tori-dashboard-panel .shadow-2xl {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 54px rgba(0, 0, 0, 0.32) !important;
+}
+
+.tori-dashboard-panel input,
+.tori-dashboard-panel select,
+.tori-dashboard-panel textarea {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(201, 226, 255, 0.16) !important;
+  color: rgba(245, 249, 255, 0.94) !important;
+  border-radius: 0.85rem !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.tori-dashboard-panel input::placeholder,
+.tori-dashboard-panel textarea::placeholder {
+  color: rgba(203, 221, 245, 0.45) !important;
+}
+
+.tori-dashboard-panel button:not(.tori-unstyled-button) {
+  border-radius: 999px;
+}
+
+.tori-dashboard-panel table,
+.tori-dashboard-panel thead,
+.tori-dashboard-panel tbody,
+.tori-dashboard-panel tr,
+.tori-dashboard-panel td,
+.tori-dashboard-panel th {
+  background-color: transparent !important;
+  border-color: rgba(201, 226, 255, 0.12) !important;
+}
+
+.tori-dashboard-panel th {
+  color: rgba(203, 221, 245, 0.7) !important;
+  letter-spacing: 0.08em;
+}
+
+.tori-dashboard-panel iframe {
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.72);
+  border-radius: 1.2rem;
+}
+
+.tori-dashboard-panel .fixed .bg-white {
+  background:
+    linear-gradient(145deg, rgba(13, 23, 38, 0.94), rgba(5, 10, 18, 0.96)) !important;
+  border: 1px solid rgba(201, 226, 255, 0.18) !important;
+  color: rgba(245, 249, 255, 0.94) !important;
 }
 
 .tori-google-button::before {
@@ -39,14 +393,17 @@
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(120deg, rgba(66, 133, 244, 0.55), rgba(52, 168, 83, 0.45), rgba(251, 188, 5, 0.45), rgba(234, 67, 53, 0.5));
+  background:
+    radial-gradient(circle at 18% 45%, rgba(221, 241, 255, 0.72), transparent 26%),
+    radial-gradient(circle at 62% 18%, rgba(126, 181, 218, 0.64), transparent 34%),
+    linear-gradient(120deg, rgba(214, 236, 255, 0.58), rgba(82, 130, 168, 0.44), rgba(13, 38, 66, 0.5));
   opacity: 0;
-  filter: blur(14px);
+  filter: blur(16px);
   transition: opacity 220ms ease;
 }
 
 .tori-google-button:hover::before {
-  opacity: 0.8;
+  opacity: 0.88;
 }
 
 .tori-google-shine {

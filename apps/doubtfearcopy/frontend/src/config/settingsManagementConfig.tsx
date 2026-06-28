@@ -13,7 +13,7 @@ export const getSettingsConfig = (serviceType: ServiceType): SettingsConfig => {
       {
         type: 'google_calendar' as const,
         name: 'Google Calendar',
-        description: 'Connect your Google Calendar to automatically sync your appointments with your calendar.',
+        description: 'Connect Google Calendar to sync paid slots, staff availability, and venue bookings.',
         icon: <GoogleCalendarIcon />,
         isConnected: false,
       }
@@ -30,10 +30,10 @@ export const getSettingsConfig = (serviceType: ServiceType): SettingsConfig => {
       return {
         ...baseConfig,
         serviceType: 'doctor',
-        serviceName: 'Doctor',
+        serviceName: 'Sports Venue',
         usageTerminology: {
-          singular: 'appointment',
-          plural: 'appointments',
+          singular: 'booking',
+          plural: 'bookings',
           action: 'book'
         },
         theme: {
@@ -46,7 +46,7 @@ export const getSettingsConfig = (serviceType: ServiceType): SettingsConfig => {
           {
             type: 'zoom' as const,
             name: 'Zoom',
-            description: 'Connect Zoom for virtual consultations and telemedicine appointments.',
+            description: 'Connect Zoom only if your venue offers virtual coaching or online consultations.',
             icon: <div className="w-5 h-5 mr-2 bg-blue-500 rounded"></div>,
             isConnected: false,
           }

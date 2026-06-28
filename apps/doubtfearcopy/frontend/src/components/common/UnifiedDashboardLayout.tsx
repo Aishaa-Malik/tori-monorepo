@@ -14,7 +14,7 @@ interface UnifiedDashboardLayoutProps {
 }
 
 const renderIcon = (iconName: string) => {
-  const className = 'w-4 h-4';
+  const className = 'w-5 h-5';
 
   switch (iconName) {
     case 'home':
@@ -82,25 +82,35 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
   const { darkMode } = useTheme();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   const config = getDashboardConfig(serviceType);
-  const navigation = getNavItems(serviceType, user?.role ?? UserRole.EMPLOYEE).map((item) => ({
-    ...item,
-    href: hrefForNavItem(config.basePath, item.segment),
-  }));
+  const navigation = getNavItems(serviceType, user?.role ?? UserRole.EMPLOYEE)
+    .filter((item) => item.segment !== 'settings')
+    .map((item) => ({
+      ...item,
+      href: hrefForNavItem(config.basePath, item.segment),
+    }));
+  const settingsNavItem = {
+    name: 'Settings',
+    href: hrefForNavItem(config.basePath, 'settings'),
+    icon: 'cog',
+  };
+  const toriLogoSrc = `${process.env.PUBLIC_URL}/images/logo.png`;
 
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   const renderNavLink = (item: { name: string; href: string; icon: string; disabled?: boolean }, mobile = false) => {
-    const textSize = mobile ? 'text-sm' : 'text-xs';
-    const iconMargin = mobile ? 'mr-3' : 'mr-2';
+    const textSize = mobile ? 'text-base' : 'text-sm';
+    const iconMargin = mobile ? 'mr-3' : 'mr-3';
 
     if (item.disabled) {
       return (
         <div
           key={item.name}
-          className={`group flex items-center px-2 py-2 ${textSize} font-medium rounded-md text-gray-400 cursor-not-allowed`}
+          className={`group flex items-center px-3 py-2.5 ${textSize} font-medium rounded-2xl text-gray-400 cursor-not-allowed`}
         >
           <div className={`${iconMargin} text-gray-500`}>{renderIcon(item.icon)}</div>
           {item.name}
@@ -112,16 +122,16 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
       <Link
         key={item.name}
         to={item.href}
-        className={`group flex items-center px-2 py-2 ${textSize} font-medium rounded-md ${
+        className={`group flex items-center px-3 py-2.5 ${textSize} font-medium rounded-2xl transition-all duration-200 ${
           isActive(item.href)
-            ? 'bg-white bg-opacity-20 text-white'
-            : 'text-gray-300 hover:bg-white hover:bg-opacity-10 hover:text-white'
+            ? 'bg-[#9ed3ff]/18 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_28px_rgba(46,112,168,0.16)]'
+            : 'text-blue-100/72 hover:bg-white/9 hover:text-white'
         }`}
         onClick={() => setMobileMenuOpen(false)}
       >
         <div
           className={`${iconMargin} ${
-            isActive(item.href) ? 'text-white' : 'text-gray-400 group-hover:text-white'
+            isActive(item.href) ? 'text-white' : 'text-blue-100/54 group-hover:text-white'
           }`}
         >
           {renderIcon(item.icon)}
@@ -131,42 +141,75 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
     );
   };
 
+  const openSignOutConfirm = () => {
+    setProfileMenuOpen(false);
+    setShowSignOutConfirm(true);
+  };
+
+  const confirmSignOut = () => {
+    setShowSignOutConfirm(false);
+    logout();
+  };
+
   const userProfile = (
-    <div className="flex items-center w-full">
-      <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
-        <span className="text-white font-semibold text-sm">
-          {user?.name?.charAt(0).toUpperCase() || 'U'}
-        </span>
-      </div>
-      <div className="ml-2 min-w-0 flex-1">
-        <p className="text-xs font-medium text-white truncate">
-          {user?.name || config.defaultUserLabel}
-        </p>
-        <p className="text-xs text-gray-300 truncate">
-          {user?.email || 'owner@business.com'}
-        </p>
-        <button
-          onClick={() => logout()}
-          className="text-xs font-medium text-gray-400 hover:text-white"
+    <div
+      className="relative w-full pr-2"
+      onMouseEnter={() => setProfileMenuOpen(true)}
+      onMouseLeave={() => setProfileMenuOpen(false)}
+    >
+      <button
+        type="button"
+        onClick={() => setProfileMenuOpen((open) => !open)}
+        className="flex w-full items-center gap-2 rounded-xl border border-white/10 bg-white/[0.055] p-2 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-200 hover:border-[#b9ddff]/18 hover:bg-white/[0.075]"
+      >
+        <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-white/12 ring-1 ring-white/10">
+          {user?.avatarUrl ? (
+            <img src={user.avatarUrl} alt={user.name || 'User'} className="h-full w-full object-cover" />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-white">
+              {user?.name?.charAt(0).toUpperCase() || 'U'}
+            </span>
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold leading-tight text-white">
+            {user?.name || config.defaultUserLabel}
+          </p>
+          <p className="mt-0.5 truncate text-[11px] leading-tight text-blue-100/50">
+            {user?.email || 'owner@business.com'}
+          </p>
+        </div>
+        <svg
+          className={`h-4 w-4 flex-shrink-0 text-blue-100/65 transition duration-200 ${profileMenuOpen ? 'rotate-90 text-white' : ''}`}
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
         >
-          Sign out
-        </button>
-      </div>
+          <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {profileMenuOpen && (
+        <div className="absolute bottom-0 left-[calc(100%-0.35rem)] z-20 w-32 pl-3">
+          <div className="rounded-2xl border border-white/10 bg-[#071421]/95 p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={openSignOutConfirm}
+            className="flex w-full items-center justify-center rounded-xl px-3 py-2 text-xs font-semibold text-blue-100/75 transition hover:bg-white/[0.08] hover:text-white"
+          >
+            Sign out
+          </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 
   return (
-    <div className={`min-h-screen relative flex items-center justify-center ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'}`}>
-      <div
-        className="absolute inset-0 bg-cover bg-center z-0"
-        style={{
-          backgroundImage: 'url(/toriateBack.png)',
-          opacity: 1,
-          pointerEvents: 'none',
-        }}
-      />
+    <div className={`tori-dashboard-font tori-dashboard-shell min-h-screen relative flex items-center justify-center ${darkMode ? 'dark' : ''}`}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.13)_1px,transparent_1.2px)] [background-size:18px_18px] opacity-45" />
 
-      <div className="relative z-10 w-[85%] h-[90vh] bg-gray-800 bg-opacity-40 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden flex">
+      <div className="tori-dashboard-panel relative z-10 flex h-screen w-screen overflow-hidden">
         <div className="lg:hidden relative z-20">
           <div className="absolute inset-0 flex z-40">
             <div
@@ -176,7 +219,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
               onClick={() => setMobileMenuOpen(false)}
             />
             <div
-              className={`relative flex-1 flex flex-col max-w-xs w-full bg-black bg-opacity-70 backdrop-blur-md rounded-3xl border border-gray-700 p-3 m-3 transition ease-in-out duration-300 transform ${
+              className={`tori-dashboard-card relative flex-1 flex flex-col max-w-xs w-full rounded-3xl p-3 m-3 transition ease-in-out duration-300 transform ${
                 mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
               }`}
             >
@@ -193,29 +236,41 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
                 </button>
               </div>
               <div className="flex-1 h-0 pt-4 pb-3 overflow-y-auto">
-                <div className="flex-shrink-0 flex items-center px-3">
-                  <span className="text-lg font-bold text-white">{config.title}</span>
+                <div className="flex-shrink-0 px-3 text-center">
+                  <img src={toriLogoSrc} alt="Tori Ate" className="mx-auto mb-3 h-11 w-auto object-contain opacity-95" />
+                  <span className="font-tori-garamond text-3xl font-light text-white">
+                    {serviceType === 'turf' ? 'Sports Venue' : config.title}
+                  </span>
                 </div>
                 <nav className="mt-4 px-2 space-y-1">
                   {navigation.map((item) => renderNavLink(item, true))}
                 </nav>
               </div>
-              <div className="flex-shrink-0 flex border-t border-gray-700 p-3">{userProfile}</div>
+              <div className="flex-shrink-0 space-y-2 p-3">
+                {renderNavLink(settingsNavItem, true)}
+                {userProfile}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="hidden lg:flex lg:w-68 lg:flex-col lg:relative lg:h-full z-50 p-3">
-          <div className="flex-1 flex flex-col min-h-0 border border-gray-700 bg-black bg-opacity-70 backdrop-blur-md rounded-3xl text-white">
+        <div className="hidden lg:flex lg:w-[14.75rem] xl:w-[15.5rem] lg:flex-col lg:relative lg:h-full z-50 p-2.5">
+          <div className="tori-dashboard-card flex-1 flex flex-col min-h-0 rounded-[1.45rem] text-white">
             <div className="flex-1 flex flex-col pt-4 pb-3 overflow-y-auto">
-              <div className="flex items-center flex-shrink-0 px-3">
-                <span className="text-lg font-bold text-white">{config.title}</span>
+              <div className="flex-shrink-0 px-3 text-center">
+                <img src={toriLogoSrc} alt="Tori Ate" className="mx-auto mb-3 h-11 w-auto object-contain opacity-95" />
+                <span className="font-tori-garamond text-3xl font-light text-white">
+                  {serviceType === 'turf' ? 'Sports Venue' : config.title}
+                </span>
               </div>
               <nav className="mt-4 flex-1 px-2 space-y-1">
                 {navigation.map((item) => renderNavLink(item))}
               </nav>
             </div>
-            <div className="flex-shrink-0 flex border-t border-gray-700 p-3">{userProfile}</div>
+            <div className="flex-shrink-0 space-y-2 p-3">
+              {renderNavLink(settingsNavItem)}
+              {userProfile}
+            </div>
           </div>
         </div>
 
@@ -235,11 +290,37 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
             </div>
           </div>
 
-          <main className="flex-1 px-3 py-5 overflow-hidden">
+          <main className="flex-1 overflow-y-auto px-2 py-2.5 sm:px-3">
             <Outlet />
           </main>
         </div>
       </div>
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <h2 className="text-lg font-semibold">Sign out?</h2>
+            <p className="mt-2 text-sm leading-6 text-blue-100/62">
+              Are you sure you want to sign out of your dashboard?
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowSignOutConfirm(false)}
+                className="flex-1 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-blue-100/80 transition hover:bg-white/[0.08] hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmSignOut}
+                className="flex-1 rounded-full bg-[#f3efe8] px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-white"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

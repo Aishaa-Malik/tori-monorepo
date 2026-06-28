@@ -5,15 +5,15 @@ export const REVENUE_CONFIGS: Record<ServiceType, RevenueServiceConfig> = {
   doctor: {
     serviceType: 'doctor',
     tableName: 'appointments',
-    displayName: 'Revenue Dashboard',
-    entityName: 'appointment',
-    entityNamePlural: 'appointments',
+    displayName: 'Venue Revenue',
+    entityName: 'booking',
+    entityNamePlural: 'bookings',
     fields: {
       customerName: 'customer_name',
       customerContact: 'customer_contact',
       customerEmail: 'customer_email'
     },
-    serviceLabel: 'General Consultation'
+    serviceLabel: 'Venue Booking'
   },
   turf: {
     serviceType: 'turf',

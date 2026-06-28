@@ -39,21 +39,18 @@ export const SERVICE_CONFIGS: Record<ServiceType, ServiceConfig> = {
   doctor: {
     serviceType: 'doctor',
     tableName: 'appointments',
-    channelName: 'doctor-appointments-changes',
-    displayName: 'Appointments',
+    channelName: 'venue-bookings-changes',
+    displayName: 'Bookings',
     fields: {
-      customerName: 'patient_name',
-      customerEmail: 'patient_email',
-      customerContact: 'patient_contact',
-      additionalFields: ['doctor', 'prescription']
+      customerName: 'customer_name',
+      customerEmail: 'customer_email',
+      customerContact: 'customer_contact'
     },
     columns: [
-      { key: 'patient', label: 'Patient', type: 'customer' },
-      { key: 'doctor', label: 'Doctor', type: 'text' },
+      { key: 'customer', label: 'Customer', type: 'customer' },
       { key: 'datetime', label: 'Date & Time', type: 'datetime' },
       { key: 'status', label: 'Status', type: 'status' },
       { key: 'payment', label: 'Payment', type: 'payment' },
-      { key: 'prescription', label: 'Prescription', type: 'file' },
       { key: 'reference', label: 'Reference', type: 'reference' }
     ],
     //columns = [ColumnConfig, ColumnConfig, ColumnConfig...]
@@ -63,7 +60,7 @@ export const SERVICE_CONFIGS: Record<ServiceType, ServiceConfig> = {
               //   type: 'customer' | 'text' | 'datetime' | 'status' | 'payment' | 'file' | 'reference';
               // }, 
               // {key: string; label: string; type: 'customer' | 'text' | 'datetime' | 'status' | 'payment' | 'file' | 'reference'; },....]
-    hasFileUpload: true
+    hasFileUpload: false
   },
   turf: {
     serviceType: 'turf',

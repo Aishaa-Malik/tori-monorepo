@@ -4,17 +4,17 @@ import { ServiceType, UserManagementConfig } from '../types/userManagement.types
 export const userManagementConfigs: Record<ServiceType, UserManagementConfig> = {
   doctor: {
     serviceType: 'doctor',
-    title: 'Doctor User Management',
+    title: 'Venue User Management',
     availableRoles: [UserRole.DOCTOR, UserRole.EMPLOYEE],
     defaultRole: UserRole.EMPLOYEE,
-    description: 'Manage user access for your medical practice'
+    description: 'Manage staff access for your sports venue'
   },
   turf: {
     serviceType: 'turf',
-    title: 'User Management',
+    title: 'Venue User Management',
     availableRoles: [UserRole.BUSINESS_OWNER, UserRole.EMPLOYEE],
     defaultRole: UserRole.EMPLOYEE,
-    description: 'Manage user access for your turf facility'
+    description: 'Manage staff access for your sports venue'
   },
   spa: {
     serviceType: 'spa',

@@ -16,12 +16,9 @@ const Modal : React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={onClose}></div>
-        </div>
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div className="flex min-h-screen items-center justify-center px-4 py-10 text-center">
+        <div className="fixed inset-0 bg-black/45 backdrop-blur-md transition-opacity" aria-hidden="true" onClick={onClose} />
+        <div className="relative inline-block w-full max-w-3xl overflow-hidden rounded-[2rem] border border-white/12 bg-[#071421]/88 text-left shadow-[0_28px_80px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl">
           {children}
         </div>
       </div>
@@ -123,79 +120,79 @@ const BookingDetailModal: React.FC<{
     <Modal isOpen={isOpen} onClose={onClose}> 
     {/* BookingDetailModal k andar Modal component call ho ra h and */}
     {/* // isme(Modal me) children pass ho ra h neeche wala html content */}
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-white">Booking Details</h3>
+      <div className="font-tori-garamond p-8 text-white">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-4xl font-light">Booking Details</h3>
           <button
             type="button"
-            className="text-gray-400 hover:text-gray-500"
+            className="tori-unstyled-button flex h-12 w-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.055] text-blue-100/72 transition hover:bg-white/[0.1] hover:text-white"
             onClick={onClose}
           >
             <span className="sr-only">Close</span>
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         
-        <div className="mt-2">
-          <table className="min-w-full divide-y divide-gray-200">
-            <tbody className="divide-y divide-gray-200">
+        <div className="mt-2 overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.035]">
+          <table className="min-w-full table-fixed divide-y divide-white/10">
+            <tbody className="divide-y divide-white/10">
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="w-[34%] bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Booking Reference
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {booking.booking_reference || 'N/A'}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Customer Name
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {getFieldValue(booking, 'name')}
                 </td>
               </tr>
               {config.fields.additionalFields?.includes('doctor') && (
                 <tr>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                  <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                     Doctor
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-2xl font-light text-white">
                     {(booking as DoctorBooking).doctor}
                   </td>
                 </tr>
               )}
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Contact
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {getFieldValue(booking, 'contact') || 'N/A'}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Email
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {getFieldValue(booking, 'email') || 'N/A'}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Date & Time
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {formatDate(booking.booking_date)} at {formatTime(booking.start_time, booking.booking_date)}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Status
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                     booking.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
                     booking.status === 'Completed' ? 'bg-green-100 text-green-800' :
@@ -208,35 +205,35 @@ const BookingDetailModal: React.FC<{
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Payment amount
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {booking.amount ? `${booking.currency || 'INR'} ${booking.amount}` : 'N/A'}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Payment Method
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {booking.payment_method ? booking.payment_method.toUpperCase() : 'N/A'}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Payment ID
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {booking.payment_id || 'N/A'}
                 </td>
               </tr>
               {config.hasFileUpload && config.fields.additionalFields?.includes('prescription') && (
                 <tr>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                  <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                     Prescription
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-2xl font-light text-white">
                     {(booking as DoctorBooking).prescription ? (
                       <a 
                         href={(booking as DoctorBooking).prescription} 
@@ -254,33 +251,23 @@ const BookingDetailModal: React.FC<{
                 </tr>
               )}
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Created At
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {formatTimestamp(booking.created_at || '')}
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-gray-50">
+                <td className="bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
                   Last Updated
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-900">
+                <td className="px-6 py-4 text-2xl font-light text-white">
                   {formatTimestamp(booking.updated_at || '')}
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-        
-        <div className="mt-6 sm:flex sm:flex-row-reverse">
-          <button
-            type="button"
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-            onClick={onClose}
-          >
-            Close
-          </button>
         </div>
       </div>
     </Modal>
@@ -297,6 +284,7 @@ const UnifiedBookingPage: React.FC<UnifiedBookingPageProps> = ({ serviceType }) 
   
   const [filter, setFilter] = useState('all');
   const statusOptions = ['all', 'Scheduled', 'Completed', 'Cancelled', 'No-show'];
+  const [statusMenuOpen, setStatusMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [bookings, setBookings] = useState<BookingData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -309,6 +297,8 @@ const UnifiedBookingPage: React.FC<UnifiedBookingPageProps> = ({ serviceType }) 
   // Add states for booking detail modal
   const [selectedBooking, setSelectedBooking] = useState<BookingData | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const visibleColumns = config.columns.filter((column) => column.key !== 'reference');
+  const selectedStatusLabel = filter === 'all' ? 'All Status' : filter;
 
   // Helper to get field value dynamically
   const getFieldValue = (booking: BookingData, fieldType: 'name' | 'email' | 'contact') => {
@@ -568,17 +558,9 @@ const filteredBookings2 = useMemo( () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">{config.displayName}</h1>
-        {config.serviceType === 'doctor' && (
-          <button
-            onClick={() => setShowNewAppointmentForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          >
-            New Appointment
-          </button>
-        )}
+    <div className="font-tori-garamond p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.displayName}</h1>
       </div>
 
       {error && (
@@ -588,56 +570,86 @@ const filteredBookings2 = useMemo( () => {
       )}
 
       {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder={`Search ${config.displayName.toLowerCase()}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <div className="mb-5 flex flex-col gap-3 rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-2xl sm:flex-row sm:items-center">
+        <input
+          type="text"
+          placeholder={`Search ${config.displayName.toLowerCase()}...`}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-3 text-2xl font-light text-white placeholder:text-blue-100/34 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 sm:w-[40%]"
+        />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setStatusMenuOpen((open) => !open)}
+            className="tori-unstyled-button flex h-12 min-w-[10rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-5 pr-4 text-2xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1]"
           >
-            {statusOptions.map(status => (
-              <option key={status} value={status}>
-                {status === 'all' ? 'All Status' : status}
-              </option>
-            ))}
-          </select>
+            <span>{selectedStatusLabel}</span>
+            <svg className={`ml-4 h-4 w-4 text-blue-100/75 transition ${statusMenuOpen ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6 8 10l4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {statusMenuOpen && (
+            <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/90 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+              {statusOptions.map((status) => (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => {
+                    setFilter(status);
+                    setStatusMenuOpen(false);
+                  }}
+                  className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                    filter === status ? 'bg-[#9ed3ff]/16 text-white' : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
+                  }`}
+                >
+                  {status === 'all' ? 'All Status' : status}
+                  {filter === status && <span className="h-1.5 w-1.5 rounded-full bg-[#bfe4ff]" />}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+        {config.serviceType === 'doctor' && (
+          <button
+            onClick={() => setShowNewAppointmentForm(true)}
+            className="tori-unstyled-button ml-auto inline-flex items-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 text-lg font-light text-white transition hover:bg-white/[0.11]"
+          >
+            <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
+              <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+            </span>
+            New Appointment
+          </button>
+        )}
       </div>
 
       {/* Bookings Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="overflow-hidden rounded-[1.3rem] border border-white/10 bg-[#030812]/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.2)] backdrop-blur-xl">
         <div className="max-h-[70vh] overflow-y-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 sticky top-0">
+          <table className="min-w-full table-fixed divide-y divide-white/8">
+            <thead className="sticky top-0 bg-[#071421]/95 backdrop-blur-xl">
               <tr>
-                {config.columns.map(column => (
-                  <th key={column.key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {visibleColumns.map(column => (
+                  <th key={column.key} className="px-6 py-4 text-center text-xl font-light normal-case text-blue-100/48 first:text-left">
                     {column.label}
                   </th>
                 ))}
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-center text-xl font-light normal-case text-blue-100/48">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-white/8">
               {filteredBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
-                  {config.columns.map(column => (
-                    <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <tr key={booking.id} className="transition hover:bg-white/[0.025]">
+                  {visibleColumns.map(column => (
+                    <td key={column.key} className="px-6 py-5 text-center text-2xl font-light text-white first:text-left">
                       {column.type === 'customer' && (
                         <div>
-                          <div className="font-medium">{getFieldValue(booking, 'name')}</div>
-                          <div className="text-gray-500">{getFieldValue(booking, 'contact')}</div>
+                          <div>{getFieldValue(booking, 'name')}</div>
+                          <div className="text-xl text-blue-100/38">{getFieldValue(booking, 'contact')}</div>
                         </div>
                       )}
                       {column.type === 'text' && column.key === 'doctor' && (
@@ -646,7 +658,7 @@ const filteredBookings2 = useMemo( () => {
                       {column.type === 'datetime' && (
                         <div>
                           <div>{formatDate(booking.booking_date)}</div>
-                          <div className="text-gray-500">{formatTime(booking.start_time, booking.booking_date)}</div>
+                          <div className="text-xl text-blue-100/38">{formatTime(booking.start_time, booking.booking_date)}</div>
                         </div>
                       )}
                       {column.type === 'status' && (
@@ -663,7 +675,7 @@ const filteredBookings2 = useMemo( () => {
                       {column.type === 'payment' && (
                         <div>
                           <div>{booking.amount ? `${booking.currency || 'INR'} ${booking.amount}` : 'N/A'}</div>
-                          <div className="text-gray-500">{booking.payment_method?.toUpperCase() || 'N/A'}</div>
+                          <div className="text-xl text-blue-100/38">{booking.payment_method?.toUpperCase() || 'N/A'}</div>
                         </div>
                       )}
                       {column.type === 'file' && config.hasFileUpload && (
@@ -694,26 +706,34 @@ const filteredBookings2 = useMemo( () => {
                           )}
                         </div>
                       )}
-                      {column.type === 'reference' && (
-                        <span className="text-gray-500">{booking.booking_reference || 'N/A'}</span>
-                      )}
                     </td>
                   ))}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
+                  <td className="px-6 py-5 text-center">
+                    <div className="flex justify-center gap-3">
                       <button
                         onClick={() => handleViewBooking(booking)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="tori-unstyled-button inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#b9ddff]/18 bg-[#b9ddff]/10 text-blue-100 transition hover:bg-[#b9ddff]/18 hover:text-white"
+                        aria-label="View booking"
                       >
-                        View
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" strokeWidth="1.8" />
+                        </svg>
                       </button>
                       {booking.status === 'Scheduled' && (
                         <button
                           onClick={() => handleCancelBooking(booking.id)}
                           disabled={cancellingIds.has(booking.id)}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                          className="tori-unstyled-button inline-flex h-11 w-11 items-center justify-center rounded-full border border-red-200/18 bg-red-400/10 text-red-100 transition hover:bg-red-400/16 hover:text-white disabled:opacity-50"
+                          aria-label="Cancel booking"
                         >
-                          {cancellingIds.has(booking.id) ? 'Cancelling...' : 'Cancel'}
+                          {cancellingIds.has(booking.id) ? (
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          ) : (
+                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                              <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          )}
                         </button>
                       )}
                     </div>
