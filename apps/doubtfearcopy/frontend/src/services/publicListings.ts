@@ -1,11 +1,5 @@
 import { getApiUrl } from '../utils/environmentUtils';
 
-const debugPublicListings = (hypothesisId: string, message: string, data: Record<string, unknown>) => {
-  // #region agent log
-  fetch('http://127.0.0.1:7936/ingest/92ede0b0-b5da-4b2a-b38e-ceee586e37ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'00f974'},body:JSON.stringify({sessionId:'00f974',runId:'public-listings-initial',hypothesisId,location:'src/services/publicListings.ts',message,data,timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-};
-
 type RawTimeSlot = {
   start_time?: string;
   end_time?: string;
@@ -48,16 +42,6 @@ const DEFAULT_IMAGES: Record<string, string> = {
 };
 
 const ensureSuccess = async (response: Response) => {
-  // #region agent log
-  debugPublicListings('H2_H3', 'public listings response received', {
-    ok: response.ok,
-    status: response.status,
-    statusText: response.statusText,
-    url: response.url,
-    contentType: response.headers.get('content-type'),
-  });
-  // #endregion
-
   if (response.ok) {
     return response.json();
   }
@@ -75,46 +59,10 @@ const ensureSuccess = async (response: Response) => {
 };
 
 export const fetchPublicListings = async (subcategoryTag: string): Promise<PublicListingRecord[]> => {
-  const apiUrl = getApiUrl();
-  const requestUrl = `${apiUrl}/public-service-listings?subcategoryTag=${encodeURIComponent(subcategoryTag)}`;
-
-  // #region agent log
-  debugPublicListings('H1_H4', 'public listings request starting', {
-    apiUrl,
-    requestUrl,
-    subcategoryTag,
-    pageOrigin: window.location.origin,
-    pagePath: window.location.pathname,
-    nodeEnv: process.env.NODE_ENV,
-    envBackendSet: Boolean(process.env.REACT_APP_BACKEND_URL),
-  });
-  // #endregion
-
-  try {
-    const response = await fetch(requestUrl);
-    const result = await ensureSuccess(response);
-    const listings = Array.isArray(result.data) ? result.data : [];
-
-    // #region agent log
-    debugPublicListings('H3', 'public listings parsed successfully', {
-      count: listings.length,
-      hasDataArray: Array.isArray(result.data),
-    });
-    // #endregion
-
-    return listings;
-  } catch (error) {
-    // #region agent log
-    debugPublicListings('H1_H2_H3', 'public listings fetch threw', {
-      errorName: error instanceof Error ? error.name : typeof error,
-      errorMessage: error instanceof Error ? error.message : String(error),
-      requestUrl,
-      pageOrigin: window.location.origin,
-    });
-    // #endregion
-
-    throw error;
-  }
+  const requestUrl = `${getApiUrl()}/public-service-listings?subcategoryTag=${encodeURIComponent(subcategoryTag)}`;
+  const response = await fetch(requestUrl);
+  const result = await ensureSuccess(response);
+  return Array.isArray(result.data) ? result.data : [];
 };
 
 export const fetchPublicListingById = async (serviceId: string): Promise<PublicListingRecord> => {

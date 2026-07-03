@@ -42,6 +42,18 @@ export const getRedirectUrl = (path: string): string => {
  * @returns The API URL for the current environment
  */
 export const getApiUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const { hostname, port, origin } = window.location;
+    const usesWebsiteApi =
+      hostname === 'toriate.com' ||
+      hostname === 'www.toriate.com' ||
+      (hostname === 'localhost' && port === '3001');
+
+    if (usesWebsiteApi) {
+      return `${origin}/api`;
+    }
+  }
+
   const envUrl = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, '');
 
   if (envUrl) {
