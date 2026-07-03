@@ -157,13 +157,13 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#02060d]/72 p-4 backdrop-blur-xl">
-      <div className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[2rem] border border-white/16 bg-[linear-gradient(145deg,rgba(25,39,61,0.86),rgba(5,10,18,0.94))] p-6 text-white shadow-[0_30px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.14)]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#02060d]/72 p-3 backdrop-blur-xl sm:p-4">
+      <div className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[1.5rem] border border-white/16 bg-[linear-gradient(145deg,rgba(25,39,61,0.86),rgba(5,10,18,0.94))] p-4 text-white shadow-[0_30px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.14)] sm:rounded-[2rem] sm:p-6">
         <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_20%_0%,rgba(220,238,255,0.18),transparent_18rem),linear-gradient(120deg,rgba(255,255,255,0.08),transparent_34%,rgba(255,255,255,0.035))]" />
         <div className="relative flex justify-between items-start mb-5">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-blue-100/45">Manual booking</p>
-            <h2 className="font-tori-garamond text-4xl font-light leading-none">Add venue slot</h2>
+            <h2 className="font-tori-garamond text-3xl font-light leading-none sm:text-4xl">Add venue slot</h2>
           </div>
           <button 
             onClick={onClose}
@@ -243,7 +243,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
             </div>
           )}
 
-          <div className="mb-4 grid grid-cols-2 gap-4">
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className={labelClass} htmlFor="date">
                 Date *
@@ -288,7 +288,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
             />
           </div>
 
-          <div className="mb-4 grid grid-cols-2 gap-4">
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className={labelClass} htmlFor="amount">
                 Amount
@@ -317,7 +317,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onClose, onSucc
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 mt-6">
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             <button
               type="button"
               onClick={onClose}

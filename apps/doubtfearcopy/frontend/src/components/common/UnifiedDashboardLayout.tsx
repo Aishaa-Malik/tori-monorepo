@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth, UserRole } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -84,6 +84,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
   const config = getDashboardConfig(serviceType);
   const navigation = getNavItems(serviceType, user?.role ?? UserRole.EMPLOYEE)
@@ -99,18 +100,22 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
   };
   const toriLogoSrc = `${process.env.PUBLIC_URL}/images/logo.png`;
 
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [user?.avatarUrl]);
+
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   const renderNavLink = (item: { name: string; href: string; icon: string; disabled?: boolean }, mobile = false) => {
-    const textSize = mobile ? 'text-base' : 'text-sm';
+    const textSize = mobile ? 'text-[1.45rem]' : 'text-[1.32rem]';
     const iconMargin = mobile ? 'mr-3' : 'mr-3';
 
     if (item.disabled) {
       return (
         <div
           key={item.name}
-          className={`group flex items-center px-3 py-2.5 ${textSize} font-medium rounded-2xl text-gray-400 cursor-not-allowed`}
+          className={`group flex items-center px-3 py-3 ${textSize} font-light rounded-2xl text-gray-400 cursor-not-allowed`}
         >
           <div className={`${iconMargin} text-gray-500`}>{renderIcon(item.icon)}</div>
           {item.name}
@@ -122,7 +127,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
       <Link
         key={item.name}
         to={item.href}
-        className={`group flex items-center px-3 py-2.5 ${textSize} font-medium rounded-2xl transition-all duration-200 ${
+        className={`group flex items-center px-3 py-3 ${textSize} font-light rounded-2xl transition-all duration-200 ${
           isActive(item.href)
             ? 'bg-[#9ed3ff]/18 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_28px_rgba(46,112,168,0.16)]'
             : 'text-blue-100/72 hover:bg-white/9 hover:text-white'
@@ -163,8 +168,14 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
         className="flex w-full items-center gap-2 rounded-xl border border-white/10 bg-white/[0.055] p-2 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-200 hover:border-[#b9ddff]/18 hover:bg-white/[0.075]"
       >
         <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-white/12 ring-1 ring-white/10">
-          {user?.avatarUrl ? (
-            <img src={user.avatarUrl} alt={user.name || 'User'} className="h-full w-full object-cover" />
+          {user?.avatarUrl && !avatarFailed ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name || 'User'}
+              referrerPolicy="no-referrer"
+              className="h-full w-full object-cover"
+              onError={() => setAvatarFailed(true)}
+            />
           ) : (
             <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-white">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
@@ -172,10 +183,10 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold leading-tight text-white">
+          <p className="truncate text-[1.28rem] font-light leading-tight text-white">
             {user?.name || config.defaultUserLabel}
           </p>
-          <p className="mt-0.5 truncate text-[11px] leading-tight text-blue-100/50">
+          <p className="mt-0.5 truncate text-[1rem] leading-tight text-blue-100/50">
             {user?.email || 'owner@business.com'}
           </p>
         </div>
@@ -190,12 +201,12 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
       </button>
 
       {profileMenuOpen && (
-        <div className="absolute bottom-0 left-[calc(100%-0.35rem)] z-20 w-32 pl-3">
+        <div className="absolute bottom-0 left-[calc(100%-0.35rem)] z-20 w-40 pl-3">
           <div className="rounded-2xl border border-white/10 bg-[#071421]/95 p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
           <button
             type="button"
             onClick={openSignOutConfirm}
-            className="flex w-full items-center justify-center rounded-xl px-3 py-2 text-xs font-semibold text-blue-100/75 transition hover:bg-white/[0.08] hover:text-white"
+            className="flex w-full items-center justify-center rounded-xl px-4 py-3 font-tori-garamond text-xl font-light text-blue-100/75 transition hover:bg-white/[0.08] hover:text-white"
           >
             Sign out
           </button>
@@ -210,7 +221,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.13)_1px,transparent_1.2px)] [background-size:18px_18px] opacity-45" />
 
       <div className="tori-dashboard-panel relative z-10 flex h-screen w-screen overflow-hidden">
-        <div className="lg:hidden relative z-20">
+        <div className="xl:hidden relative z-20">
           <div className="absolute inset-0 flex z-40">
             <div
               className={`absolute inset-0 bg-gray-600 bg-opacity-75 transition-opacity ease-linear duration-300 ${
@@ -219,7 +230,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
               onClick={() => setMobileMenuOpen(false)}
             />
             <div
-              className={`tori-dashboard-card relative flex-1 flex flex-col max-w-xs w-full rounded-3xl p-3 m-3 transition ease-in-out duration-300 transform ${
+              className={`tori-dashboard-card relative flex-1 flex flex-col max-w-[min(21rem,calc(100vw-2rem))] w-full rounded-3xl p-3 m-3 transition ease-in-out duration-300 transform ${
                 mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
               }`}
             >
@@ -254,7 +265,7 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
           </div>
         </div>
 
-        <div className="hidden lg:flex lg:w-[14.75rem] xl:w-[15.5rem] lg:flex-col lg:relative lg:h-full z-50 p-2.5">
+        <div className="hidden xl:flex xl:w-[15.5rem] 2xl:w-[16.5rem] xl:flex-col xl:relative xl:h-full z-50 p-2.5">
           <div className="tori-dashboard-card flex-1 flex flex-col min-h-0 rounded-[1.45rem] text-white">
             <div className="flex-1 flex flex-col pt-4 pb-3 overflow-y-auto">
               <div className="flex-shrink-0 px-3 text-center">
@@ -275,11 +286,11 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
         </div>
 
         <div className="flex flex-col flex-1 relative z-10 overflow-hidden">
-          <div className="flex justify-between items-center p-0">
-            <div className="lg:hidden">
+          <div className="flex items-center justify-between px-2 py-2 xl:hidden">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="h-8 w-8 inline-flex items-center justify-center rounded-md text-white"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <span className="sr-only">Open sidebar</span>
@@ -287,11 +298,21 @@ const UnifiedDashboardLayout: React.FC<UnifiedDashboardLayoutProps> = ({ service
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
+              <div className="min-w-0">
+                <p className="font-tori-garamond text-2xl font-light leading-none text-white sm:text-3xl">
+                  {serviceType === 'turf' ? 'Sports Venue' : config.title}
+                </p>
+                <p className="mt-0.5 truncate font-tori-garamond text-sm font-light text-blue-100/45">
+                  Dashboard
+                </p>
+              </div>
             </div>
           </div>
 
-          <main className="flex-1 overflow-y-auto px-2 py-2.5 sm:px-3">
-            <Outlet />
+          <main className="flex-1 overflow-y-auto px-2 pb-3 pt-1 sm:px-4 sm:pb-4 xl:px-3 xl:py-2.5">
+            <div className="mx-auto w-full max-w-[118rem]">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

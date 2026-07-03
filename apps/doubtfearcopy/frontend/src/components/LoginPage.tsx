@@ -133,7 +133,7 @@ const LoginPage: React.FC = () => {
             <img
               src={dashboardLoginImg}
               alt="Tori Ate dashboard login visual"
-              className="h-full w-full object-fill"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>

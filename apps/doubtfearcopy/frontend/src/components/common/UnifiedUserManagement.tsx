@@ -289,15 +289,15 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
   };
 
   return (
-    <div className="space-y-4 px-1 py-4 sm:px-2 lg:px-3">
+    <div className="space-y-4 px-0 py-4 font-tori-garamond sm:px-2 lg:px-3">
       {/* Header section */}
       <div className="flex flex-col gap-5">
-        <div>
-          <h2 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">
+        <div className="text-left">
+          <h2 className="font-tori-garamond text-4xl font-light leading-[0.95] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">
             {serviceConfig.title}
           </h2>
           {serviceConfig.description && (
-            <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">
+            <p className="font-tori-garamond mt-2 text-lg font-light leading-tight text-blue-100/34 sm:text-xl">
               {serviceConfig.description}
             </p>
           )}
@@ -319,20 +319,20 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
       )}
 
       {/* Search and filters */}
-      <div className="flex flex-col gap-3 rounded-[1.2rem] border border-white/10 bg-[#030812]/68 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-xl md:flex-row md:items-center">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
         <input
           type="search"
           placeholder="Search users by name or email"
-          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-2.5 text-sm text-white placeholder:text-blue-100/38 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 md:w-[40%]"
+          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-2.5 font-tori-garamond text-lg font-light text-white placeholder:text-blue-100/38 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 md:w-[40%]"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button
           onClick={() => setShowInviteModal(true)}
-          className="tori-unstyled-button inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] py-2 pl-2 pr-4 text-sm font-semibold normal-case text-white transition hover:bg-white/[0.1] md:ml-auto"
+          className="tori-unstyled-button group inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] py-2 pl-2 pr-4 font-tori-garamond text-lg font-light normal-case text-white transition hover:bg-white/[0.1] md:ml-auto"
         >
           <span className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition duration-700 group-hover:rotate-[360deg]" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
           </span>
@@ -342,7 +342,8 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
 
       {/* Users table */}
       <div className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-[#030812]/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-        <table className="min-w-full table-fixed divide-y divide-white/8">
+        <div className="overflow-x-auto">
+        <table className="min-w-[58rem] table-fixed divide-y divide-white/8 xl:min-w-full">
           <colgroup>
             <col className="w-[36%]" />
             <col className="w-[18%]" />
@@ -352,11 +353,11 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
           </colgroup>
           <thead className="bg-white/[0.035]">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">User</th>
-              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Role</th>
-              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Status</th>
-              <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Date Added</th>
-              <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-[0.12em] text-blue-100/45">Actions</th>
+              <th className="px-6 py-4 text-left font-tori-garamond text-lg font-light normal-case text-blue-100/45">User</th>
+              <th className="px-6 py-4 text-center font-tori-garamond text-lg font-light normal-case text-blue-100/45">Role</th>
+              <th className="px-6 py-4 text-center font-tori-garamond text-lg font-light normal-case text-blue-100/45">Status</th>
+              <th className="px-6 py-4 text-center font-tori-garamond text-lg font-light normal-case text-blue-100/45">Date Added</th>
+              <th className="px-6 py-4 text-right font-tori-garamond text-lg font-light normal-case text-blue-100/45">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/8">
@@ -381,10 +382,10 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
                         </span>
                       </div>
                       <div className="ml-4 min-w-0 text-left">
-                        <div className="truncate text-base font-semibold text-white">
+                        <div className="truncate font-tori-garamond text-xl font-light text-white">
                           {user.full_name || user.email.split('@')[0]}
                         </div>
-                        <div className="mt-1 truncate text-sm text-blue-100/34">{user.email}</div>
+                        <div className="mt-1 truncate font-tori-garamond text-lg font-light text-blue-100/34">{user.email}</div>
                       </div>
                     </div>
                   </td>
@@ -393,26 +394,26 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
-                        className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-sm text-white focus:border-[#9ed3ff]/45 focus:outline-none"
+                        className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 font-tori-garamond text-base font-light text-white focus:border-[#9ed3ff]/45 focus:outline-none"
                       >
                         {serviceConfig.availableRoles.map(role => (
                           <option key={role} value={role}>{getRoleDisplayName(role)}</option>
                         ))}
                       </select>
                     ) : (
-                      <span className="text-sm text-blue-100/58">{getRoleDisplayName(user.role)}</span>
+                      <span className="font-tori-garamond text-base font-light text-blue-100/58">{getRoleDisplayName(user.role)}</span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-center align-middle">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    <span className={`inline-flex rounded-full border px-3 py-1 font-tori-garamond text-sm font-light leading-none ${
                       user.status === 'active' 
-                        ? 'bg-emerald-300/14 text-emerald-100' 
-                        : 'bg-[#f3efe8]/12 text-[#f3efe8]'
+                        ? 'border-emerald-200/20 bg-emerald-300/14 text-emerald-100' 
+                        : 'border-[#f3efe8]/20 bg-[#f3efe8]/12 text-[#f3efe8]'
                     }`}>
                       {user.status === 'active' ? 'Active' : 'Pending Invitation'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center align-middle text-sm text-blue-100/52">
+                  <td className="px-6 py-4 text-center align-middle font-tori-garamond text-base font-light text-blue-100/52">
                     {user.status === 'pending' ? user.invitation_date : user.created_at}
                   </td>
                   <td className="px-6 py-4 text-right align-middle text-sm font-medium">
@@ -431,12 +432,13 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-6 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-sm">
+          <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] sm:p-6">
             <h3 className="font-tori-garamond text-4xl font-light">Invite User</h3>
             <p className="mt-1 text-sm text-blue-100/55">Add a team member to your sports venue dashboard.</p>
             <form onSubmit={handleInviteSubmit}>
@@ -467,7 +469,7 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
                   ))}
                 </select>
               </div>
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowInviteModal(false)}
@@ -490,7 +492,7 @@ const UnifiedUserManagement: React.FC<UserManagementProps> = ({ serviceType, con
       )}
 
       {removeTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-[1.5rem] border border-white/12 bg-[#071421]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
             <h3 className="text-lg font-semibold">
               {removeTarget.status === 'pending' ? 'Cancel invitation?' : 'Remove user?'}

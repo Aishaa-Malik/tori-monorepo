@@ -18,7 +18,7 @@ const Modal : React.FC<{
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center px-4 py-10 text-center">
         <div className="fixed inset-0 bg-black/45 backdrop-blur-md transition-opacity" aria-hidden="true" onClick={onClose} />
-        <div className="relative inline-block w-full max-w-3xl overflow-hidden rounded-[2rem] border border-white/12 bg-[#071421]/88 text-left shadow-[0_28px_80px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl">
+        <div className="relative inline-block max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[1.5rem] border border-white/12 bg-[#071421]/88 text-left shadow-[0_28px_80px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:rounded-[2rem]">
           {children}
         </div>
       </div>
@@ -120,9 +120,9 @@ const BookingDetailModal: React.FC<{
     <Modal isOpen={isOpen} onClose={onClose}> 
     {/* BookingDetailModal k andar Modal component call ho ra h and */}
     {/* // isme(Modal me) children pass ho ra h neeche wala html content */}
-      <div className="font-tori-garamond p-8 text-white">
+      <div className="font-tori-garamond p-4 text-white sm:p-8">
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-4xl font-light">Booking Details</h3>
+          <h3 className="text-3xl font-light sm:text-4xl">Booking Details</h3>
           <button
             type="button"
             className="tori-unstyled-button flex h-12 w-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.055] text-blue-100/72 transition hover:bg-white/[0.1] hover:text-white"
@@ -135,8 +135,8 @@ const BookingDetailModal: React.FC<{
           </button>
         </div>
         
-        <div className="mt-2 overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.035]">
-          <table className="min-w-full table-fixed divide-y divide-white/10">
+        <div className="mt-2 overflow-x-auto rounded-[1.25rem] border border-white/10 bg-white/[0.035]">
+          <table className="min-w-[42rem] table-fixed divide-y divide-white/10 sm:min-w-full">
             <tbody className="divide-y divide-white/10">
               <tr>
                 <td className="w-[34%] bg-white/[0.035] px-6 py-4 text-2xl font-light text-blue-100/75">
@@ -558,9 +558,9 @@ const filteredBookings2 = useMemo( () => {
   }
 
   return (
-    <div className="font-tori-garamond p-6">
+    <div className="font-tori-garamond px-0 py-4 sm:px-2 lg:px-3">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.displayName}</h1>
+        <h1 className="font-tori-garamond text-4xl font-light leading-[0.95] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">{config.displayName}</h1>
       </div>
 
       {error && (
@@ -570,19 +570,19 @@ const filteredBookings2 = useMemo( () => {
       )}
 
       {/* Filters */}
-      <div className="mb-5 flex flex-col gap-3 rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-2xl sm:flex-row sm:items-center">
+      <div className="mb-5 flex flex-col gap-3 font-tori-garamond md:flex-row md:items-center">
         <input
           type="text"
           placeholder={`Search ${config.displayName.toLowerCase()}...`}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-3 text-2xl font-light text-white placeholder:text-blue-100/34 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 sm:w-[40%]"
+          className="w-full rounded-full border border-white/10 bg-white/[0.065] px-5 py-3 font-tori-garamond text-lg font-light text-white placeholder:text-blue-100/34 focus:border-[#9ed3ff]/45 focus:outline-none focus:ring-2 focus:ring-[#9ed3ff]/18 sm:text-xl md:w-[40%]"
         />
-        <div className="relative">
+        <div className="relative z-50 md:ml-auto">
           <button
             type="button"
             onClick={() => setStatusMenuOpen((open) => !open)}
-            className="tori-unstyled-button flex h-12 min-w-[10rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-5 pr-4 text-2xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1]"
+            className="tori-unstyled-button flex h-11 w-full min-w-[8.5rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-4 pr-3 font-tori-garamond text-lg font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1] md:w-auto"
           >
             <span>{selectedStatusLabel}</span>
             <svg className={`ml-4 h-4 w-4 text-blue-100/75 transition ${statusMenuOpen ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -590,7 +590,7 @@ const filteredBookings2 = useMemo( () => {
             </svg>
           </button>
           {statusMenuOpen && (
-            <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/90 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+            <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-44 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/95 p-1.5 font-tori-garamond shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
               {statusOptions.map((status) => (
                 <button
                   key={status}
@@ -599,7 +599,7 @@ const filteredBookings2 = useMemo( () => {
                     setFilter(status);
                     setStatusMenuOpen(false);
                   }}
-                  className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                  className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-3.5 py-2 text-left font-tori-garamond text-lg font-light transition ${
                     filter === status ? 'bg-[#9ed3ff]/16 text-white' : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
                   }`}
                 >
@@ -613,10 +613,10 @@ const filteredBookings2 = useMemo( () => {
         {config.serviceType === 'doctor' && (
           <button
             onClick={() => setShowNewAppointmentForm(true)}
-            className="tori-unstyled-button ml-auto inline-flex items-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 text-lg font-light text-white transition hover:bg-white/[0.11]"
+            className="tori-unstyled-button group inline-flex items-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 font-tori-garamond text-lg font-light text-white transition hover:bg-white/[0.11]"
           >
             <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
-              <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <svg className="h-4 w-4 transition duration-700 group-hover:rotate-[360deg]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
             </span>
@@ -628,15 +628,16 @@ const filteredBookings2 = useMemo( () => {
       {/* Bookings Table */}
       <div className="overflow-hidden rounded-[1.3rem] border border-white/10 bg-[#030812]/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.2)] backdrop-blur-xl">
         <div className="max-h-[70vh] overflow-y-auto">
-          <table className="min-w-full table-fixed divide-y divide-white/8">
+          <div className="overflow-x-auto">
+          <table className="min-w-[58rem] table-fixed divide-y divide-white/8 xl:min-w-full">
             <thead className="sticky top-0 bg-[#071421]/95 backdrop-blur-xl">
               <tr>
                 {visibleColumns.map(column => (
-                  <th key={column.key} className="px-6 py-4 text-center text-xl font-light normal-case text-blue-100/48 first:text-left">
+                  <th key={column.key} className="px-6 py-4 text-center font-tori-garamond text-lg font-light normal-case text-blue-100/48 first:text-left">
                     {column.label}
                   </th>
                 ))}
-                <th className="px-6 py-4 text-center text-xl font-light normal-case text-blue-100/48">
+                <th className="px-6 py-4 text-center font-tori-garamond text-lg font-light normal-case text-blue-100/48">
                   Actions
                 </th>
               </tr>
@@ -645,11 +646,11 @@ const filteredBookings2 = useMemo( () => {
               {filteredBookings.map((booking) => (
                 <tr key={booking.id} className="transition hover:bg-white/[0.025]">
                   {visibleColumns.map(column => (
-                    <td key={column.key} className="px-6 py-5 text-center text-2xl font-light text-white first:text-left">
+                    <td key={column.key} className="px-6 py-5 text-center font-tori-garamond text-xl font-light text-white first:text-left">
                       {column.type === 'customer' && (
                         <div>
                           <div>{getFieldValue(booking, 'name')}</div>
-                          <div className="text-xl text-blue-100/38">{getFieldValue(booking, 'contact')}</div>
+                          <div className="text-lg text-blue-100/38">{getFieldValue(booking, 'contact')}</div>
                         </div>
                       )}
                       {column.type === 'text' && column.key === 'doctor' && (
@@ -658,16 +659,16 @@ const filteredBookings2 = useMemo( () => {
                       {column.type === 'datetime' && (
                         <div>
                           <div>{formatDate(booking.booking_date)}</div>
-                          <div className="text-xl text-blue-100/38">{formatTime(booking.start_time, booking.booking_date)}</div>
+                          <div className="text-lg text-blue-100/38">{formatTime(booking.start_time, booking.booking_date)}</div>
                         </div>
                       )}
                       {column.type === 'status' && (
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          booking.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
-                          booking.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                          booking.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                          booking.status === 'no-show' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
+                        <span className={`inline-flex rounded-full border px-3 py-1 font-tori-garamond text-sm font-light leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] ${
+                          booking.status === 'Scheduled' ? 'border-[#bfe4ff]/30 bg-[#bfe4ff]/18 text-[#dcefff]' :
+                          booking.status === 'Completed' ? 'border-emerald-200/24 bg-emerald-300/14 text-emerald-100' :
+                          booking.status === 'Cancelled' ? 'border-red-200/24 bg-red-400/12 text-red-100' :
+                          booking.status === 'no-show' ? 'border-amber-200/24 bg-amber-300/12 text-amber-100' :
+                          'border-white/14 bg-white/10 text-blue-100'
                         }`}>
                           {booking.status}
                         </span>
@@ -675,7 +676,7 @@ const filteredBookings2 = useMemo( () => {
                       {column.type === 'payment' && (
                         <div>
                           <div>{booking.amount ? `${booking.currency || 'INR'} ${booking.amount}` : 'N/A'}</div>
-                          <div className="text-xl text-blue-100/38">{booking.payment_method?.toUpperCase() || 'N/A'}</div>
+                          <div className="text-lg text-blue-100/38">{booking.payment_method?.toUpperCase() || 'N/A'}</div>
                         </div>
                       )}
                       {column.type === 'file' && config.hasFileUpload && (
@@ -742,6 +743,7 @@ const filteredBookings2 = useMemo( () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 

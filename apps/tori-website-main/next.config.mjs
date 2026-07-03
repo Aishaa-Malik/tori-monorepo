@@ -7,7 +7,7 @@
 //const DASHBOARD_URL = 'http://localhost:3001/';
 const DASHBOARD_URL =
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3001'
+    ? 'http://localhost:3000'
     : 'https://tori-dashboard.vercel.app';
 
 //export { DASHBOARD_URL };

@@ -4,11 +4,30 @@ import { supabase } from '../../services/supabaseService';
 import { SettingsPageProps, UsageData, IntegrationConfig } from '../../types/settingsManagement.types';
 import { getSettingsConfig } from '../../config/settingsManagementConfig';
 
+interface SettingsTimeSlot {
+  start_time: string;
+  end_time: string;
+  price: number;
+  label?: string;
+}
+
+interface EditableServiceSetting {
+  id?: string;
+  name: string;
+  subcategory_tag?: string | null;
+  duration_mins: number;
+  availabilitySchedule: Record<string, SettingsTimeSlot[]>;
+}
+
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+const createEmptySchedule = (): Record<string, SettingsTimeSlot[]> =>
+  daysOfWeek.reduce((schedule, day) => ({ ...schedule, [day]: [] }), {} as Record<string, SettingsTimeSlot[]>);
+
 const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
   const { user, tenant } = useAuth();
   const config = useMemo(() => getSettingsConfig(serviceType), [serviceType]);
   
-  const [showUsageLimit, setShowUsageLimit] = useState(false);
   const [usageData, setUsageData] = useState<UsageData>({ used: 0, total: 0 });
   const [planName, setPlanName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -16,6 +35,14 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectError, setConnectError] = useState<string | null>(null);
   const [connectSuccess, setConnectSuccess] = useState<string | null>(null);
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const [serviceSettings, setServiceSettings] = useState<EditableServiceSetting[]>([]);
+  const [isSavingServiceSettings, setIsSavingServiceSettings] = useState(false);
+  const [serviceSettingsMessage, setServiceSettingsMessage] = useState<string | null>(null);
+  const [serviceSettingsError, setServiceSettingsError] = useState<string | null>(null);
+  const [deletedServiceIds, setDeletedServiceIds] = useState<string[]>([]);
+  const googleCalendarLogo = `${process.env.PUBLIC_URL}/Google_Calendar_icon_(2020).svg`;
+  const zoomLogo = `${process.env.PUBLIC_URL}/Zoom_Communications_Logo.svg`;
 
   useEffect(() => {
     const fetchUsageData = async () => {
@@ -130,6 +157,64 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
         } else {
           console.log('No tenant ID available, cannot check integrations');
         }
+
+        if (tenant?.id) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('business_profiles')
+            .select('id')
+            .eq('tenant_id', tenant.id)
+            .maybeSingle();
+
+          if (profileError) {
+            console.error('Error fetching business profile:', profileError);
+            setServiceSettingsError('Could not load service schedule settings.');
+          } else if (profileData?.id) {
+            setProfileId(profileData.id);
+
+            const { data: servicesData, error: servicesError } = await supabase
+              .from('business_services')
+              .select('id, name, subcategory_tag, duration_mins')
+              .eq('profile_id', profileData.id)
+              .order('created_at', { ascending: true });
+
+            if (servicesError) {
+              console.error('Error fetching services:', servicesError);
+              setServiceSettingsError('Could not load services.');
+            } else {
+              const serviceIds = (servicesData || []).map((service) => service.id);
+              const { data: slotsData, error: slotsError } = serviceIds.length > 0
+                ? await supabase
+                    .from('service_weekly_slots')
+                    .select('service_id, day_of_week, time_slots')
+                    .in('service_id', serviceIds)
+                : { data: [], error: null };
+
+              if (slotsError) {
+                console.error('Error fetching weekly slots:', slotsError);
+                setServiceSettingsError('Could not load weekly slots.');
+              }
+
+              const normalizedServices: EditableServiceSetting[] = (servicesData || []).map((service: any) => {
+                const schedule = createEmptySchedule();
+                (slotsData || [])
+                  .filter((slot: any) => slot.service_id === service.id)
+                  .forEach((slot: any) => {
+                    schedule[slot.day_of_week] = Array.isArray(slot.time_slots) ? slot.time_slots : [];
+                  });
+
+                return {
+                  id: service.id,
+                  name: service.name || '',
+                  subcategory_tag: service.subcategory_tag || '',
+                  duration_mins: service.duration_mins || 60,
+                  availabilitySchedule: schedule,
+                };
+              });
+
+              setServiceSettings(normalizedServices);
+            }
+          }
+        }
       } catch (error) {
         console.error('Error in fetching settings data:', error);
       } finally {
@@ -243,8 +328,177 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
     }
   };
 
-  const toggleUsageLimit = () => {
-    setShowUsageLimit(!showUsageLimit);
+  const updateServiceSetting = (serviceIndex: number, field: 'name' | 'subcategory_tag' | 'duration_mins', value: string | number) => {
+    setServiceSettings((prev) => prev.map((service, index) => (
+      index === serviceIndex ? { ...service, [field]: value } : service
+    )));
+  };
+
+  const updateServiceSlot = (
+    serviceIndex: number,
+    day: string,
+    slotIndex: number,
+    field: keyof SettingsTimeSlot,
+    value: string | number
+  ) => {
+    setServiceSettings((prev) => prev.map((service, index) => {
+      if (index !== serviceIndex) return service;
+
+      return {
+        ...service,
+        availabilitySchedule: {
+          ...service.availabilitySchedule,
+          [day]: service.availabilitySchedule[day].map((slot, currentSlotIndex) => (
+            currentSlotIndex === slotIndex ? { ...slot, [field]: value } : slot
+          )),
+        },
+      };
+    }));
+  };
+
+  const addServiceSlot = (serviceIndex: number, day: string) => {
+    setServiceSettings((prev) => prev.map((service, index) => {
+      if (index !== serviceIndex) return service;
+
+      return {
+        ...service,
+        availabilitySchedule: {
+          ...service.availabilitySchedule,
+          [day]: [
+            ...service.availabilitySchedule[day],
+            { start_time: '09:00', end_time: '10:00', price: 99, label: '' },
+          ],
+        },
+      };
+    }));
+  };
+
+  const removeServiceSlot = (serviceIndex: number, day: string, slotIndex: number) => {
+    setServiceSettings((prev) => prev.map((service, index) => {
+      if (index !== serviceIndex) return service;
+
+      return {
+        ...service,
+        availabilitySchedule: {
+          ...service.availabilitySchedule,
+          [day]: service.availabilitySchedule[day].filter((_, currentSlotIndex) => currentSlotIndex !== slotIndex),
+        },
+      };
+    }));
+  };
+
+  const addServiceSetting = () => {
+    setServiceSettings((prev) => [
+      ...prev,
+      {
+        name: 'New service',
+        subcategory_tag: '',
+        duration_mins: 60,
+        availabilitySchedule: createEmptySchedule(),
+      },
+    ]);
+  };
+
+  const removeServiceSetting = (serviceIndex: number) => {
+    setServiceSettings((prev) => {
+      const serviceToRemove = prev[serviceIndex];
+      if (serviceToRemove?.id) {
+        setDeletedServiceIds((ids) => [...ids, serviceToRemove.id as string]);
+      }
+      return prev.filter((_, index) => index !== serviceIndex);
+    });
+  };
+
+  const handleSaveServiceSettings = async () => {
+    if (!profileId) {
+      setServiceSettingsError('Could not find the business profile for this venue.');
+      return;
+    }
+
+    try {
+      setIsSavingServiceSettings(true);
+      setServiceSettingsMessage(null);
+      setServiceSettingsError(null);
+
+      if (deletedServiceIds.length > 0) {
+        const { error: deleteSlotsError } = await supabase
+          .from('service_weekly_slots')
+          .delete()
+          .in('service_id', deletedServiceIds);
+
+        if (deleteSlotsError) throw deleteSlotsError;
+
+        const { error: deleteServicesError } = await supabase
+          .from('business_services')
+          .delete()
+          .in('id', deletedServiceIds);
+
+        if (deleteServicesError) throw deleteServicesError;
+      }
+
+      for (const service of serviceSettings) {
+        const operatingDays = daysOfWeek.filter((day) => service.availabilitySchedule[day]?.length > 0);
+        const allSlots = operatingDays.flatMap((day) => service.availabilitySchedule[day]);
+        const minPrice = allSlots.reduce((lowest, slot) => Math.min(lowest, Number(slot.price) || 0), Infinity);
+        const servicePayload = {
+          profile_id: profileId,
+          name: service.name.trim() || 'Venue service',
+          subcategory_tag: service.subcategory_tag?.trim() || null,
+          operating_days: operatingDays,
+          duration_mins: Number(service.duration_mins) || 60,
+          price: minPrice === Infinity ? 0 : minPrice,
+        };
+
+        let serviceId = service.id;
+
+        if (serviceId) {
+          const { error: serviceUpdateError } = await supabase
+            .from('business_services')
+            .update(servicePayload)
+            .eq('id', serviceId);
+
+          if (serviceUpdateError) throw serviceUpdateError;
+        } else {
+          const { data: insertedService, error: serviceInsertError } = await supabase
+            .from('business_services')
+            .insert(servicePayload)
+            .select('id')
+            .single();
+
+          if (serviceInsertError) throw serviceInsertError;
+          serviceId = insertedService.id;
+        }
+
+        const { error: deleteSlotsError } = await supabase
+          .from('service_weekly_slots')
+          .delete()
+          .eq('service_id', serviceId);
+
+        if (deleteSlotsError) throw deleteSlotsError;
+
+        const slotsPayload = daysOfWeek.map((day) => ({
+          service_id: serviceId,
+          day_of_week: day,
+          is_open: service.availabilitySchedule[day].length > 0,
+          time_slots: service.availabilitySchedule[day],
+          created_at: new Date().toISOString(),
+        }));
+
+        const { error: slotsInsertError } = await supabase
+          .from('service_weekly_slots')
+          .insert(slotsPayload);
+
+        if (slotsInsertError) throw slotsInsertError;
+      }
+
+      setDeletedServiceIds([]);
+      setServiceSettingsMessage('Service schedule updated.');
+    } catch (error) {
+      console.error('Error saving service schedule settings:', error);
+      setServiceSettingsError('Could not save service schedule settings.');
+    } finally {
+      setIsSavingServiceSettings(false);
+    }
   };
 
   if (isLoading) {
@@ -256,109 +510,248 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
   }
 
   return (
-    <div className="min-h-full px-4 py-5 sm:px-6 lg:px-7">
-      <div className="mx-auto max-w-6xl space-y-5 pb-10">
-      <div className="rounded-[1.4rem] border border-white/10 bg-white/[0.045] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9fc4de]/70">
+    <div className="min-h-full px-0 py-4 font-tori-garamond sm:px-3 lg:px-5">
+      <div className="w-full space-y-5 pb-10">
+      <div className="text-left">
+        <p className="inline-flex rounded-full border border-white/10 bg-white/[0.07] px-3 py-1 font-tori-garamond text-base font-light normal-case text-[#c5e3f8]/70">
           Dashboard Controls
         </p>
-        <h1 className="font-tori-garamond mt-2 text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">Settings</h1>
-        <p className="font-tori-garamond mt-2 max-w-4xl text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">
+        <h1 className="font-tori-garamond mt-2 text-4xl font-light leading-[0.95] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">Settings</h1>
+        <p className="font-tori-garamond mt-2 max-w-4xl text-lg font-light leading-tight text-blue-100/34 sm:text-xl">
           Manage your plan, booking limits, and integrations from one place.
         </p>
       </div>
+
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start 2xl:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
+      <div className="space-y-5 lg:contents">
       
       {config.features.showSubscriptionDetails && (
-        <section className="rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9fc4de]/68">Subscription</p>
-              <h2 className="mt-2 text-xl font-semibold text-white">Current plan</h2>
-              <p className="mt-1 text-sm text-blue-100/52">Track your active plan and monthly usage.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-[#edf6ff] px-3 py-1 text-sm font-semibold text-[#2d4c74]">
+        <section className="relative h-fit overflow-hidden rounded-[1.4rem] border border-white/10 bg-[radial-gradient(circle_at_80%_0%,rgba(158,211,255,0.14),transparent_15rem),linear-gradient(145deg,rgba(3,8,18,0.86),rgba(4,16,29,0.76))] p-6 pt-12 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:col-start-2 lg:row-start-1">
+          <p className="absolute left-5 top-4 inline-flex rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-0.5 font-tori-garamond text-sm font-light normal-case text-[#c5e3f8]/70">Subscription</p>
+          <div className="flex flex-col items-center gap-5 text-center">
+            <div className="mx-auto max-w-md">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <h2 className="font-tori-garamond text-3xl font-light text-white">Current plan</h2>
+                <span className="rounded-full bg-[#edf6ff] px-3 py-1 font-tori-garamond text-base font-light text-[#2d4c74]">
                   {planName}
                 </span>
-                <span className="text-xs font-semibold text-emerald-300">Active</span>
+                <span className="rounded-full border border-emerald-300/18 bg-emerald-400/10 px-3 py-1 font-tori-garamond text-sm font-light text-emerald-200">Active</span>
               </div>
+              <p className="mt-1 font-tori-garamond text-base text-blue-100/46">Track your active plan and monthly usage.</p>
             </div>
           </div>
           
           {config.features.showUsageLimit && (
-            <div className="mt-5">
-              <button
-                onClick={toggleUsageLimit}
-                className="inline-flex items-center rounded-full border border-[#b9ddff]/18 bg-white/[0.055] px-4 py-2 text-xs font-semibold uppercase tracking-[0.04em] text-blue-100/80 transition hover:bg-[#9ed3ff]/12 hover:text-white"
-              >
-                <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">→</span>
-                Check {config.usageTerminology.plural} usage limit
-              </button>
-              
-              {showUsageLimit && (
-                <div className="mt-4 rounded-2xl border border-[#b9ddff]/16 bg-[#9ed3ff]/[0.065] p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <h3 className="text-sm font-semibold text-white">
-                        Monthly {config.usageTerminology.plural.charAt(0).toUpperCase() + config.usageTerminology.plural.slice(1)} Usage
-                      </h3>
-                      <p className="mt-1 text-sm text-blue-100/58">
-                        {usageData.used} / {usageData.total} {config.usageTerminology.plural} used this month
-                      </p>
-                    </div>
-                    <div className={`text-lg font-semibold ${(usageData.total - usageData.used) > 0 ? 'text-emerald-300' : 'text-red-300'}`}>
-                      {usageData.total - usageData.used} remaining
-                    </div>
-                  </div>
-                  <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#bfe4ff] to-[#5d90b8]"
-                      style={{ width: `${Math.min((usageData.used / Math.max(usageData.total, 1)) * 100, 100)}%` }}
-                    />
-                  </div>
-                  {usageData.used >= usageData.total && (
-                    <p className="mt-3 rounded-xl border border-red-300/20 bg-red-500/10 p-3 text-sm text-red-100">
-                      <span className="font-semibold">Limit reached:</span> You've reached your monthly {config.usageTerminology.singular} limit. Please upgrade your plan to {config.usageTerminology.action} more {config.usageTerminology.plural}.
-                    </p>
-                  )}
+            <div className="mt-8 rounded-2xl border border-[#b9ddff]/16 bg-[#9ed3ff]/[0.065] p-6">
+              <div className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+                <div>
+                  <h3 className="font-tori-garamond text-2xl font-light text-white">
+                    Monthly {config.usageTerminology.plural.charAt(0).toUpperCase() + config.usageTerminology.plural.slice(1)} Usage
+                  </h3>
+                  <p className="mt-1 font-tori-garamond text-xl font-light text-blue-100/58">
+                    {usageData.used} / {usageData.total} {config.usageTerminology.plural} used this month
+                  </p>
                 </div>
+                <div className={`text-center font-tori-garamond text-4xl font-light sm:text-right ${(usageData.total - usageData.used) > 0 ? 'text-emerald-300' : 'text-red-300'}`}>
+                  {usageData.total - usageData.used}
+                  <span className="block text-2xl">remaining</span>
+                </div>
+              </div>
+              <div className="mt-6 h-3 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#bfe4ff] to-[#5d90b8]"
+                  style={{ width: `${Math.min((usageData.used / Math.max(usageData.total, 1)) * 100, 100)}%` }}
+                />
+              </div>
+              {usageData.used >= usageData.total && (
+                <p className="mt-3 rounded-xl border border-red-300/20 bg-red-500/10 p-3 text-sm text-red-100">
+                  <span className="font-semibold">Limit reached:</span> You've reached your monthly {config.usageTerminology.singular} limit. Please upgrade your plan to {config.usageTerminology.action} more {config.usageTerminology.plural}.
+                </p>
               )}
             </div>
           )}
         </section>
       )}
+
+      <section className="relative rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-6 pt-12 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:col-span-2 lg:row-start-2 lg:w-[65%]">
+        <p className="absolute left-5 top-4 inline-flex rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-0.5 font-tori-garamond text-sm font-light normal-case text-[#c5e3f8]/70">Service schedule</p>
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="mx-auto max-w-md">
+            <h2 className="mt-2 font-tori-garamond text-3xl font-light text-white">Edit slots and services</h2>
+            <p className="mt-1 font-tori-garamond text-base text-blue-100/46">Update the same services, days, times, and slot prices you added during onboarding.</p>
+          </div>
+          <button
+            type="button"
+            onClick={addServiceSetting}
+            className="tori-unstyled-button rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 font-tori-garamond text-lg font-light text-white transition hover:bg-white/[0.11]"
+          >
+            Add service
+          </button>
+        </div>
+
+        <div className="mt-5 space-y-4">
+          {serviceSettings.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5 font-tori-garamond text-lg font-light text-blue-100/55">
+              No services found yet. Add one here to start accepting slots.
+            </div>
+          ) : (
+            serviceSettings.map((service, serviceIndex) => (
+              <div key={service.id || serviceIndex} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                <div className="grid gap-3 2xl:grid-cols-[1.2fr_0.9fr_0.55fr_auto] 2xl:items-end">
+                  <label className="block">
+                    <span className="font-tori-garamond text-sm font-light text-blue-100/50">Service</span>
+                    <input
+                      value={service.name}
+                      onChange={(event) => updateServiceSetting(serviceIndex, 'name', event.target.value)}
+                      className="mt-1 w-full rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 font-tori-garamond text-lg font-light text-white placeholder:text-blue-100/30 focus:border-[#9ed3ff]/45 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="font-tori-garamond text-sm font-light text-blue-100/50">Category tag</span>
+                    <input
+                      value={service.subcategory_tag || ''}
+                      onChange={(event) => updateServiceSetting(serviceIndex, 'subcategory_tag', event.target.value)}
+                      placeholder="gym, yoga, turf_cricket"
+                      className="mt-1 w-full rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 font-tori-garamond text-lg font-light text-white placeholder:text-blue-100/30 focus:border-[#9ed3ff]/45 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="font-tori-garamond text-sm font-light text-blue-100/50">Mins</span>
+                    <input
+                      type="number"
+                      min="1"
+                      value={service.duration_mins}
+                      onChange={(event) => updateServiceSetting(serviceIndex, 'duration_mins', Number(event.target.value))}
+                      className="mt-1 w-full rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 font-tori-garamond text-lg font-light text-white placeholder:text-blue-100/30 focus:border-[#9ed3ff]/45 focus:outline-none"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => removeServiceSetting(serviceIndex)}
+                    className="tori-unstyled-button rounded-full border border-red-300/18 bg-red-400/10 px-4 py-2 font-tori-garamond text-lg font-light text-red-100 transition hover:bg-red-400/16"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {daysOfWeek.map((day) => (
+                    <div key={day} className="rounded-2xl border border-white/8 bg-[#071421]/45 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-tori-garamond text-xl font-light text-white">{day}</p>
+                        <button
+                          type="button"
+                          onClick={() => addServiceSlot(serviceIndex, day)}
+                          className="tori-unstyled-button rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 font-tori-garamond text-base font-light text-blue-100/75 transition hover:bg-white/[0.1]"
+                        >
+                          Add slot
+                        </button>
+                      </div>
+
+                      <div className="mt-3 space-y-2">
+                        {service.availabilitySchedule[day].length === 0 ? (
+                          <p className="font-tori-garamond text-base font-light text-blue-100/38">Closed</p>
+                        ) : (
+                          service.availabilitySchedule[day].map((slot, slotIndex) => (
+                            <div key={`${day}-${slotIndex}`} className="grid gap-2 2xl:grid-cols-[1fr_0.75fr_0.75fr_0.65fr_auto] 2xl:items-center">
+                              <input
+                                value={slot.label || ''}
+                                onChange={(event) => updateServiceSlot(serviceIndex, day, slotIndex, 'label', event.target.value)}
+                                placeholder="Slot label"
+                                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 font-tori-garamond text-base font-light text-white placeholder:text-blue-100/30 focus:border-[#9ed3ff]/45 focus:outline-none"
+                              />
+                              <input
+                                type="time"
+                                value={slot.start_time}
+                                onChange={(event) => updateServiceSlot(serviceIndex, day, slotIndex, 'start_time', event.target.value)}
+                                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 font-tori-garamond text-base font-light text-white focus:border-[#9ed3ff]/45 focus:outline-none"
+                              />
+                              <input
+                                type="time"
+                                value={slot.end_time}
+                                onChange={(event) => updateServiceSlot(serviceIndex, day, slotIndex, 'end_time', event.target.value)}
+                                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 font-tori-garamond text-base font-light text-white focus:border-[#9ed3ff]/45 focus:outline-none"
+                              />
+                              <input
+                                type="number"
+                                min="0"
+                                value={slot.price || ''}
+                                onChange={(event) => updateServiceSlot(serviceIndex, day, slotIndex, 'price', event.target.value ? Number(event.target.value) : 0)}
+                                placeholder="Price"
+                                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 font-tori-garamond text-base font-light text-white placeholder:text-blue-100/30 focus:border-[#9ed3ff]/45 focus:outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeServiceSlot(serviceIndex, day, slotIndex)}
+                                className="tori-unstyled-button rounded-full border border-red-300/18 bg-red-400/10 px-3 py-2 font-tori-garamond text-base font-light text-red-100 transition hover:bg-red-400/16"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="font-tori-garamond text-base font-light">
+            {serviceSettingsMessage && <span className="text-emerald-200">{serviceSettingsMessage}</span>}
+            {serviceSettingsError && <span className="text-red-200">{serviceSettingsError}</span>}
+          </div>
+          <button
+            type="button"
+            onClick={handleSaveServiceSettings}
+            disabled={isSavingServiceSettings}
+            className="tori-unstyled-button rounded-full border border-[#b9ddff]/18 bg-[#f3efe8] px-6 py-2 font-tori-garamond text-xl font-light text-[#111827] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSavingServiceSettings ? 'Saving...' : 'Save schedule'}
+          </button>
+        </div>
+      </section>
+      </div>
       
       {config.features.showIntegrations && (
-        <section className="rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-          <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9fc4de]/68">Integrations</p>
-            <h2 className="mt-2 text-xl font-semibold text-white">Connected tools</h2>
-            <p className="mt-1 text-sm text-blue-100/52">Sync calendars and external tools used by your venue.</p>
+        <section className="relative rounded-[1.4rem] border border-white/10 bg-[#030812]/78 p-5 pt-12 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:col-start-1 lg:row-start-1 lg:h-full">
+          <p className="absolute left-5 top-4 inline-flex rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-0.5 font-tori-garamond text-sm font-light normal-case text-[#c5e3f8]/70">Integrations</p>
+          <div className="mb-4 text-center">
+            <h2 className="mt-2 font-tori-garamond text-3xl font-light text-white">Connected tools</h2>
+            <p className="mt-1 font-tori-garamond text-base text-blue-100/46">Sync calendars and external tools used by your venue.</p>
           </div>
           
-          <div className="grid gap-4">
+          <div className="grid gap-5 md:grid-cols-2">
             {integrations.map((integration) => (
-              <div key={integration.type} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 transition hover:border-[#b9ddff]/18 hover:bg-white/[0.05]">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div key={integration.type} className="rounded-2xl border border-white/10 bg-white/[0.035] p-6 transition hover:border-[#b9ddff]/18 hover:bg-white/[0.05]">
+                <div className="flex h-full flex-col items-center gap-6 text-center">
                   <div className="min-w-0">
-                    <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
-                      {integration.icon}
+                    {integration.type === 'google_calendar' ? (
+                      <img src={googleCalendarLogo} alt="Google Calendar" className="mx-auto mb-7 h-16 w-16 object-contain" />
+                    ) : integration.type === 'zoom' ? (
+                      <img src={zoomLogo} alt="Zoom" className="mx-auto mb-7 h-14 w-28 object-contain" />
+                    ) : (
+                      <div className="mx-auto mb-7 text-5xl">{integration.icon}</div>
+                    )}
+                    <h3 className="font-tori-garamond text-2xl font-light text-white">
                       {integration.name}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-blue-100/58">
+                    <p className="mt-2 font-tori-garamond text-base leading-5 text-blue-100/52">
                       {integration.description}
                     </p>
                   </div>
                   
-                  <div className="flex flex-shrink-0 items-center gap-3">
+                  <div className="mt-auto flex flex-shrink-0 items-center justify-center gap-3">
                     {integration.isConnected ? (
                       <>
-                        <span className="inline-flex items-center rounded-full border border-emerald-300/18 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
+                        <span className="inline-flex items-center rounded-full border border-emerald-300/18 bg-emerald-400/10 px-3 py-1.5 font-tori-garamond text-sm font-light text-emerald-200">
                           Connected
                         </span>
                         <button 
-                          className="rounded-full border border-red-300/18 bg-red-400/10 px-3 py-1.5 text-xs font-semibold text-red-100 transition hover:bg-red-400/16"
+                          className="tori-unstyled-button rounded-full border border-red-300/18 bg-red-400/10 px-3 py-1.5 font-tori-garamond text-sm font-light text-red-100 transition hover:bg-red-400/16"
                           onClick={() => handleDisconnectIntegration(integration.type)}
                         >
                           Disconnect
@@ -368,7 +761,7 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
                       <button 
                         onClick={integration.type === 'google_calendar' ? handleConnectGoogleCalendar : undefined}
                         disabled={isConnecting}
-                        className="inline-flex items-center rounded-full border border-[#b9ddff]/18 bg-white/[0.055] px-4 py-2 text-xs font-semibold uppercase tracking-[0.04em] text-blue-100/80 transition hover:bg-[#9ed3ff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        className="tori-unstyled-button group inline-flex min-w-[10.5rem] items-center rounded-full border border-[#b9ddff]/18 bg-white/[0.055] py-1.5 pl-1.5 pr-6 font-tori-garamond text-xl font-light normal-case text-white transition hover:bg-[#9ed3ff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {isConnecting && integration.type === 'google_calendar' ? (
                           <>
@@ -380,8 +773,12 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
                           </>
                         ) : (
                           <>
-                            <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">→</span>
-                            Connect with {integration.name}
+                            <span className="mr-5 flex h-10 w-10 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827] transition duration-300 group-hover:translate-x-0.5">
+                              <svg className="h-5 w-5" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                                <path d="M3.5 9h10M9.5 5l4 4-4 4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                            Connect
                           </>
                         )}
                       </button>
@@ -400,6 +797,7 @@ const UnifiedSettingsPage: React.FC<SettingsPageProps> = ({ serviceType }) => {
           </div>
         </section>
       )}
+      </div>
       
       {config.features.customSections && (
         <div className="space-y-5">

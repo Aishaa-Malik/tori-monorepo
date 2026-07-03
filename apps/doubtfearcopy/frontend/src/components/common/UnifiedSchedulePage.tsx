@@ -74,7 +74,7 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full px-0 py-6 sm:px-3 sm:py-8">
         <div className="flex justify-center items-center h-64">
           <div className="text-gray-600 dark:text-gray-400">
             <svg className="animate-spin h-8 w-8 mx-auto mb-2 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -90,8 +90,8 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded-md p-4 mb-6">
+      <div className="flex min-h-[62vh] items-center justify-center px-4 py-8">
+        <div className="hidden bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded-md p-4 mb-6">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-red-400 dark:text-red-300" viewBox="0 0 20 20" fill="currentColor">
@@ -101,15 +101,15 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
             <div className="ml-3">{error}</div>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="flex justify-center">
           <button 
             onClick={() => window.location.href = config.settingsPath}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300 flex items-center"
+            className="tori-unstyled-button inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[#b9ddff]/18 bg-white/[0.055] px-8 py-4 font-tori-garamond text-2xl font-light normal-case text-blue-100/85 transition hover:bg-[#9ed3ff]/12 hover:text-white"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="mr-3 h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
             </svg>
-            Go to Settings to Connect Google Calendar
+            Go to Settings to connect Google Calendar
           </button>
         </div>
       </div>
@@ -120,15 +120,15 @@ const UnifiedSchedulePage: React.FC<UnifiedSchedulePageProps> = ({ serviceType }
   const openCalendarUrl = `https://calendar.google.com/calendar/u/0/r?cid=${calendarId}`;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+    <div className="w-full px-0 py-6 sm:px-3 sm:py-8">
+      <div className="mb-6 flex flex-col items-start text-left md:flex-row md:items-center md:justify-start">
         <div>
-          <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.title}</h1>
-          <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">{config.description}</p>
+          <h1 className="font-tori-garamond text-4xl font-light leading-[0.95] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">{config.title}</h1>
+          <p className="font-tori-garamond mt-2 text-xl font-light leading-tight text-blue-100/45 sm:text-2xl lg:text-3xl">{config.description}</p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden mb-6">
+      <div className="mb-6 overflow-hidden rounded-[1.35rem] border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.18)]">
         <div className="responsive-calendar-container" style={{ position: 'relative', paddingBottom: '75%', height: 0, overflow: 'hidden' }}>
           <iframe 
             src={calendarSrc}

@@ -532,6 +532,20 @@ const OnboardingForm: React.FC = () => {
     }
   };
 
+  const renderSelectedCheck = () => (
+    <span className="tori-option-check" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M6.2 12.4l3.7 3.7 7.9-9.2"
+          stroke="currentColor"
+          strokeWidth="2.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -540,49 +554,53 @@ const OnboardingForm: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-800">What type of business do you own?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   userType === 'Healthcare' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => handleUserTypeSelect('Healthcare')}
               >
+                {userType === 'Healthcare' && renderSelectedCheck()}
                 <div className="font-medium text-lg">Healthcare (Doctor, Physio, Vet)</div>
                 <p className="text-gray-600 mt-2">Manage patient appointments and medical records</p>
               </button>
               
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   userType === 'SportsVenue' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => handleUserTypeSelect('SportsVenue')}
               >
+                {userType === 'SportsVenue' && renderSelectedCheck()}
                 <div className="font-medium text-lg">Sports Venues(Turf, Cricket)</div>
                 <p className="text-gray-600 mt-2">Manage sports bookings & schedules</p>
               </button>
 
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   userType === 'Fitness' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => handleUserTypeSelect('Fitness')}
               >
+                {userType === 'Fitness' && renderSelectedCheck()}
                 <div className="font-medium text-lg">Fitness Workout</div>
                 <p className="text-gray-600 mt-2">Manage Fitness classes and Sessions schedules</p>
               </button>
 
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   userType === 'SpaSalon' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => handleUserTypeSelect('SpaSalon')}
               >
+                {userType === 'SpaSalon' && renderSelectedCheck()}
                 <div className="font-medium text-lg">Spa & Salon</div>
                 <p className="text-gray-600 mt-2">Manage Salon & Spa treatments and wellness Appointments</p>
               </button>
@@ -592,61 +610,65 @@ const OnboardingForm: React.FC = () => {
         
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-7">
             <h2 className="text-xl font-semibold text-gray-800">What's your business name?</h2>
-            <div>
-              <input
-                type="text"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Enter your business name"
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Enter your contact number"
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <input
-                type="number"
-                min="0"
-                max="5"
-                step="0.1"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                placeholder="Enter your rating"
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr_0.62fr]">
+              <div>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="Enter your business name"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter your contact number"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value)}
+                  placeholder="Rating"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
             
             <h2 className="text-xl font-semibold text-gray-800 mt-6">How should your booking system handle time slot availability?</h2>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   bookingSystemType === '1' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => setBookingSystemType('1')}
               >
+                {bookingSystemType === '1' && renderSelectedCheck()}
                 <div className="font-medium text-lg">1. Single Booking (Exclusive Time Slots)</div>
                 <p className="text-gray-600 mt-2">Only ONE person/customer can book each time slot</p>
               </button>
               
               <button
-                className={`p-6 border rounded-lg text-left ${
+                className={`tori-option-card p-6 border rounded-lg text-left ${
                   bookingSystemType === '2' 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'tori-option-selected border-blue-500 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onClick={() => setBookingSystemType('2')}
               >
+                {bookingSystemType === '2' && renderSelectedCheck()}
                 <div className="font-medium text-lg">2. Multiple Bookings (Shared Time Slots)</div>
                 <p className="text-gray-600 mt-2">MULTIPLE people/customers can book the SAME time slot</p>
               </button>
@@ -758,18 +780,24 @@ const OnboardingForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
-      <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
-        <h1 className="text-center text-3xl font-extrabold text-gray-900">
+    <div className="tori-onboarding-shell min-h-screen flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="pointer-events-none absolute left-[8%] top-[10%] h-72 w-72 rounded-full bg-[#5da9d8]/18 blur-[90px]" />
+      <div className="pointer-events-none absolute bottom-[-8rem] right-[4%] h-96 w-96 rounded-full bg-white/10 blur-[120px]" />
+      <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-6xl">
+        <div className="mx-auto mb-4 flex w-fit items-center gap-2 rounded-full border border-white/14 bg-white/[0.07] px-4 py-2 text-sm text-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-2xl">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#bfe6ff] shadow-[0_0_18px_rgba(191,230,255,0.85)]" />
+          First-time setup
+        </div>
+        <h1 className="font-tori-garamond text-center text-[clamp(46px,5.4vw,86px)] font-light leading-[0.95] tracking-normal text-white xl:whitespace-nowrap">
           Welcome to Your Business Setup
         </h1>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Let's get your account set up in just a few steps
+        <p className="mx-auto mt-4 max-w-xl text-center text-[18px] leading-7 text-white/62">
+          Let's get your account set up in just a few polished steps.
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-5xl">
+        <div className="tori-onboarding-card px-5 py-7 sm:px-9 sm:py-9">
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex justify-between mb-2">
@@ -788,16 +816,16 @@ const OnboardingForm: React.FC = () => {
                 </div>
               ))}
             </div>
-            <div className="overflow-hidden h-2 rounded-full bg-gray-200">
+            <div className="overflow-hidden h-2 rounded-full bg-white/10">
               <div
-                className="h-full bg-blue-600 transition-all duration-300"
+                className="h-full rounded-full bg-gradient-to-r from-[#dff3ff] via-[#85c5ef] to-[#2f74b8] transition-all duration-300"
                 style={{ width: `${((step - 1) / 3) * 100}%` }}
               ></div>
             </div>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
+            <div className="mb-5 rounded-2xl border border-red-200/20 bg-red-500/10 p-4 text-[15px] text-red-100">
               {error}
             </div>
           )}
@@ -805,12 +833,12 @@ const OnboardingForm: React.FC = () => {
           {renderStep()}
 
           {/* Bottom Navigation */}
-          <div className="mt-6 flex justify-between">
+          <div className="mt-8 flex items-center justify-between">
             {step > 1 && (
               <button
                 type="button"
                 onClick={handleBack}
-                className="text-gray-700 hover:text-gray-900"
+                className="tori-onboarding-back text-white/64 hover:text-white"
               >
                 Back
               </button>
@@ -820,7 +848,7 @@ const OnboardingForm: React.FC = () => {
                <button
                type="button"
                onClick={handleNext}
-               className="ml-auto bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+               className="tori-onboarding-primary ml-auto"
              >
                Next
              </button>
@@ -829,7 +857,7 @@ const OnboardingForm: React.FC = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`ml-auto bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                className={`tori-onboarding-primary ml-auto ${
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >

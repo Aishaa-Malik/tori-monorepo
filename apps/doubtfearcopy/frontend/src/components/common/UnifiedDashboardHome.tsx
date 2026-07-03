@@ -134,6 +134,19 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
   const selectedFilterLabel =
     dashboardFilterOptions.find((filter) => filter.value === selectedFilter)?.label || 'Today';
 
+  const renderStatValue = (value: string) => {
+    if (value.startsWith('₹')) {
+      return (
+        <>
+          <span className="text-[0.82em] leading-none align-baseline">₹</span>
+          <span>{value.slice(1)}</span>
+        </>
+      );
+    }
+
+    return value;
+  };
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!user?.tenantId) return;
@@ -288,19 +301,19 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
 
   return (
     <div className="h-full overflow-auto text-white">
-      <div className="mx-auto flex min-h-full w-full max-w-[96rem] flex-col gap-3 px-1 pb-2 pt-1 sm:gap-4 sm:px-2 lg:pb-3">
+      <div className="mx-auto flex min-h-full w-full max-w-[104rem] flex-col gap-3 px-0 pb-2 pt-1 sm:gap-4 sm:px-2 lg:pb-3">
         <header className="flex flex-col gap-4 px-1 py-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-4xl">
-            <h1 className="font-tori-garamond mt-2 text-5xl font-light leading-[0.92] text-white sm:text-6xl xl:text-7xl">
+            <h1 className="font-tori-garamond mt-2 text-4xl font-light leading-[0.92] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">
               Welcome back, {user?.name || 'venue owner'}
             </h1>
           </div>
 
-          <div className="relative flex -translate-x-6 flex-col gap-2 lg:items-end">
+          <div className="relative z-50 flex flex-col gap-2 sm:max-w-xs lg:-translate-x-6 lg:items-end">
             <button
               type="button"
               onClick={() => setFilterMenuOpen((open) => !open)}
-              className="tori-unstyled-button font-tori-garamond flex h-12 min-w-[12rem] items-center justify-between rounded-[1.15rem] border border-white/12 bg-white/[0.09] py-2 pl-5 pr-4 text-3xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:bg-white/[0.12]"
+              className="tori-unstyled-button font-tori-garamond flex h-11 w-full min-w-[10rem] items-center justify-between rounded-full border border-white/12 bg-white/[0.09] py-2 pl-5 pr-4 text-xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:bg-white/[0.12]"
             >
               <span>{selectedFilterLabel}</span>
               <svg
@@ -313,7 +326,7 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
               </svg>
             </button>
             {filterMenuOpen && (
-              <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/88 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+              <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-40 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/92 p-1.5 font-tori-garamond shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
                 {dashboardFilterOptions.map((filter) => (
                   <button
                     key={filter.value}
@@ -322,7 +335,7 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
                       setSelectedFilter(filter.value);
                       setFilterMenuOpen(false);
                     }}
-                    className={`tori-unstyled-button font-tori-garamond flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                    className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-3.5 py-2 text-left font-tori-garamond text-xl font-light transition ${
                       selectedFilter === filter.value
                         ? 'bg-[#9ed3ff]/16 text-white'
                         : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
@@ -353,24 +366,24 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
           </div>
         </header>
 
-        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-4">
           {statCards.map((card, index) => (
             <div
               key={card.label}
-              className={`relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br ${card.tone} p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]`}
+              className={`relative flex min-h-[9.35rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br ${card.tone} p-4 pb-0 shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:min-h-[10.85rem]`}
             >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
-              <div className="relative flex w-full flex-col">
+              <div className="relative flex min-h-full w-full flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="font-tori-garamond text-2xl font-light normal-case opacity-72">
+                  <p className="font-tori-garamond max-w-[70%] text-lg font-light leading-none normal-case opacity-78">
                     {card.label}
                   </p>
-                  <span className="font-tori-garamond rounded-full bg-white/12 px-2 py-1 text-lg font-light normal-case opacity-70">
+                  <span className="font-tori-garamond ml-auto rounded-full border border-white/14 bg-white/12 px-3 py-1 text-xs font-light leading-none normal-case opacity-75 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
                     {dateFilter.label}
                   </span>
                 </div>
-                <p className="font-tori-garamond mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
-                  {card.value}
+                <p className="font-tori-garamond absolute -bottom-2 left-0 text-left text-6xl font-light leading-[0.78] sm:-bottom-3 sm:text-8xl">
+                  {renderStatValue(card.value)}
                 </p>
               </div>
             </div>
@@ -378,17 +391,17 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
           <button
             type="button"
             onClick={() => setShowNewAppointmentForm(true)}
-            className="tori-unstyled-button group relative min-h-[10.25rem] !rounded-[1.35rem] overflow-hidden border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition hover:from-[#111d2c]/95 hover:to-[#1a2a42]/90"
+            className="tori-unstyled-button group relative min-h-[9.35rem] !rounded-[1.35rem] overflow-hidden border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition hover:from-[#111d2c]/95 hover:to-[#1a2a42]/90 sm:min-h-[10.85rem]"
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-80" />
             <div className="relative flex h-full flex-col">
               <div className="flex items-start gap-3">
-                <p className="font-tori-garamond text-2xl font-light normal-case text-blue-100/78">
+                <p className="font-tori-garamond text-lg font-light leading-none normal-case text-blue-100/78">
                   Add manual booking
                 </p>
               </div>
               <div className="flex flex-1 items-center justify-center">
-                <svg className="h-24 w-24 text-white/92 transition duration-700 group-hover:rotate-[360deg] group-hover:scale-105" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                <svg className="h-16 w-16 text-white/92 transition duration-700 group-hover:rotate-[360deg] group-hover:scale-105 sm:h-24 sm:w-24" viewBox="0 0 64 64" fill="none" aria-hidden="true">
                   <path d="M32 12v40M12 32h40" stroke="currentColor" strokeWidth="4.8" strokeLinecap="round" />
                 </svg>
               </div>
@@ -399,23 +412,20 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
           </button>
         </section>
 
-        <section className="grid flex-1 grid-cols-1 gap-3 xl:grid-cols-[1.05fr_0.95fr]">
-          <DashboardCard className="p-4">
+        <section className="grid flex-1 grid-cols-1 gap-3 2xl:grid-cols-[1.05fr_0.95fr]">
+          <DashboardCard className="flex min-h-[23rem] flex-col p-4 sm:min-h-[25rem] xl:min-h-[27rem]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="font-resist-sans text-xs uppercase tracking-[0.14em] text-blue-100/50">
-                  Revenue stream
-                </p>
-                <h2 className="font-tori-garamond text-3xl font-light text-white">
+                <p className="font-tori-garamond text-2xl font-light leading-none text-white">
                   Recent paid bookings
-                </h2>
+                </p>
               </div>
-              <Link to={`${dashboardBasePath}/revenue`} className="rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
+              <Link to={`${dashboardBasePath}/revenue`} className="font-tori-garamond rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
                 View all
               </Link>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-1 flex-col space-y-2">
               {transactionsLoading ? (
                 [...Array(4)].map((_, index) => (
                   <div key={index} className="h-14 animate-pulse rounded-2xl bg-white/8" />
@@ -439,33 +449,31 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
                   </div>
                 ))
               ) : (
-                <div className="rounded-2xl border border-white/8 bg-white/[0.045] p-6 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#bfe4ff]/12 text-3xl">
-                    ₹
+                <div className="relative flex min-h-[18rem] flex-1 flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_50%_0%,rgba(191,228,255,0.18),transparent_14rem),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.025))] p-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] sm:min-h-[20rem]">
+                  <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#bfe4ff]/14 blur-2xl" />
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/12 bg-[#bfe4ff]/12 text-5xl shadow-[0_18px_44px_rgba(93,169,216,0.18)]">
+                    💸
                   </div>
-                  <p className="font-tori-garamond mt-3 text-2xl font-light text-white">No paid bookings yet</p>
-                  <p className="mt-1 text-sm text-blue-100/45">Your first paid slot will light this board up.</p>
+                  <p className="font-tori-garamond mt-5 text-3xl font-light leading-none text-white sm:text-4xl">No paid bookings yet</p>
+                  <p className="mx-auto mt-2 max-w-sm font-tori-garamond text-base text-blue-100/50">Your first paid slot will light this board up.</p>
                 </div>
               )}
             </div>
           </DashboardCard>
 
-          <DashboardCard className="p-4">
+          <DashboardCard className="flex min-h-[23rem] flex-col p-4 sm:min-h-[25rem] xl:min-h-[27rem]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="font-resist-sans text-xs uppercase tracking-[0.14em] text-blue-100/50">
+                <p className="font-tori-garamond text-2xl font-light leading-none text-white">
                   Upcoming slots
                 </p>
-                <h2 className="font-tori-garamond text-3xl font-light text-white">
-                  Next venue bookings
-                </h2>
               </div>
-              <Link to={`${dashboardBasePath}/schedule`} className="rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
+              <Link to={`${dashboardBasePath}/schedule`} className="font-tori-garamond rounded-full border border-white/10 px-3 py-1 text-xs text-blue-100/60 transition hover:bg-white/[0.06] hover:text-white">
                 View all
               </Link>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-1 flex-col space-y-2">
               {bookingsLoading ? (
                 [...Array(4)].map((_, index) => (
                   <div key={index} className="h-14 animate-pulse rounded-2xl bg-white/8" />
@@ -486,12 +494,13 @@ const UnifiedDashboardHome: React.FC<DashboardProps> = ({ serviceType }) => {
                   </div>
                 ))
               ) : (
-                <div className="rounded-2xl border border-white/8 bg-white/[0.045] p-6 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-300/12 text-2xl">
-                    ◷
+                <div className="relative flex min-h-[18rem] flex-1 flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_50%_0%,rgba(125,255,196,0.14),transparent_14rem),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.025))] p-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] sm:min-h-[20rem]">
+                  <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-emerald-300/12 blur-2xl" />
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/12 bg-emerald-300/12 text-5xl shadow-[0_18px_44px_rgba(16,185,129,0.14)]">
+                    🗓️
                   </div>
-                  <p className="font-tori-garamond mt-3 text-2xl font-light text-white">No upcoming slots</p>
-                  <p className="mt-1 text-sm text-blue-100/45">Invite customers or add a manual booking to start.</p>
+                  <p className="font-tori-garamond mt-5 text-3xl font-light leading-none text-white sm:text-4xl">No upcoming slots</p>
+                  <p className="mx-auto mt-2 max-w-sm font-tori-garamond text-base text-blue-100/50">Invite customers or add a manual booking to start.</p>
                 </div>
               )}
             </div>

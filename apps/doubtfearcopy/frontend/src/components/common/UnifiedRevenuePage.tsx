@@ -312,6 +312,19 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
   const selectedFilterLabel =
     filterOptions.find((filter) => filter.value === selectedFilter)?.label || 'Daily';
 
+  const renderCurrencyValue = (value: string) => {
+    if (value.startsWith('₹')) {
+      return (
+        <>
+          <span className="text-[0.82em] leading-none align-baseline">₹</span>
+          <span>{value.slice(1)}</span>
+        </>
+      );
+    }
+
+    return value;
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -324,25 +337,12 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
   }
 
   return (
-    <div className="font-tori-garamond container mx-auto px-4 py-8">
+    <div className="w-full px-0 py-4 font-tori-garamond sm:px-2 sm:py-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="mb-6 flex flex-col text-left md:flex-row md:items-start md:justify-between">
         <div>
-          <h1 className="font-tori-garamond text-5xl font-light leading-[0.95] text-white sm:text-6xl xl:text-7xl">{config.displayName}</h1>
-          <p className="font-tori-garamond mt-2 text-2xl italic leading-tight text-blue-100/45 sm:text-3xl">Track booking revenue and venue performance for {tenant?.name || 'your sports venue'}</p>
-        </div>
-        <div className="mt-4 md:mt-0">
-          <button 
-            onClick={() => fetchRevenueData()}
-            className="tori-unstyled-button inline-flex items-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 text-xl font-light text-white transition hover:bg-white/[0.11]"
-          >
-            <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            </span>
-            Refresh
-          </button>
+          <h1 className="font-tori-garamond text-4xl font-light leading-[0.95] text-white sm:text-5xl lg:text-6xl 2xl:text-7xl">{config.displayName}</h1>
+          <p className="font-tori-garamond mt-2 text-lg font-light leading-tight text-blue-100/34 sm:text-xl">Track booking revenue and venue performance for {tenant?.name || 'your sports venue'}</p>
         </div>
       </div>
 
@@ -359,13 +359,13 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
       )}
 
       {/* Date Filter Controls */}
-      <div className="mb-6 rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur-2xl">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-          <div className="relative">
+      <div className="mb-6 flex justify-start lg:justify-end">
+        <div className="flex w-full flex-col gap-3 sm:max-w-xs lg:w-auto lg:max-w-none lg:flex-row lg:items-center">
+          <div className="relative z-50">
             <button
               type="button"
               onClick={() => setFilterMenuOpen((open) => !open)}
-              className="tori-unstyled-button flex h-11 min-w-[10rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-5 pr-4 text-2xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1]"
+              className="tori-unstyled-button flex h-11 w-full min-w-[9rem] items-center justify-between rounded-full border border-white/10 bg-white/[0.075] py-2 pl-5 pr-4 font-tori-garamond text-xl font-light text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition hover:bg-white/[0.1] lg:w-auto"
             >
               <span>{selectedFilterLabel}</span>
               <svg className={`ml-4 h-4 w-4 text-blue-100/75 transition ${filterMenuOpen ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -373,13 +373,13 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
               </svg>
             </button>
             {filterMenuOpen && (
-              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-30 w-48 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/90 p-1.5 shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
+              <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-40 overflow-hidden rounded-[1.1rem] border border-white/12 bg-[#071421]/95 p-1.5 font-tori-garamond shadow-[0_22px_58px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-2xl">
                 {filterOptions.map((filter) => (
                   <button
                     key={filter.value}
                     type="button"
                     onClick={() => handleFilterChange(filter.value)}
-                    className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-2xl font-light transition ${
+                    className={`tori-unstyled-button flex w-full items-center justify-between rounded-xl px-3.5 py-2 text-left font-tori-garamond text-lg font-light transition ${
                       selectedFilter === filter.value
                         ? 'bg-[#9ed3ff]/16 text-white'
                         : 'text-blue-100/68 hover:bg-white/[0.07] hover:text-white'
@@ -392,10 +392,21 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
               </div>
             )}
           </div>
+          <button 
+            onClick={() => fetchRevenueData()}
+            className="tori-unstyled-button group inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.075] py-2 pl-2 pr-4 font-tori-garamond text-lg font-light text-white transition hover:bg-white/[0.11]"
+          >
+            <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#f3efe8] text-[#111827]">
+              <svg className="h-4 w-4 transition duration-700 group-hover:rotate-[360deg]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </span>
+            Refresh
+          </button>
           
           {/* Custom Date Range Inputs */}
           {selectedFilter === 'custom' && (
-            <div className="flex flex-col sm:flex-row gap-3 items-end">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
               <div>
                 <label className="mb-1 block text-xl font-light text-blue-100/60">Start Date</label>
                 <input
@@ -421,43 +432,56 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
       </div>
 
       {/* Revenue Metrics Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="mx-auto mb-8 grid w-full max-w-[72rem] grid-cols-1 gap-3 md:grid-cols-3">
         {/* Total Revenue for Selected Period */}
-        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#dbeafe]/95 to-[#9ec7ff]/80 p-4 text-[#07111f] shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+        <div className="relative flex min-h-[9.5rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#dbeafe]/95 to-[#9ec7ff]/80 p-4 pb-0 text-[#07111f] shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:min-h-[11.6rem]">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
-          <div className="relative flex w-full flex-col">
-            <div>
-              <p className="text-2xl font-light normal-case opacity-72">Total Revenue</p>
-              <p className="mt-1 text-lg font-light opacity-58">
-                {metrics.period} · {metrics.count} {config.entityNamePlural}
-              </p>
+          <div className="relative flex min-h-full w-full flex-col">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+              <p className="text-left text-xl font-light normal-case opacity-72">Total Revenue</p>
+              </div>
+              <span className="ml-auto rounded-full border border-white/14 bg-white/12 px-3 py-1 font-tori-garamond text-xs font-light leading-none normal-case opacity-75 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
+                {metrics.period}
+              </span>
             </div>
-            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
-              {formatCurrency(metrics.revenue)}
+            <p className="absolute -bottom-2 left-0 text-left text-6xl font-light leading-[0.78] sm:-bottom-3 sm:text-8xl">
+              {renderCurrencyValue(formatCurrency(metrics.revenue))}
             </p>
           </div>
         </div>
 
         {/* Average per appointment/booking */}
-        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#111827]/95 to-[#17233a]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+        <div className="relative flex min-h-[9.5rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#111827]/95 to-[#17233a]/90 p-4 pb-0 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:min-h-[11.6rem]">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
-          <div className="relative flex w-full flex-col">
-            <p className="text-2xl font-light normal-case text-blue-100/72">Average per {config.entityName}</p>
-            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
-              {metrics.count > 0 
-                ? formatCurrency(Math.round(metrics.revenue / metrics.count))
-                : formatCurrency(0)
-              }
+          <div className="relative flex min-h-full w-full flex-col">
+            <div className="flex items-start justify-between gap-3">
+              <p className="max-w-[70%] text-left text-xl font-light normal-case text-blue-100/72">Average per {config.entityName}</p>
+              <span className="ml-auto rounded-full border border-white/14 bg-white/12 px-3 py-1 font-tori-garamond text-xs font-light leading-none normal-case text-blue-100/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
+                {metrics.period}
+              </span>
+            </div>
+            <p className="absolute -bottom-2 left-0 text-left text-6xl font-light leading-[0.78] sm:-bottom-3 sm:text-8xl">
+              {renderCurrencyValue(
+                metrics.count > 0 
+                  ? formatCurrency(Math.round(metrics.revenue / metrics.count))
+                  : formatCurrency(0)
+              )}
             </p>
           </div>
         </div>
 
         {/* Transaction Count */}
-        <div className="relative flex min-h-[10.25rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+        <div className="relative flex min-h-[9.5rem] overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-[#0c141f]/95 to-[#142033]/90 p-4 pb-0 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] sm:min-h-[11.6rem]">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.22),transparent_12rem)] opacity-70" />
-          <div className="relative flex w-full flex-col">
-            <p className="text-2xl font-light normal-case text-blue-100/72">Total Transactions</p>
-            <p className="mt-auto text-left text-7xl font-light leading-none sm:text-8xl xl:text-8xl">
+          <div className="relative flex min-h-full w-full flex-col">
+            <div className="flex items-start justify-between gap-3">
+              <p className="max-w-[70%] text-left text-xl font-light normal-case text-blue-100/72">Total Transactions</p>
+              <span className="ml-auto rounded-full border border-white/14 bg-white/12 px-3 py-1 font-tori-garamond text-xs font-light leading-none normal-case text-blue-100/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
+                {metrics.period}
+              </span>
+            </div>
+            <p className="absolute -bottom-2 left-0 text-left text-6xl font-light leading-[0.78] sm:-bottom-3 sm:text-8xl">
               {metrics.count}
             </p>
           </div>
@@ -465,22 +489,22 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">
+      <div className="overflow-hidden rounded-[1.35rem] border border-white/10 bg-[#030812]/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_54px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+        <div className="border-b border-white/10 px-4 py-4 sm:px-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="font-tori-garamond text-2xl font-light text-white">
                 Transactions - {metrics.period}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 font-tori-garamond text-sm font-light text-blue-100/58">
                 {metrics.dateRange}
               </p>
             </div>
-            <div className="text-right">
-              <span className="text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-3 text-left sm:text-right">
+              <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 font-tori-garamond text-sm font-light text-blue-100/58">
                 Showing all {transactions.length} transactions
               </span>
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="font-tori-garamond text-xl font-light text-white">
                 {formatCurrency(metrics.revenue)}
               </div>
             </div>
@@ -488,39 +512,39 @@ const UnifiedRevenuePage: React.FC<UnifiedRevenuePageProps> = ({ serviceType }) 
         </div>
         
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-[56rem] divide-y divide-white/8 xl:min-w-full">
+            <thead className="bg-white/[0.035]">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   Booking Date
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   Customer
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   Service
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   Payment Method
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   amount
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center font-tori-garamond text-base font-light normal-case text-blue-100/45">
                   Reference
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-white/8 bg-transparent">
               {transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="text-gray-500">
-                      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                      <p className="mt-4 text-lg font-medium">No transactions found</p>
-                      <p className="mt-2">No revenue data available for the selected period.</p>
+                  <td colSpan={6} className="px-6 py-14 text-center">
+                    <div className="mx-auto max-w-md">
+                      <div className="mx-auto text-7xl leading-none">
+                        🧾
+                      </div>
+                      <p className="font-tori-garamond mt-5 text-4xl font-light leading-none text-white">No transactions found</p>
+                      <p className="mx-auto mt-2 max-w-sm font-tori-garamond text-base text-blue-100/50">No revenue data is available for this period yet.</p>
                     </div>
                   </td>
                 </tr>
