@@ -1,59 +1,72 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './ScrollSection.css';
+import {
+  createRafScrollListener,
+  getStickyProgress,
+  isMobileViewport,
+} from '@/lib/mobile-animation';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const testimonials = [
   {
     id: 1,
-    image: "/images/rev-1.png",
-    quote: "Tori takes bookings 24/7, so even if I'm not present in the clinic, I never miss a patient.",
-    name: "Patients get instant confirmation and automatic reminders.",
-    studio: "Navneet Grover - Physiotherapist"
+    image: "/images/testimonials/aimfit.png",
+    quote: "Most of our customer conversations already happen on WhatsApp, but managing enquiries, timings, and follow-ups manually gets messy very quickly. Toriate gave us a cleaner way to think about bookings — customers can interact through WhatsApp, and the business gets better visibility instead of depending only on scattered chats",
+    name: "Bengaluru",
+    studio: "Aimfit Gym"
+
   },
   {
     id: 2,
-    image: "/images/rev-4-4.png",
-    quote: "Patients can EASILY BOOK their APPOINTMENTS, SURGERIES, and MEDICAL PURCHASES.",
-    name: "",
-    studio: "Hitesh"
+    image: "/images/testimonials/sanjiwani.png",
+    quote: "For a clinic, the problem is not just taking one appointment. It is remembering follow-ups, managing timing changes, and reducing the back-and-forth between staff and patients. Toriate’s WhatsApp-based booking flow makes the process feel familiar for patients while giving the clinic a more organized way to handle appointments.",
+    name: "Hyderabad",
+    studio: "Sanjiwani Chikitsa Kendra"
   },
   {
     id: 3,
-    image: "/images/rev-2-2.png",
-    quote: "From INSTANT PATIENT RESPONSES to CONFIRMED APPOINTMENTS -everything happens DIRECTLY ON WHATSAPP." ,
-    name: "saves my patients' time and helps my clinic GROW EFFORTLESSLY.",
-    studio: "Tanvi Nagpal - Physiotherapist"
+    image: "/images/testimonials/poorna.png",
+    quote: "Our patients and staff are already comfortable with WhatsApp, so the idea of moving appointment booking into a structured WhatsApp flow made sense immediately. Toriate helps reduce the confusion of manual coordination and gives the team a clearer view of bookings, timing, and appointment status.",
+    name: "Bengaluru",
+    studio: "Poorna Neuro"
   },
   {
     id: 4,
-    image: "/images/rev-3-3-3.png",
-    quote: "A SOLID feature is its seamless integration with WHATSAPP, for those who don't want to download apps like fit pass, cult, dont have that much tech knowledge like people in 50s they can book workouts" ,
-    name: "represents a revolutionary advancement in the Health and wellness domain, offering",
-    studio: "Mamata Gujrati - Yoga Instructor"
-  },
-  {
-    id: 5,
-    image: "/images/rev-5-5-5.png",
-    quote: "With TORI, customers book instantly while businesses grow" ,
-    name: "",
-    studio: "Dhruv Sharma - Turf Owner"
-  },
-  
+    image: "/images/testimonials/asf.png",
+    quote: "In yoga and fitness, customers often ask about batches, timings, and availability through WhatsApp. Toriate makes that experience more structured. Instead of manually replying to every booking-related message, the customer journey can happen inside WhatsApp while the business gets a cleaner dashboard to track appointments.",
+    name: "Bengaluru",
+    studio: "Ashish Yoga Fitness"
+  }
 ];
 
 const TestimonialCard = ({ data }) => {
   return (
     <div className="t-card">
       <div className="t-card-video-wrap">
-        <img 
+        <Image
           src={data.image}
-          alt={`Testimonial from ${data.name}`}
-          className="t-card-video" // Keeping class name for layout consistency or should I change it?
-          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+          alt={`${data.studio} testimonial`}
+          className="t-card-video"
+          fill
+          sizes="(max-width: 768px) 86vw, 380px"
+          loading="lazy"
         />
+        {/* Uncomment when testimonial photos are replaced with videos.
+        {!isPlaying && (
+          <button className="t-card-play-btn" onClick={togglePlay}>
+            <span>▶</span> Play
+          </button>
+        )}
+        {isPlaying && (
+           <button className="t-card-play-btn" onClick={togglePlay} style={{opacity: 0.5}}>
+            <span>II</span> Pause
+          </button>
+        )}
+        */}
       </div>
       <div className="t-card-divider"></div>
       <div className="t-card-content">
@@ -70,181 +83,282 @@ const TestimonialCard = ({ data }) => {
 const ScrollSection = () => {
   const wrapperRef = useRef(null);
   const stickyRef = useRef(null);
-  const railRef = useRef(null);
-  const canvasRef = useRef(null);
+  const railRef = useRef(null); // This acts as ".cards"
+  const outlineRef = useRef(null);
+  const fillRef = useRef(null);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const sticky = stickyRef.current;
     const rail = railRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const outlineCanvas = outlineRef.current;
+    const fillCanvas = fillRef.current;
 
-    if (!wrapper || !sticky || !rail || !canvas) return;
+    if (!wrapper || !sticky || !rail || !outlineCanvas || !fillCanvas) return;
 
-    // --- 1. Horizontal Scroll Animation ---
-    
-    // Calculate how far the rail needs to move
-    // Movement = (Rail Width - Viewport Width) + Padding
-    const getScrollDistance = () => {
-      const railWidth = rail.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      return -(railWidth - viewportWidth + window.innerWidth * 0.1); // Add 10vw overscroll
-    };
+    const isMobile = isMobileViewport();
 
-    const scrollAnim = gsap.fromTo(rail, 
-      {
-        x: 0 
-      },
-      {
-        x: () => getScrollDistance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1, // Increased scrub for smoother feel
-          invalidateOnRefresh: true,
+    const outlineCtx = outlineCanvas.getContext("2d");
+    const fillCtx = fillCanvas.getContext("2d");
+
+    // --- Provided Script Logic ---
+
+    const stickyHeight = window.innerHeight * 5;
+
+    function setCanvasSize(canvas, ctx) {
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2);
+      // Force canvas to match viewport dimensions exactly without scrollbars
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = '100%';
+      canvas.style.height = '100svh';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    setCanvasSize(outlineCanvas, outlineCtx);
+    setCanvasSize(fillCanvas, fillCtx);
+
+    const triangleSize = isMobile ? 150 : 150;
+    const lineWidth = 1;
+    const SCALE_THRESHOLD = 0.01;
+    const triangleStates = new Map();
+    let animationFrameId = null;
+    let canvasXPosition = 0;
+
+    function drawTriangle(ctx, x, y, fillScale = 0, flipped = false) {
+      const halfSize = triangleSize / 2;
+
+      if (fillScale < SCALE_THRESHOLD) {
+        ctx.beginPath();
+        if (!flipped) {
+          ctx.moveTo(x, y - halfSize);
+          ctx.lineTo(x + halfSize, y + halfSize);
+          ctx.lineTo(x - halfSize, y + halfSize);
+        } else {
+          ctx.moveTo(x, y + halfSize);
+          ctx.lineTo(x + halfSize, y - halfSize);
+          ctx.lineTo(x - halfSize, y - halfSize);
         }
-      }
-    );
-
-    // --- 2. Canvas Triangle Grid Animation ---
-
-    let width, height;
-    const triangleSize = 150;
-    const triangles = [];
-
-    const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      initTriangles();
-      render(0); // Initial render
-    };
-
-    const initTriangles = () => {
-      triangles.length = 0;
-      const cols = Math.ceil(width / (triangleSize * 0.5));
-      const rows = Math.ceil(height / triangleSize);
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const x = c * (triangleSize * 0.5);
-          const y = r * triangleSize + (c % 2 === 0 ? 0 : triangleSize / 2);
-          const isFlipped = (c % 2 !== 0);
-          
-          // Randomize order slightly for the fill effect
-          const order = (c / cols) + (Math.random() * 0.1); 
-          
-          triangles.push({ x, y, isFlipped, order, scale: 0 });
-        }
-      }
-    };
-
-    const drawTriangle = (x, y, scale, isFlipped, isFill) => {
-      const s = triangleSize;
-      const h = s * Math.sqrt(3) / 2; // height of equilateral triangle
-      
-      ctx.beginPath();
-      if (!isFlipped) {
-         ctx.moveTo(x, y);
-         ctx.lineTo(x + s, y);
-         ctx.lineTo(x + s / 2, y + h);
-      } else {
-         ctx.moveTo(x + s / 2, y);
-         ctx.lineTo(x + s, y + h);
-         ctx.lineTo(x, y + h);
-      }
-      ctx.closePath();
-
-      if (isFill) {
-        // Only draw fill if scale > 0.01
-        if (scale > 0.01) {
-            // Simple scaling approach: draw smaller triangle at center
-            const cx = x + s/2;
-            const cy = y + h/2; // Approx center
-            
-            // To properly scale, we'd need centroid math, but let's keep it simple and just use alpha or simple stroke for now to avoid artifacts
-            // Actually, user wants "orange triangle". Let's use Alpha for smoothness or full fill.
-            ctx.fillStyle = `rgba(255, 107, 0, ${scale})`; // Orange with opacity
-            ctx.fill();
-        }
-      } else {
-        // Outline
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-        ctx.lineWidth = 1;
+        ctx.closePath();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.075)";
+        ctx.lineWidth = lineWidth;
         ctx.stroke();
       }
-    };
 
-    const render = (progress) => {
-      ctx.clearRect(0, 0, width, height);
+      if (fillScale >= SCALE_THRESHOLD) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(fillScale, fillScale);
+        ctx.translate(-x, -y);
 
-      // Draw Outlines
-      triangles.forEach(t => {
-        drawTriangle(t.x, t.y, 1, t.isFlipped, false);
-      });
+        ctx.beginPath();
+        if (!flipped) {
+          ctx.moveTo(x, y - halfSize);
+          ctx.lineTo(x + halfSize, y + halfSize);
+          ctx.lineTo(x - halfSize, y + halfSize);
+        } else {
+          ctx.moveTo(x, y + halfSize);
+          ctx.lineTo(x + halfSize, y - halfSize);
+          ctx.lineTo(x - halfSize, y - halfSize);
+        }
+        ctx.closePath();
+        ctx.fillStyle = "#E6F2FF";
+        ctx.strokeStyle = "#8AB9EB";
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.fill();
+        ctx.restore();
+      }
+    }
 
-      // Draw Fills based on progress
-      // We map progress (0 to 1) to the triangles
-      // We want them to start appearing after some scrolling
-      const effectiveProgress = Math.max(0, (progress - 0.2) * 1.5); // Delayed start (0.2)
-      
-      triangles.forEach(t => {
-        // Calculate scale/opacity based on order and progress
-        // If progress > t.order, it starts filling
-        let p = (effectiveProgress - t.order) * 3; // Reduced speed multiplier for smoother fill
-        p = Math.max(0, Math.min(1, p)); // Clamp 0-1
-        
-        if (p > 0) {
-            drawTriangle(t.x, t.y, p, t.isFlipped, true);
+    function drawGrid(scrollProgress = 0) {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      outlineCtx.clearRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+      fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
+
+      const animationProgress =
+        scrollProgress <= 0.65 ? 0 : (scrollProgress - 0.65) / 0.35;
+
+      let needsUpdate = false;
+      const animationSpeed = 0.15;
+
+      triangleStates.forEach((state, key) => {
+        // Draw all outlines regardless of scale to ensure full grid visibility
+        // Calculate x with canvasXPosition for horizontal scrolling effect
+        const x = state.col * (triangleSize * 0.5) + triangleSize / 2 + canvasXPosition;
+
+        // Only draw if within visible viewport range to optimize and prevent artifacts
+        if (x > -triangleSize && x < outlineCanvas.width + triangleSize) {
+            const y = state.row * triangleSize + triangleSize / 2;
+            const flipped = (state.row + state.col) % 2 !== 0;
+            drawTriangle(outlineCtx, x, y, 0, flipped);
         }
       });
+
+      triangleStates.forEach((state, key) => {
+        const shouldBeVisible = animationProgress > 0 && state.order <= animationProgress;
+        const targetScale = shouldBeVisible ? 1 : 0;
+        const newScale =
+          state.scale + (targetScale - state.scale) * animationSpeed;
+
+        if (Math.abs(newScale - state.scale) > 0.001) {
+          state.scale = newScale;
+          needsUpdate = true;
+        }
+
+        if (state.scale >= SCALE_THRESHOLD) {
+          const x = state.col * (triangleSize * 0.5) + triangleSize / 2 + canvasXPosition;
+
+          if (x > -triangleSize && x < fillCanvas.width + triangleSize) {
+              const y = state.row * triangleSize + triangleSize / 2;
+              const flipped = (state.row + state.col) % 2 !== 0;
+              drawTriangle(fillCtx, x, y, state.scale, flipped);
+          }
+        }
+      });
+
+      if (needsUpdate) {
+        animationFrameId = requestAnimationFrame(() => drawGrid(scrollProgress));
+      }
+    }
+
+    function initializeTriangles() {
+      // Calculate extra columns to cover the scrolling area
+      // We scroll by window.innerWidth * 2, so we need width * 3 total coverage roughly
+      const extraWidth = window.innerWidth * (isMobile ? 2.25 : 3.5);
+      const totalWidth = window.innerWidth + extraWidth;
+
+      const cols = Math.ceil(totalWidth / (triangleSize * 0.5));
+      const rows = Math.ceil(window.innerHeight / (triangleSize * 0.5));
+      const totalTriangles = rows * cols;
+
+      const positions = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          positions.push({ row: r, col: c, key: `${r}-${c}` });
+        }
+      }
+
+      for (let i = positions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [positions[i], positions[j]] = [positions[j], positions[i]];
+      }
+
+      positions.forEach((pos, index) => {
+        triangleStates.set(pos.key, {
+          order: index / totalTriangles,
+          scale: 0,
+          row: pos.row,
+          col: pos.col,
+        });
+      });
+    }
+
+    initializeTriangles();
+    drawGrid();
+
+    let resizeFrameId = null;
+    const handleResize = () => {
+      if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
+
+      resizeFrameId = requestAnimationFrame(() => {
+        setCanvasSize(outlineCanvas, outlineCtx);
+        setCanvasSize(fillCanvas, fillCtx);
+        triangleStates.clear();
+        initializeTriangles();
+        drawGrid();
+      });
     };
 
-    // Link Canvas Render to ScrollTrigger
-    ScrollTrigger.create({
-      trigger: wrapper,
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
-        render(self.progress);
-      }
+    window.addEventListener("resize", handleResize);
+
+    const getHorizontalDistance = () =>
+      Math.max(
+        0,
+        rail.scrollWidth -
+          window.innerWidth +
+          window.innerWidth * 0.06
+      );
+
+    // Mobile: native position:sticky (CSS) drives the pin, and a plain
+    // rAF-based scroll listener drives the rail transform + canvas grid.
+    // GSAP ScrollTrigger's own pin:true mechanism was found to permanently
+    // freeze page scroll on real mobile browsers (the pin never releases),
+    // which is the same class of bug already fixed in every other pinned
+    // section on this site by switching away from ScrollTrigger's pin.
+    if (isMobile) {
+      const updateTestimonials = () => {
+        const progress = getStickyProgress(wrapper);
+        const x = -progress * getHorizontalDistance();
+        rail.style.transform = `translate3d(${x}px, 0, 0)`;
+        canvasXPosition = -progress * 200;
+        drawGrid(progress);
+      };
+
+      const stopScrollListener = createRafScrollListener(updateTestimonials);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        stopScrollListener();
+      };
+    }
+
+    const triggerTween = gsap.to(rail, {
+      x: () => -getHorizontalDistance(),
+      force3D: true,
+      ease: "none",
+      scrollTrigger: {
+        trigger: wrapperRef.current,
+        start: "top top",
+        end: `+=${stickyHeight}px`,
+        pin: true,
+        anticipatePin: 1,
+        scrub: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          canvasXPosition = -self.progress * 200;
+          drawGrid(self.progress);
+        },
+      },
     });
 
-    window.addEventListener('resize', resize);
-    resize(); // Init
-
     return () => {
-      window.removeEventListener('resize', resize);
-      scrollAnim.kill();
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      window.removeEventListener("resize", handleResize);
+      if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      triggerTween.scrollTrigger?.kill();
+      triggerTween.kill();
     };
   }, []);
 
   return (
     <div className="testimonials-spacer" ref={wrapperRef}>
       <div className="testimonials-sticky-viewport" ref={stickyRef}>
-        
-        {/* Background Grid */}
+
+        {/* Background Grid - Replaced with 2 Canvases */}
         <div className="testimonials-bg">
-            <img src="/images/hero.jpg" alt="" />
-        </div>
-        <canvas className="testimonials-canvas" ref={canvasRef} />
-
-        {/* Content */}
-        <div className="testimonials-header">
-          <h2><span>Real Stories</span> Real Results</h2>
+            <picture>
+              <source media="(max-width: 768px)" srcSet="/images/hero-mobile.webp" type="image/webp" />
+              <img src="/images/hero.webp" alt="" loading="lazy" decoding="async" />
+            </picture>
         </div>
 
-        <div className="testimonials-rail" ref={railRef}>
+        {/* Outline Layer (Z-Index 1) */}
+        <canvas className="outline-layer" ref={outlineRef} />
+
+        {/* Fill Layer (Z-Index 3) */}
+        <canvas className="fill-layer" ref={fillRef} />
+
+        {/* Cards Rail (Z-Index 2 - should be between layers according to reference styles, but checking z-indexes...)
+            Reference styles: outline=1, fill=3, cards=2.
+            So cards should be BETWEEN outline and fill.
+        */}
+        <div className="testimonials-rail" ref={railRef} style={{ zIndex: 2 }}>
           {testimonials.map(t => (
             <TestimonialCard key={t.id} data={t} />
           ))}

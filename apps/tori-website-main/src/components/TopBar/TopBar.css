@@ -3,11 +3,11 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1rem 2rem;
+  padding: 0.75rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 10;
+  z-index: 10000;
   pointer-events: none; /* Allow clicking through the empty space */
 }
 
@@ -26,93 +26,21 @@
 }
 
 .top-bar .top-bar-logo {
-  width: 4rem;
+  display: flex;
+  align-items: center;
+  width: auto;
 }
 
 .top-bar .top-bar-logo img {
+  height: 3.3rem;
   width: auto;
-  height: 44px;
   display: block;
-}
-
-.top-bar .top-bar-status {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #ffffff;
-  white-space: nowrap;
-}
-
-.top-bar .top-bar-status-avatars {
-  display: flex;
-  align-items: center;
-}
-
-.top-bar .top-bar-status-avatar {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-left: -0.45rem;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.top-bar .top-bar-status-avatar:first-child {
-  margin-left: 0;
-}
-
-.top-bar .top-bar-status-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 50%;
-}
-
-.top-bar .top-bar-status-text {
-  font-size: 0.72rem;
-  font-weight: 400;
 }
 
 .top-bar .top-bar-cta {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.top-bar .top-bar-cta .btn {
-  margin: 0;
-}
-
-/* Book ANY SERVICE IN 10 SEC Button Specific Override */
-@media (max-width: 768px) {
-  .top-bar-logo,
-  .top-bar-cta {
-    display: none !important;
-  }
-}
-
-.top-bar .get-started-btn {
-  background: rgba(255, 255, 255, 0.25) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-}
-
-.top-bar .get-started-btn .circle {
-  background: #ffffff !important;
-}
-
-.top-bar .get-started-btn .button-text {
-  color: #ffffff !important;
 }
 
 /* Login Button Customization */
@@ -127,22 +55,27 @@
 .top-bar .nav-pill {
   display: flex;
   align-items: center;
-  gap: 0.25rem; /* Reduced gap */
-  padding: 0.4rem 0.5rem; /* Reduced padding */
-  background: rgba(255, 255, 255, 0.1); /* Glassmorphism transparent bg */
+  gap: 0.4rem;
+  height: 2.75rem;
+  padding: 0 0.65rem;
+  background: rgba(20, 20, 20, 0.8); /* Darker background */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 2rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .top-bar .nav-link {
   position: relative;
-  font-size: 0.875rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-resist-sans), "Manrope", sans-serif;
+  font-size: clamp(14px, 1.2vw, 16px);
+  font-weight: 400;
   text-decoration: none;
-  padding: 0.5rem 0.8rem; /* Reduced horizontal padding */
+  height: 2.15rem;
+  padding: 0 0.8rem;
   border-radius: 2rem;  /* Pill shape */
   white-space: nowrap;
   
@@ -150,8 +83,9 @@
   /* Left side: Whit'ish (Filled), Right side: Transparent (Unfilled) */
   /* Using exact 50% with -1px shift to hide the line */
   background-image: linear-gradient(to right, var(--base-100) 50%, transparent 50%);
-  background-size: 200% 100%;
-  background-position: 100.5% 0; /* Shift slightly more than 100% to push the edge off-screen initially */
+  background-size: 210% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 0;
   
   /* Remove text clip from here, moved to .nav-text */
   background-clip: border-box;
@@ -163,8 +97,9 @@
   /* Text Color Fill Effect */
   /* Left side: Black (Filled bg), Right side: Whit'ish (Unfilled bg) */
   background-image: linear-gradient(to right, #000000 50%, var(--base-100) 50%);
-  background-size: 200% 100%;
-  background-position: 100.5% 0; /* Match the background shift */
+  background-size: 210% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 0;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -172,120 +107,131 @@
   display: inline-block; /* Ensure transforms/gradients work well */
 }
 
-.top-bar .nav-link:hover {
-  /* Optional: Hover effect */
+.top-bar .top-bar-cta .btn {
+  margin: 0 !important;
+  padding: 0.25rem 0.25rem 0.25rem 0.25rem !important;
+  width: 10rem !important;
+  height: 2.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+.top-bar .top-bar-cta .btn .circle {
+  position: relative !important;
+  flex-shrink: 0 !important;
+  width: 2.35rem !important;
+  height: 2.35rem !important;
+  margin: 0 !important;
+}
+
+.top-bar .top-bar-cta .btn:hover .circle {
+  width: calc(100% - 0.5rem) !important;
+}
+
+.top-bar .top-bar-cta .btn .icon {
+  position: absolute !important;
+  top: 50% !important;
+  left: 1.4rem !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.top-bar .top-bar-cta .btn .button-text {
+  font-family: var(--font-resist-sans), "Manrope", sans-serif !important;
+  font-size: 0.9rem !important;
+  margin: 0 !important;
+  flex: 1 !important;
+  text-align: center !important;
+  padding-left: 2.65rem !important;
+  padding-right: 0.5rem !important;
+}
+
+.top-bar .login-btn:hover .button-text {
+  color: #000000 !important;
+}
+
+.top-bar .top-bar-cta .btn:hover .icon {
+  transform: translate(calc(-50% + 0.5rem), -50%) !important;
 }
 
 /* Remove active class styling as GSAP handles it */
 /* .top-bar .nav-link.active { ... } */
-
-.mobile-founder-text {
-  display: none;
-}
 
 @media (max-width: 1000px) {
   .top-bar {
     padding: 0.5rem 1.5rem;
   }
   
-  .top-bar .top-bar-status {
-    display: none;
-  }
-
   .top-bar .nav-pill {
-    gap: 1rem;
-    padding: 0.4rem 1rem;
+    gap: 0.8rem;
+    height: 3rem;
+    padding: 0 1rem;
   }
   
   .top-bar .nav-link {
     font-size: 0.8rem;
-  }
-}
-
-@media (min-width: 1001px) {
-  .top-bar {
-    display: grid;
-    grid-template-columns: minmax(80px, 120px) auto 1fr;
-    align-items: center;
-    gap: 1.25rem;
-    background: linear-gradient(
-      180deg,
-      rgba(8, 8, 8, 0.85) 0%,
-      rgba(8, 8, 8, 0.35) 45%,
-      rgba(8, 8, 8, 0) 100%
-    );
-  }
-
-  .top-bar .top-bar-logo {
-    justify-self: start;
-  }
-
-  .top-bar .top-bar-status {
-    justify-self: start;
-  }
-
-  .top-bar .top-bar-nav {
-    justify-self: center;
-  }
-
-  .top-bar .nav-pill {
-    gap: 0.35rem;
-    padding: 0.4rem 0.75rem;
-  }
-
-  .top-bar .nav-link {
-    padding: 0.45rem 0.6rem;
-    font-size: 0.8rem;
+    height: 2.35rem;
+    padding: 0 0.75rem;
   }
 }
 
 @media (max-width: 768px) {
+  .top-bar {
+    padding: 0.55rem 0.85rem;
+  }
+
   .top-bar .top-bar-nav {
     display: none;
   }
+
+  .top-bar .top-bar-logo img {
+    height: 2.5rem;
+  }
   
   .top-bar .top-bar-cta {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0;
-  }
-  
-  .top-bar .login-btn {
-    display: none;
+    gap: 0.4rem;
   }
 
-  .mobile-founder-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48%;
-    font-size: 0.65rem;
-    color: var(--base-100);
-    line-height: 1.2;
-    padding: 0.5rem 0.75rem;
-    text-align: center;
-    font-weight: 500;
-    
-    /* Glassy styles matching button */
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 2rem;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  .top-bar .top-bar-cta .login-btn {
+    display: none !important;
   }
   
-  /* Target the Book ANY SERVICE IN 10 SEC button container/link */
-  .top-bar .top-bar-cta > a.btn,
-  .top-bar .top-bar-cta > button.btn {
-    width: 48% !important; /* Slightly less than 50% to account for gaps/padding */
-    margin: 0 !important;
-    font-size: 0.8rem;
+  .top-bar .top-bar-cta .btn {
+    width: 8.8rem !important;
+    height: 2.5rem !important;
   }
-  
-  /* Also target the button text if needed to prevent overflow */
+
+  .top-bar .top-bar-cta .btn .circle {
+    width: 2.1rem !important;
+    height: 2.1rem !important;
+  }
+
+  .top-bar .top-bar-cta .btn .icon {
+    left: 1.25rem !important;
+    font-size: 0.9rem !important;
+  }
+
   .top-bar .top-bar-cta .btn .button-text {
-    font-size: 0.8rem;
-    left: 55%; /* Adjust centering if needed */
+    font-size: 0.78rem !important;
+    padding-left: 2.2rem !important;
+    padding-right: 0.35rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .top-bar .top-bar-logo img {
+    height: 2.2rem;
+  }
+
+  .top-bar .top-bar-cta .btn {
+    width: 8rem !important;
   }
 }

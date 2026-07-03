@@ -1,75 +1,235 @@
 .how-we-work {
-  position: relative;
   width: 100%;
-  height: 100%;
+  margin-left: 0;
   min-height: 100vh;
-  color: var(--base-100);
-  display: flex;
-  gap: 2rem;
+  padding: 0 clamp(1.25rem, 3vw, 2.5rem);
+  background:
+    linear-gradient(
+      to right,
+      #000 0%,
+      #000 45%,
+      rgba(0, 0, 0, 0.88) 53%,
+      rgba(0, 0, 0, 0.34) 66%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    url('/images/features-bg-final.webp') 72vw center / 62vw 100% no-repeat,
+    #000;
+  display: grid;
+  grid-template-columns: minmax(0, 58%) minmax(330px, 39%);
+  column-gap: clamp(1rem, 2.5vw, 2.5rem);
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 5;
+  overflow: visible;
 }
 
-.how-we-work .how-we-work-header {
+.how-we-work::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 60%;
+  width: 100%;
+  height: 36vh;
+  background: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.86) 24%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.how-we-work::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  background: linear-gradient(to top, #000 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.how-we-work .header {
+  text-align: left;
+  margin-bottom: 0;
+  flex: 1;
+  position: relative;
   height: 100vh;
-  overflow: hidden;
-  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 0; /* Removed padding */
+}
+
+.how-we-work .how-we-work-header {
+  grid-column: 1;
+  width: 100%;
+  flex-shrink: 0;
+  position: sticky !important;
+  top: 0 !important;
+  align-self: flex-start;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: clamp(3rem, 7vh, 5rem);
+  padding-bottom: 0;
+  padding-right: clamp(1.5rem, 3vw, 3rem);
+  z-index: 20;
+  overflow: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.how-we-work .how-we-work-header.is-fixed {
+  position: fixed !important;
+  top: 0 !important;
+  left: var(--hww-pin-left);
+  width: var(--hww-pin-width);
+}
+
+.how-we-work .how-we-work-header.is-ended {
+  position: absolute !important;
+  top: auto !important;
+  bottom: 0;
+  left: var(--hww-pin-offset-left);
+  width: var(--hww-pin-width);
+}
+
+.how-we-work .how-we-work-header .container {
+  height: auto !important;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
 }
 
 .how-we-work .how-we-work-header-content {
-  padding-top: 10rem;
-  width: 70%;
+  /* Container for the sticky content */
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: clamp(1.25rem, 2.4vw, 2rem);
+  z-index: 30; /* Ensure content is above any overlays */
+  position: relative; /* Establish stacking context */
+  opacity: 1 !important; /* Force opacity */
+  visibility: visible !important; /* Force visibility */
 }
 
-.how-we-work .how-we-work-header-content .how-we-work-header-callout p {
-  color: var(--base-350);
+.how-we-work .how-we-work-header-callout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.35rem;
+  flex-wrap: wrap;
+}
+
+.how-we-work .how-we-work-header-callout > [data-copy-wrapper="true"] {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.speed-badge-header {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem 0.4rem 0.62rem; /* Left padding slightly less for icon spacing */
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2rem;
+  margin-bottom: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  gap: 0.42rem;
+}
+
+.speed-badge-divider {
+  display: none;
+}
+
+.speed-badge-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: #FFD84D;
+  filter: drop-shadow(0 0 6px rgba(255, 216, 77, 0.8));
+}
+
+.speed-badge-text-header {
+  font-family: var(--font-itc-garamond), serif; /* Serif font as requested */
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+  text-transform: capitalize; /* Title Case */
 }
 
 .how-we-work .how-we-work-header-content h3 {
-  color: var(--base-100);
+  font-family: var(--font-itc-garamond), sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
+  font-weight: 500;
+  max-width: 24ch;
+  line-height: 1.05;
+  letter-spacing: 0;
   margin-bottom: 1rem;
 }
 
-.how-we-work .how-we-work-header-content .subheading {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: var(--base-200);
-  margin-bottom: 2rem;
-  font-style: italic;
+.how-we-work .process-title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Ensure contrasting colors for left section text against dark bg */
+.how-we-work .header h2 {
+  font-family: var(--font-itc-garamond), sans-serif;
+  font-size: clamp(3rem, 5vw, 4rem);
+  text-transform: uppercase;
+  color: #E6F2FF; /* Light Blue for contrast against dark bg */
+  line-height: 1.1;
+  text-align: left;
+}
+
+.how-we-work .subheading {
+  font-size: clamp(1rem, 1.28vw, 1.2rem);
+  line-height: 1.35;
+  color: #B0C4DE; /* Light steel blue for contrast */
+  max-width: 68ch;
+  letter-spacing: 0;
 }
 
 .how-we-work .how-we-work-steps {
   display: flex;
   gap: 1rem;
+  margin-top: clamp(1.5rem, 3vh, 2rem);
 }
 
 .how-we-work .how-we-work-step {
   position: relative;
-  padding: 1.25rem;
-  width: 4rem;
-  height: 4rem;
+  padding: 1rem; /* Reduced padding from 1.5rem */
+  width: 4rem; /* Reduced width from 6rem */
+  height: 4rem; /* Reduced height from 6rem */
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(102, 95, 86, 0.65);
-  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Light border */
+  border-radius: 1rem; /* Reduced radius from 1.5rem */
   transition: all 0.3s ease;
   overflow: hidden;
+  color: #FFFFFF; /* White text */
 }
 
 .how-we-work .how-we-work-step p {
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* Reduced font size from 1.5rem */
   font-weight: 550;
 }
 
 .how-we-work .how-we-work-step-label {
   position: absolute;
-  left: 2rem;
+  left: 1.5rem; /* Adjusted left position */
   opacity: 0;
   transform: translateX(-20px);
   transition: all 0.3s ease;
@@ -84,10 +244,10 @@
 }
 
 .how-we-work .how-we-work-step.active {
-  width: 8rem;
-  color: var(--base-500);
-  background-color: var(--base-100);
-  border-color: var(--base-100);
+  width: 8rem; /* Reduced active width from 12rem */
+  color: #000000; /* Dark text on active */
+  background-color: #FFFFFF; /* White bg on active */
+  border-color: #FFFFFF;
 }
 
 .how-we-work .how-we-work-step.active .how-we-work-step-index {
@@ -100,118 +260,265 @@
 }
 
 .how-we-work .how-we-work-cards {
-  flex: 2;
+  grid-column: 2;
+  width: 100%;
+  flex-shrink: 0;
   position: relative;
-  margin-left: 60%;
+  margin-left: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 8rem 0 20vh 0; /* Increased bottom padding */
+  gap: clamp(1.5rem, 3vw, 2rem);
+  padding: clamp(5rem, 10vh, 8rem) 1rem clamp(7rem, 14vh, 10rem) 0;
   will-change: transform;
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .how-we-work {
+    padding-inline: clamp(1rem, 2vw, 1.5rem);
+    grid-template-columns: minmax(0, 57%) minmax(320px, 40%);
+  }
+
+  .how-we-work .how-we-work-header {
+    padding-right: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .how-we-work .how-we-work-header-content {
+    gap: 1rem;
+  }
+
+  .how-we-work .how-we-work-header-content h3 {
+    font-size: clamp(2.2rem, 3.7vw, 3rem);
+    max-width: 24ch;
+    line-height: 1.04;
+  }
+
+  .how-we-work .subheading {
+    font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+    max-width: 62ch;
+    line-height: 1.35;
+  }
+
+  .how-we-work .how-we-work-steps {
+    gap: 0.75rem;
+  }
+
+  .how-we-work .how-we-work-step {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  .how-we-work .how-we-work-step.active {
+    width: 7.25rem;
+  }
 }
 
 .how-we-work .how-we-work-card {
   position: relative;
+  width: 94%;
+  margin: 0 auto;
+  height: 100%;
+  background-color: #E6F2FF; /* Base Light Blue */
+  border-radius: 1.75rem;
+  padding: clamp(1.1rem, 1.75vw, 1.75rem);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background-color: var(--base-450);
-  padding: 1rem;
-  border-radius: 1rem;
+  justify-content: flex-start;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    inset 0 0 60px rgba(255, 255, 255, 0.8),
+    inset 0 0 20px rgba(255, 255, 255, 0.5);
+  color: #061B37;
+  overflow: hidden;
 }
 
+/* Revert Image Styling */
 .how-we-work .how-we-work-card-img {
   position: relative;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1 / 1;
+  background-color: transparent;
+  border-radius: 1rem;
   overflow: hidden;
-  border-radius: 0.75rem;
+  margin: 0 auto;
 }
 
-.how-we-work .how-we-work-card-img img {
-  position: relative;
-  top: 0;
-  left: 0;
+.how-we-work .how-we-work-card-img img,
+.how-we-work .how-we-work-card-img video {
   width: 100%;
-  height: auto;
-  opacity: 0.75;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
   display: block;
 }
 
-.how-we-work .how-we-work-card-index-label {
-  color: var(--base-100);
-  margin-bottom: 0.5rem;
-}
-
+/* Revert Heading Size/Spacing */
 .how-we-work .how-we-work-card-index-label h3 {
-  font-size: 2rem;
-  letter-spacing: -0.05rem;
-}
-
-.how-we-work .how-we-work-card-index-label {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.how-we-work .speed-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 2rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  font-family: var(--font-itc-garamond), sans-serif;
+  font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 500;
-  color: var(--base-100);
-  backdrop-filter: blur(10px);
+  line-height: 1;
+  color: #061B37;
+  margin-top: 0.5rem;
 }
 
-.how-we-work .speed-badge-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #10b981;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
+/* Revert Copy Spacing */
 .how-we-work .how-we-work-card-copy {
-  color: var(--base-350);
-  padding: 1rem;
+  color: #124576;
+  padding: 0; /* Removed horizontal padding inside container */
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .how-we-work {
+    display: flex;
     flex-direction: column;
     min-height: auto;
+    padding: 0 clamp(0.9rem, 4vw, 1.25rem) clamp(3rem, 10vw, 5rem);
+    background:
+      radial-gradient(circle at 85% 16%, rgba(138, 185, 235, 0.22), transparent 26rem),
+      #000;
   }
 
   .how-we-work .how-we-work-header {
-    position: relative;
+    position: sticky !important;
+    top: 0;
     width: 100%;
     height: auto;
+    max-height: none;
+    padding-top: clamp(3rem, 10vw, 4.5rem);
+    padding-bottom: 1.2rem;
+    padding-right: 0;
     overflow: visible;
+    background:
+      linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.92) 72%, rgba(0, 0, 0, 0) 100%);
   }
 
   .how-we-work .how-we-work-steps {
-    display: none;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .how-we-work .how-we-work-header-callout,
+  .how-we-work .how-we-work-header-callout > [data-copy-wrapper="true"] {
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
+
+  .how-we-work .how-we-work-header-callout .section-pill,
+  .speed-badge-header {
+    min-height: 2.15rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.65rem;
+  }
+
+  .speed-badge-icon {
+    width: 1rem;
+    height: 1rem;
+    font-size: 1rem;
+  }
+
+  .speed-badge-text-header {
+    font-size: 0.9rem;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .how-we-work .how-we-work-header-content {
-    padding-top: 2rem;
+    padding-top: 0;
     width: 100%;
-    padding-bottom: 1rem;
+    padding-bottom: 0;
+    gap: 0.85rem;
   }
 
   .how-we-work .how-we-work-header-content h3 {
-    font-size: 2rem;
+    font-size: clamp(2rem, 9vw, 3.2rem);
+    line-height: 1.02;
     margin-bottom: 0;
   }
 
+  .how-we-work .subheading {
+    max-width: 100%;
+    font-size: clamp(0.95rem, 3.8vw, 1.08rem);
+    line-height: 1.32;
+  }
+
+  .how-we-work .how-we-work-step {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.85rem;
+    padding: 0.65rem;
+  }
+
+  .how-we-work .how-we-work-step p {
+    font-size: 0.95rem;
+  }
+
+  .how-we-work .how-we-work-step.active {
+    width: 6.25rem;
+  }
+
+  .how-we-work .how-we-work-step-label {
+    left: 1rem;
+    font-size: 0.86rem;
+  }
+
+  .how-we-work .how-we-work-step.active .how-we-work-step-index {
+    transform: translateX(18px);
+  }
+
   .how-we-work .how-we-work-cards {
+    width: 100%;
     margin-left: 0;
-    padding: 1rem 0;
+    padding: 1rem 0 0;
+    gap: 1rem;
+  }
+
+  .how-we-work .how-we-work-card {
+    width: min(100%, 460px);
+    min-height: auto;
+    border-radius: 1.35rem;
+    padding: clamp(0.9rem, 3.5vw, 1.2rem);
+    gap: 0.9rem;
+  }
+
+  .how-we-work .how-we-work-card-img {
+    aspect-ratio: 1 / 1;
+    max-height: min(46svh, 360px);
+    border-radius: 1rem;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(230, 242, 255, 0.9), transparent 48%),
+      #E6F2FF;
+  }
+
+  .how-we-work .how-we-work-card-index-label h3 {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+  }
+
+  .how-we-work .how-we-work-card-copy .abt-container {
+    font-size: clamp(1rem, 4.2vw, 1.12rem);
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-we-work .how-we-work-header-callout {
+    transform: scale(0.94);
+    transform-origin: left center;
+    width: 106%;
+  }
+
+  .speed-badge-header {
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem;
+  }
+
+  .speed-badge-text-header {
+    font-size: 0.82rem;
+  }
+
+  .how-we-work .how-we-work-card-img {
+    aspect-ratio: 1 / 1;
+    max-height: 42svh;
   }
 }

@@ -1,7 +1,6 @@
 import "./globals.css";
 import ClientLayout from "@/client-layout";
 import TopBar from "@/components/TopBar/TopBar";
-import VideoWidget from "@/components/VideoWidget/VideoWidget";
 import localFont from "next/font/local";
 
 const resistSans = localFont({
@@ -20,19 +19,26 @@ const itcGaramondItalic = localFont({
   display: "swap",
 });
 
+const itcGaramond = localFont({
+  src: "../../fonts/itc-garamond-std-light-narrow.otf",
+  variable: "--font-itc-garamond",
+  weight: "300",
+  style: "normal",
+  display: "swap",
+});
+
 export const metadata = {
-  title: "Tori Ate | AI WhatsApp Appointment Scheduling Platform",
-  description: "AI WhatsApp Appointment Scheduling Platform",
+  title: "Turn WhatsApp Chats Into Paid Bookings | Toriate",
+  description: "Toriate helps clinics, sports venues and appointment-heavy businesses automate bookings, reminders, payment links and repeat follow-ups inside WhatsApp — without replacing your current software.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${resistSans.variable} ${itcGaramondItalic.variable}`}>
+      <body className={`${resistSans.variable} ${itcGaramondItalic.variable} ${itcGaramond.variable}`}>
         <ClientLayout>
           <TopBar />
           {children}
-          <VideoWidget />
         </ClientLayout>
       </body>
     </html>

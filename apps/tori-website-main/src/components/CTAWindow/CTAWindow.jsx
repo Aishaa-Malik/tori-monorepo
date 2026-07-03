@@ -40,14 +40,14 @@ const CTAWindow = ({
                     {i < arr.length - 1 && <br />}
                   </span>
                 ))}
-              <span className="cta-dot"></span>
             </h2>
           </Copy>
-          <Copy delay={0.15}>
-            <div className="cta-subtitle">
-              <AnimatedBodyText>{subtitle}</AnimatedBodyText>
-            </div>
-          </Copy>
+          <div className="cta-subtitle">
+            <AnimatedBodyText animate={false}>{subtitle}</AnimatedBodyText>
+          </div>
+          <div className="cta-helper">
+            <AnimatedBodyText animate={false}>{helperText}</AnimatedBodyText>
+          </div>
           <Copy delay={0.25}>
             <div className="cta-btn-wrapper">
               <AnimatedButton
@@ -55,11 +55,6 @@ const CTAWindow = ({
                 route={buttonRoute}
                 animateOnScroll={false}
               />
-            </div>
-          </Copy>
-          <Copy delay={0.2}>
-            <div className="cta-helper">
-              <AnimatedBodyText>{helperText}</AnimatedBodyText>
             </div>
           </Copy>
         </div>
@@ -71,7 +66,7 @@ const CTAWindow = ({
     <section className="cta-window">
       <div className="container">
         <div className="cta-window-img-wrapper">
-          <img src={img} alt="" />
+          <img src={img} alt="" loading="lazy" decoding="async" />
         </div>
         <div className="cta-window-img-overlay"></div>
         <div className="cta-window-header">

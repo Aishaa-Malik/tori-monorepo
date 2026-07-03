@@ -6,32 +6,6 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  /* Prevent FOUC - GSAP will handle visibility */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s ease;
-}
-
-/* GSAP will add this class when initialized (needs JS logic or just use ScrollTrigger to fade it in) */
-.spotlight.is-initialized {
-  opacity: 1;
-  visibility: visible;
-}
-
-@media (max-width: 768px) {
-  /* This prevents the "32,775px" jump by capping the height GSAP can inject */
-  .pin-spacer {
-    height: auto !important;
-    max-height: 300vh !important; /* Limits the scroll room to 3 screen heights */
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .spotlight {
-    height: 100vh !important;
-    min-height: 100vh !important;
-    top: 0 !important;
-  }
 }
 
 .spotlight-outline {
@@ -244,6 +218,19 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .spotlight {
+    height: 200svh;
+    overflow: visible;
+  }
+
+  .spotlight-inner {
+    position: sticky;
+    top: 0;
+    height: calc(100svh - 2rem);
+  }
 }
 
 .spotlight-header {

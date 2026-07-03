@@ -18,11 +18,10 @@ const AnimatedButton = ({
   animate = true,
   animateOnScroll = true,
   delay = 0,
-  className = "",
-  ...props
 }) => {
   const { navigateWithTransition } = useViewTransition();
   const buttonRef = useRef(null);
+  const circleRef = useRef(null);
   const iconRef = useRef(null);
   const textRef = useRef(null);
   const splitRef = useRef(null);
@@ -30,7 +29,7 @@ const AnimatedButton = ({
   const waitForFonts = async () => {
     try {
       await document.fonts.ready;
-      const customFonts = ["Manrope", "Inter"];
+      const customFonts = ["Manrope"];
       const fontCheckPromises = customFonts.map((fontFamily) => {
         return document.fonts.check(`16px ${fontFamily}`);
       });
@@ -47,87 +46,83 @@ const AnimatedButton = ({
     () => {
       if (!buttonRef.current || !textRef.current) return;
 
-      if (!animate) {
+      if (window.matchMedia("(max-width: 768px)").matches) {
         gsap.set(buttonRef.current, { scale: 1, opacity: 1 });
+        gsap.set(circleRef.current, { scale: 1, opacity: 1 });
         gsap.set(iconRef.current, { opacity: 1, x: 0 });
+        gsap.set(textRef.current, { opacity: 1, y: 0 });
+        return;
+      }
+
+      if (!animate || !animateOnScroll) {
+        gsap.set(buttonRef.current, { scale: 1 });
+        gsap.set(circleRef.current, { scale: 1, opacity: 1 });
+        gsap.set(iconRef.current, { opacity: 1, x: 0 });
+        gsap.set(textRef.current, { opacity: 1, y: 0 });
         return;
       }
 
       const initializeAnimation = async () => {
         await waitForFonts();
 
-        if (!buttonRef.current || !iconRef.current || !textRef.current) return;
-
-        // ✅ Skip SplitText if label contains HTML/JSX
-        const isJSX = typeof label !== 'string';
-        
-        if (!isJSX) {
-          const split = SplitText.create(textRef.current, {
-            type: "lines",
-            mask: "lines",
-            linesClass: "line++",
-            lineThreshold: 0.1,
-          });
-          splitRef.current = split;
-        }
-
-        gsap.set(buttonRef.current, { 
-          scale: 0.8, 
-          opacity: 0,
-          transformOrigin: "center" 
+        const split = SplitText.create(textRef.current, {
+          type: "lines",
+          mask: "lines",
+          linesClass: "line++",
+          lineThreshold: 0.1,
         });
-        gsap.set(iconRef.current, { opacity: 0, x: -10 });
-        
-        if (!isJSX && splitRef.current) {
-          gsap.set(splitRef.current.lines, { y: "100%", opacity: 0 });
-        } else {
-          gsap.set(textRef.current, { opacity: 0, y: 20 });
-        }
+        splitRef.current = split;
+
+        gsap.set(buttonRef.current, { scale: 0, transformOrigin: "center" });
+        gsap.set(circleRef.current, {
+          scale: 0,
+          transformOrigin: "center",
+          opacity: 0,
+        });
+        gsap.set(iconRef.current, { opacity: 0, x: -15 });
+        gsap.set(split.lines, { y: "100%", opacity: 0 });
 
         const tl = gsap.timeline({ delay: delay });
 
         tl.to(buttonRef.current, {
           scale: 1,
-          opacity: 1,
-          duration: 0.6,
-          ease: "power3.out",
+          duration: 0.5,
+          ease: "back.out(1.7)",
         });
+
+        tl.to(
+          circleRef.current,
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power3.out",
+          },
+          "+0.25"
+        );
 
         tl.to(
           iconRef.current,
           {
             opacity: 1,
             x: 0,
-            duration: 0.4,
-            ease: "power2.out",
+            duration: 0.5,
+            ease: "power3.out",
           },
-          "-=0.3"
+          "-0.25"
         );
 
-        if (!isJSX && splitRef.current) {
-          tl.to(
-            splitRef.current.lines,
-            {
-              y: "0%",
-              opacity: 1,
-              duration: 0.6,
-              stagger: 0.08,
-              ease: "power3.out",
-            },
-            "-=0.4"
-          );
-        } else {
-          tl.to(
-            textRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              ease: "power3.out",
-            },
-            "-=0.4"
-          );
-        }
+        tl.to(
+          split.lines,
+          {
+            y: "0%",
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power4.out",
+          },
+          "-=0.2"
+        );
 
         if (animateOnScroll) {
           ScrollTrigger.create({
@@ -152,6 +147,7 @@ const AnimatedButton = ({
 
   const buttonContent = (
     <>
+      <span className="circle" ref={circleRef} aria-hidden="true"></span>
       <div className="icon" ref={iconRef}>
         <IoMdArrowForward />
       </div>
@@ -165,13 +161,12 @@ const AnimatedButton = ({
     return (
       <a
         href={route}
-        className={`btn ${className}`}
+        className="btn"
         ref={buttonRef}
         onClick={(e) => {
           e.preventDefault();
           navigateWithTransition(route);
         }}
-        {...props}
       >
         {buttonContent}
       </a>
@@ -179,12 +174,7 @@ const AnimatedButton = ({
   }
 
   return (
-    <button
-      className={`btn ${className}`}
-      ref={buttonRef}
-      suppressHydrationWarning
-      {...props}
-    >
+    <button className="btn" ref={buttonRef}>
       {buttonContent}
     </button>
   );

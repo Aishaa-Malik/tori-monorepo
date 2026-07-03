@@ -1,22 +1,23 @@
 const clientReviewsContent = [
-  {
+    {
     id: 1,
     name: "Ayush",
     title: "Co-Founder",
-    image: "/images/ayush-1.png",
-    avatar: "/images/ayush-1.png",
+    image: "/images/ayush-best-photo.webp",
+    avatar: "/images/ayush.webp",
     review:
-      "Engineering from BITS Pilani\nWon Smart India Hackathon organized by Govt of India (among 0.7M people)\nWon Inspire Manak Awards (Govt of India) 2X\nFounded multiple Startups\n7+ years in Tech & Startups\nApart from work, a Polymath & a Polyglot",
+      "Ayush is an engineering student at BITS Pilani, ML Intern at DRDO, winner of Smart India Hackathon ’22 & recipient of the INSPIRE Award by the Government of India.\n\nTori Ate exists because appointment businesses should not lose revenue just because booking still feels slow, manual & broken.",
   },
-    {
+  {
     id: 2,
     name: "Aisha",
     title: "Co-Founder",
-    image: "/images/aisha-1.jpg",
-    avatar: "/images/aisha-1.jpg",
+    image: "/images/aisha-2.webp",
+    avatar: "/images/aisha.webp",
     review:
-      "Ex Software Engineer at AMAZON, DRDO (2X), FuturesFirst\nOffers from Goldman Sacs, Zomato, Edfora, Quicket Solutions\nEngineering from NIT Jaipur\nex TA at CodingNinjas\nFounded multiple Startups\n7+ years in Tech",
-  }
+      "Aisha is an ex-Amazon Software Engineer from NIT Jaipur, with experience across Amazon, DRDO Delhi, DRDO Chandigarh, Futures First & offers from Edfora, Zomato, Goldman Sachs & Quicket Solutions.\n\nTori Ate exists because appointment businesses should not lose revenue just because booking still feels slow, manual & broken.",
+  },
+  
   
 ];
 

@@ -1,10 +1,16 @@
 .cta-window {
   position: relative;
-  width: 65vw;
-  height: 65svh;
+  width: 100%; /* Changed from 65vw */
+  max-width: 980px; /* Added max-width */
+  height: auto; /* Changed from 65svh */
   overflow: hidden;
-  padding: 1rem;
-  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5rem) 1rem 2rem 1rem;
+  margin: clamp(-5rem, -5vw, -3rem) auto clamp(2rem, 4vw, 3rem);
+  background: #000 !important;
+}
+
+#contact-us {
+  background: #000 !important;
 }
 
 .cta-window .container {
@@ -14,6 +20,7 @@
   overflow: hidden;
   display: flex;
   align-items: flex-end;
+  width: 100%; /* Ensure container takes full width */
 }
 
 .cta-window .cta-window-img-wrapper {
@@ -75,24 +82,8 @@
 @media (max-width: 1000px) {
   .cta-window {
     width: 100%;
-    height: auto;
-    padding: 1rem;
-    min-height: auto;
-  }
-  
-  .cta-window.cta-centered .cta-center-container {
-    padding: 2rem 1rem;
-    min-height: auto;
-    gap: 1.5rem;
-  }
-
-  .cta-title {
-    font-size: 2.5rem;
-  }
-
-  .cta-subtitle {
-    font-size: 1rem;
-    line-height: 1.5;
+    padding: clamp(2.5rem, 10vw, 4rem) 0.85rem 1.5rem;
+    margin: -2rem auto 2rem;
   }
 
   .cta-window .cta-window-footer {
@@ -110,11 +101,24 @@
   .cta-window .cta-window-footer .cta-window-description {
     text-align: left;
   }
-}
 
-@media (max-width: 480px) {
+  .cta-window.cta-centered .cta-center-container {
+    min-height: auto;
+    padding: clamp(2.25rem, 9vw, 3.5rem) clamp(1rem, 5vw, 1.5rem);
+    background-size: cover;
+    border-radius: 1.4rem;
+  }
+
   .cta-title {
-    font-size: 2rem;
+    font-size: clamp(2.35rem, 11vw, 3.4rem);
+    line-height: 1;
+  }
+
+  .cta-subtitle,
+  .cta-helper {
+    max-width: 100%;
+    font-size: clamp(1rem, 4.2vw, 1.15rem);
+    line-height: 1.35;
   }
 }
 .cta-window.cta-centered .cta-center-container {
@@ -122,56 +126,171 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
-  min-height: 50svh;
-  padding: 3rem 2rem;
+  gap: clamp(0.85rem, 1.65vw, 1.15rem);
+  min-height: clamp(31rem, 52svh, 39rem);
+  padding: clamp(2.35rem, 4.8vw, 3.4rem) clamp(1.5rem, 4vw, 3rem);
   text-align: center;
   position: relative;
-  background-size: cover;
+  background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 2rem;
+  border: 1px solid rgba(242, 237, 230, 0.18);
+  border-radius: clamp(1.5rem, 3vw, 2.5rem);
   overflow: hidden;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cta-window.cta-centered .cta-title,
+.cta-window.cta-centered .cta-subtitle,
+.cta-window.cta-centered .cta-helper,
+.cta-window.cta-centered .cta-btn-wrapper {
+  position: relative;
+  z-index: 1;
 }
 
 .cta-title {
   color: #ffffff;
-  font-size: clamp(1.9rem, 5vw, 3.5rem);
-  font-weight: 800;
-}
-
-.cta-title .cta-dot {
-  display: inline-block;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background-color: #2ee265;
-  margin-left: 0.35rem;
-  vertical-align: middle;
+  font-family: var(--font-itc-garamond), serif;
+  font-size: clamp(2.25rem, 4.4vw, 3.75rem);
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 0;
 }
 
 .cta-subtitle {
-  max-width: 60ch;
+  max-width: 74ch;
   color: #ffffff;
   opacity: 0.9;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: clamp(1.16rem, 1.72vw, 1.36rem);
+  line-height: 1.38;
+}
+
+.cta-subtitle .abt-word,
+.cta-subtitle .abt-word span,
+.cta-helper .abt-word,
+.cta-helper .abt-word span {
+  opacity: 1;
 }
 
 .cta-btn-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.cta-window.cta-centered .btn,
+.cta-window.cta-centered .btn .circle {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.cta-window.cta-centered .btn .icon {
+  opacity: 1;
 }
 
 .cta-helper {
   color: #c8d0d0;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
+  font-size: clamp(1rem, 1.38vw, 1.12rem);
+  margin-top: 0.2rem;
+  max-width: 70ch;
+  line-height: 1.35;
 }
 .cta-bg-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.35);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(52, 85, 125, 0.16), transparent 45%),
+    rgba(0, 0, 0, 0.48);
+}
+
+.cta-window .btn-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  height: 100%;
+}
+
+.cta-window .btn-content p {
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  animation: scrollText 5s linear infinite; /* Increased speed (was 10s) */
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .cta-window {
+    padding: clamp(2.5rem, 9vw, 3.5rem) 0.85rem 1.75rem;
+    margin: clamp(1rem, 4vw, 2rem) auto 3.5rem;
+  }
+
+  .cta-window.cta-centered .cta-center-container {
+    min-height: clamp(28rem, 70svh, 34rem);
+    padding: clamp(2.6rem, 10vw, 3.5rem) clamp(1.15rem, 5vw, 1.55rem);
+    background-size: cover;
+    background-position: center;
+    border-radius: 1.45rem;
+    gap: clamp(0.85rem, 3vw, 1.15rem);
+    border-color: rgba(230, 242, 255, 0.32);
+    box-shadow:
+      0 22px 70px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(138, 185, 235, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .cta-title {
+    font-size: clamp(2.25rem, 10.6vw, 3.25rem);
+    line-height: 1;
+  }
+
+  .cta-subtitle,
+  .cta-helper {
+    max-width: 30ch;
+    font-size: clamp(1rem, 4vw, 1.12rem);
+    line-height: 1.38;
+  }
+
+  .cta-btn-wrapper {
+    margin-top: 0.65rem;
+  }
+
+  .cta-window .btn {
+    width: min(11.9rem, 66vw);
+    height: 2.9rem;
+    transform: none;
+    background: rgba(242, 237, 230, 0.9);
+    padding: 0.32rem 0.9rem 0.32rem 0.32rem;
+    box-shadow: 0 12px 34px rgba(138, 185, 235, 0.16);
+  }
+
+  .cta-window .btn .circle,
+  .cta-window .btn .icon {
+    width: 2.18rem;
+    height: 2.18rem;
+  }
+
+  .cta-window .btn .button-text {
+    font-size: 0.86rem;
+    margin-left: 1.12rem;
+  }
+
+  .cta-bg-overlay {
+    background:
+      radial-gradient(circle at 50% 8%, rgba(138, 185, 235, 0.2), transparent 42%),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.72)),
+      rgba(0, 0, 0, 0.36);
+  }
 }

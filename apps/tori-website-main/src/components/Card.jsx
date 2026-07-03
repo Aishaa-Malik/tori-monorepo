@@ -8,6 +8,8 @@ const Card = forwardRef(
       frontAlt,
       price,
       period,
+      comparisonPrice,
+      comparisonPeriod,
       description,
       buttonText,
       features,
@@ -31,6 +33,8 @@ const Card = forwardRef(
                   alt={frontAlt}
                   width={600}
                   height={600}
+                  loading="lazy"
+                  decoding="async"
                   style={{ color: "transparent" }}
                 />
               ) : (
@@ -49,8 +53,18 @@ const Card = forwardRef(
                 <div className="card-divider"></div>
 
                 <div className="price-container">
-                  <h1 className="price">{price}</h1>
-                  <span className="period">{period}</span>
+                  <div className="price-block">
+                    <h1 className="price">{price}</h1>
+                    {period && <span className="period">{period}</span>}
+                  </div>
+                  {comparisonPrice && (
+                    <p className="price-comparison">
+                      <span className="price-comparison-value">{comparisonPrice}</span>
+                      {comparisonPeriod && (
+                        <span className="price-comparison-label"> {comparisonPeriod}</span>
+                      )}
+                    </p>
+                  )}
                 </div>
 
                 <div className="features-box">

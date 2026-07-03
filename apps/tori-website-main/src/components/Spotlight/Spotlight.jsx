@@ -1,11 +1,15 @@
 "use client";
 import "./Spotlight.css";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import {
+  createRafScrollListener,
+  getStickyProgress,
+  isMobileViewport,
+} from "@/lib/mobile-animation";
 
 const Spotlight = () => {
   const spotlightRef = useRef(null);
@@ -15,51 +19,21 @@ const Spotlight = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(false);
-  const vimeoSrc = "https://www.youtube.com/embed/6jca6cMROy8?autoplay=0&mute=0&loop=1&playlist=6jca6cMROy8&controls=0&modestbranding=1&rel=0";
+  const vimeoSrc =
+    "https://player.vimeo.com/video/980402765?autoplay=1&muted=1&loop=1&controls=0&autopause=0&playsinline=1";
 
-  useGSAP(() => {
+  useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
-    // Add initialized class after mount
-    if (spotlightRef.current) {
-      spotlightRef.current.classList.add("is-initialized");
-    }
 
     const introTextElements = introTextElementsRef.current;
 
-    // We check if elements exist, but since we might be targeting .hero, 
-    // we should be careful not to block if intro text is missing, 
-    // although this component renders them.
     if (!introTextElements[0] || !introTextElements[1]) {
       return;
     }
 
-    // FIXED: Prevent scroll jumping with proper state management
     let hasReachedFullScreen = false;
-    
-    scrollTriggerRef.current = ScrollTrigger.create({
-      trigger: ".spotlight", // Changed from .hero to .spotlight to only pin this section
-      start: window.innerWidth < 768 ? "0% 0%" : "top top", // Force 0% for mobile
-      end: window.innerWidth < 768 ? "+=100%" : "+=100%", // Limit mobile height
-      pin: true,
-      // THE FIX: Disable pinSpacing on mobile to kill that 32,775px gap 
-      pinSpacing: window.innerWidth > 768, 
-      immediateRender: true, 
-      invalidateOnRefresh: true, 
-      refreshPriority: 1, 
-      onRefresh: (self) => { 
-        if (window.innerWidth < 768 && self.spacer) { 
-          // Double-check: force the height to stay 100vh 
-          self.spacer.style.setProperty('height', '100vh', 'important');
-          self.spacer.style.setProperty('padding-bottom', '0', 'important');
-          self.spacer.style.setProperty('margin-bottom', '0', 'important');
-        } 
-      },
-      scrub: 1,
-      anticipatePin: 1,
-      onUpdate: (self) => {
-        const progress = self.progress;
 
+    const updateSpotlight = (progress) => {
         if (progress <= 0.5) {
           const animationProgress = progress / 0.5;
           const moveDistance = window.innerWidth * 0.6;
@@ -97,10 +71,33 @@ const Spotlight = () => {
             hasReachedFullScreen = true;
           }
         }
-      }
+    };
+
+    if (isMobileViewport()) {
+      const spotlight = spotlightRef.current;
+
+      return createRafScrollListener(() => {
+        updateSpotlight(getStickyProgress(spotlight));
+      });
+    }
+
+    scrollTriggerRef.current = ScrollTrigger.create({
+      trigger: ".spotlight",
+      start: "top top",
+      end: "+=100%",
+      pin: true,
+      pinSpacing: true,
+      scrub: 1,
+      anticipatePin: 1,
+      onUpdate: (self) => updateSpotlight(self.progress),
     });
 
-  }, { scope: spotlightRef }); // Keep scope, but trigger is global .hero
+    return () => {
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.kill();
+      }
+    };
+  }, []);
 
   // Video player controls
   const togglePlayPause = () => {
@@ -172,6 +169,7 @@ const Spotlight = () => {
             className="demo-video"
             title="SaaS demo video"
             frameBorder="0"
+            // style={{ borderRadius: "12rem" }}
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
           ></iframe>

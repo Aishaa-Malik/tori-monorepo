@@ -48,6 +48,14 @@ const AnimatedButton2 = ({
     () => {
       if (!buttonRef.current || !textRef.current) return;
 
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        gsap.set(buttonRef.current, { scale: 1, opacity: 1 });
+        gsap.set(circleRef.current, { scale: 1, opacity: 1 });
+        gsap.set(iconRef.current, { opacity: 1, x: 0 });
+        gsap.set(textRef.current, { opacity: 1, y: 0 });
+        return;
+      }
+
       if (!animate) {
         gsap.set(buttonRef.current, { scale: 1 });
         gsap.set(circleRef.current, { scale: 1, opacity: 1 });
@@ -154,7 +162,7 @@ const AnimatedButton2 = ({
     return (
       <a
         href={route}
-        className={`btn ${className || ''}`}
+        className={`btn btn2 ${className || ''}`}
         ref={buttonRef}
         onClick={(e) => {
           e.preventDefault();
@@ -168,7 +176,7 @@ const AnimatedButton2 = ({
   }
 
   return (
-    <button className={`btn ${className || ''}`} ref={buttonRef} style={bgColor ? { backgroundColor: bgColor } : {}}>
+    <button className={`btn btn2 ${className || ''}`} ref={buttonRef} style={bgColor ? { backgroundColor: bgColor } : {}}>
       {buttonContent}
     </button>
   );

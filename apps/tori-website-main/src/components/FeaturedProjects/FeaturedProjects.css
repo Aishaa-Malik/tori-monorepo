@@ -1,13 +1,27 @@
 .featured-projects {
   position: relative;
   width: 100vw;
-  background-color: var(--base-500);
+  background-color: transparent;
   color: var(--base-100);
-  padding: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex; /* Added flex context */
+  flex-direction: column;
+  align-items: center; /* Center cards horizontally to prevent "extreme left" collision */
+}
+
+.featured-project-card {
+  width: 100%;
+  max-width: 1400px; /* Optional: Constrain max width for better large screen layout */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
 }
 
 .featured-projects .featured-project-card {
   position: sticky;
+  top: 0;
   width: 100%;
   height: 100svh;
   display: flex;
@@ -15,24 +29,168 @@
   align-items: center;
   transform-style: preserve-3d;
   perspective: 1000px;
-  will-change: transform;
+  overflow: hidden;
+  background: #000;
+  isolation: isolate;
+  contain: paint;
 }
 
 .featured-projects .featured-project-card-inner {
   position: relative;
+  z-index: 1;
   width: calc(100%);
-  height: calc(100% - 2rem);
-  padding: 1rem;
+  height: calc(100% - clamp(2rem, 4vw, 4rem));
+  padding: clamp(1rem, 2vw, 1.5rem);
   display: flex;
-  gap: 1rem;
+  gap: clamp(1rem, 2vw, 1.5rem);
   border-radius: 2rem;
-  background-color: var(--base-450);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: box-shadow 200ms ease, border-color 200ms ease;
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.78);
+  --card-border: rgba(138, 185, 235, 0.45);
+  --card-glow: rgba(18, 69, 118, 0.32);
+  background:
+    radial-gradient(circle at 16% 12%, rgba(230, 242, 255, 0.22), transparent 30%),
+    radial-gradient(circle at 80% 82%, rgba(138, 185, 235, 0.16), transparent 34%),
+    linear-gradient(135deg, #061B37 0%, #124576 58%, #000 100%);
+  border: 1px solid var(--card-border);
+  color: var(--card-text);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 54px var(--card-glow);
+  transition: border-color 160ms ease;
   transform-origin: 50% 100%;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
   overflow: hidden;
+  contain: paint;
+}
+
+/* Brand palette variations: ice, sapphire, navy and black-blue from the site visuals. */
+.featured-projects .featured-project-card.feature-theme-1 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+1) .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.78);
+  --card-border: rgba(230, 242, 255, 0.72);
+  --card-glow: rgba(230, 242, 255, 0.42);
+  background:
+    radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.58), transparent 28%),
+    radial-gradient(circle at 82% 80%, rgba(18, 69, 118, 0.22), transparent 36%),
+    linear-gradient(135deg, #E6F2FF 0%, #8AB9EB 52%, #34557D 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-2 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+2) .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.76);
+  --card-border: rgba(138, 185, 235, 0.54);
+  --card-glow: rgba(52, 85, 125, 0.34);
+  background:
+    radial-gradient(circle at 24% 18%, rgba(138, 185, 235, 0.34), transparent 34%),
+    radial-gradient(circle at 86% 78%, rgba(230, 242, 255, 0.12), transparent 30%),
+    linear-gradient(135deg, #061B37 0%, #124576 58%, #030912 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-3 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+3) .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.72);
+  --card-border: rgba(255, 255, 255, 0.68);
+  --card-glow: rgba(138, 185, 235, 0.44);
+  background:
+    radial-gradient(circle at 78% 20%, rgba(255, 255, 255, 0.5), transparent 30%),
+    radial-gradient(circle at 20% 82%, rgba(18, 69, 118, 0.2), transparent 32%),
+    linear-gradient(135deg, #8AB9EB 0%, #D7E8F8 48%, #E6F2FF 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-4 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+4) .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(176, 196, 222, 0.78);
+  --card-border: rgba(52, 85, 125, 0.72);
+  --card-glow: rgba(18, 69, 118, 0.5);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(138, 185, 235, 0.16), transparent 28%),
+    radial-gradient(circle at 76% 76%, rgba(52, 85, 125, 0.34), transparent 34%),
+    linear-gradient(135deg, #000 0%, #061B37 54%, #124576 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-5 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+5) .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.76);
+  --card-border: rgba(230, 242, 255, 0.72);
+  --card-glow: rgba(255, 255, 255, 0.34);
+  background:
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.48), transparent 30%),
+    radial-gradient(circle at 88% 20%, rgba(18, 69, 118, 0.18), transparent 32%),
+    linear-gradient(135deg, #D7E8F8 0%, #8AB9EB 58%, #34557D 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-6 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+6) .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.74);
+  --card-border: rgba(138, 185, 235, 0.5);
+  --card-glow: rgba(6, 27, 55, 0.55);
+  background:
+    radial-gradient(circle at 74% 16%, rgba(138, 185, 235, 0.24), transparent 30%),
+    radial-gradient(circle at 16% 84%, rgba(230, 242, 255, 0.1), transparent 30%),
+    linear-gradient(135deg, #030912 0%, #061B37 44%, #34557D 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-7 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+7) .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.7);
+  --card-border: rgba(230, 242, 255, 0.78);
+  --card-glow: rgba(230, 242, 255, 0.38);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.56), transparent 28%),
+    radial-gradient(circle at 80% 80%, rgba(18, 69, 118, 0.16), transparent 36%),
+    linear-gradient(135deg, #E6F2FF 0%, #B0C4DE 46%, #8AB9EB 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-8 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+8) .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(176, 196, 222, 0.8);
+  --card-border: rgba(52, 85, 125, 0.78);
+  --card-glow: rgba(18, 69, 118, 0.36);
+  background:
+    radial-gradient(circle at 16% 72%, rgba(138, 185, 235, 0.18), transparent 32%),
+    radial-gradient(circle at 82% 22%, rgba(52, 85, 125, 0.32), transparent 34%),
+    linear-gradient(135deg, #000 0%, #061B37 66%, #34557D 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-9 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+9) .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.74);
+  --card-border: rgba(255, 255, 255, 0.7);
+  --card-glow: rgba(138, 185, 235, 0.45);
+  background:
+    radial-gradient(circle at 78% 72%, rgba(255, 255, 255, 0.44), transparent 30%),
+    radial-gradient(circle at 18% 18%, rgba(18, 69, 118, 0.18), transparent 34%),
+    linear-gradient(135deg, #8AB9EB 0%, #E6F2FF 54%, #B0C4DE 100%);
+}
+
+.featured-projects .featured-project-card.feature-theme-10 .featured-project-card-inner,
+.featured-projects .featured-project-card:nth-child(10n+10) .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.76);
+  --card-border: rgba(138, 185, 235, 0.54);
+  --card-glow: rgba(18, 69, 118, 0.48);
+  background:
+    radial-gradient(circle at 22% 18%, rgba(138, 185, 235, 0.28), transparent 32%),
+    radial-gradient(circle at 82% 84%, rgba(230, 242, 255, 0.1), transparent 30%),
+    linear-gradient(135deg, #061B37 0%, #34557D 52%, #124576 100%);
+}
+
+.featured-projects .featured-project-card:hover .featured-project-card-inner {
+  border-color: rgba(255, 255, 255, 0.62);
 }
 
 .featured-projects .featured-project-card-content {
@@ -43,81 +201,553 @@
 }
 
 .featured-projects .featured-project-card-content-main {
-  padding: 2rem;
+  padding: clamp(1.25rem, 2vw, 2rem);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transform: translateY(-0.45rem);
 }
 
 .featured-projects .featured-project-card-info {
   width: 40%;
-  padding: 2rem;
+  padding: clamp(1.25rem, 2vw, 2rem);
   text-align: left;
-  color: var(--base-350);
+  color: var(--card-muted);
 }
 
 .featured-projects .featured-project-card-title h2 {
-  padding: 2rem 0 1rem 0;
+  padding: 1rem 0 1rem 0;
+  font-size: clamp(2.4rem, 4.6vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+  color: var(--card-text);
+}
+
+.featured-projects .featured-project-card-description,
+.featured-projects .featured-project-card-description .abt-container,
+.featured-projects .featured-project-card-description .abt-word span {
+  color: var(--card-text);
+}
+
+.featured-projects .featured-project-card-description .abt-word {
+  background-color: rgba(255, 255, 255, 0.18);
 }
 
 .featured-projects .featured-project-card-description {
-  width: 75%;
+  width: 100%;
   text-align: left;
-  color: var(--base-250);
+  /* color: var(--base-250); Removed to allow dynamic color inheritance */
 }
 
-.featured-projects .featured-project-card-description p {
+.featured-projects .featured-project-card-description p,
+.featured-projects .featured-project-card-description .abt-container {
   white-space: pre-line;
+  font-size: clamp(1.22rem, 1.78vw, 1.5rem);
+  line-height: 1.4;
+}
+
+.featured-projects .featured-project-card-description .feature-description-segment + .feature-description-segment {
+  margin-top: 0.58rem;
 }
 
 .featured-projects .featured-project-card-img {
-  flex: 1;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  flex: 0 0 min(48%, 560px);
+  width: min(48%, 560px);
+  aspect-ratio: 1 / 1;
+  align-self: center;
   border-radius: 1.5rem;
   overflow: hidden;
+  background: #061B37;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  contain: paint;
 }
 
-.featured-projects .featured-project-card-inner::after {
+.featured-projects .featured-project-card-img video,
+.featured-projects .featured-project-card-img img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.featured-project-card-mobile-visual {
+  display: none;
+}
+
+.featured-projects .featured-project-card-scrim {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--base-500);
-  opacity: var(--after-opacity, 0);
+  background-color: #000;
+  opacity: 0;
   will-change: opacity;
   pointer-events: none;
   z-index: 2;
 }
 
+.featured-projects .featured-project-card-inner::after {
+  display: none;
+}
+
 @media (max-width: 1000px) {
+  .featured-projects {
+    width: 100%;
+    padding: clamp(0.65rem, 2.6vw, 0.9rem);
+  }
+
+  .featured-projects .featured-project-card {
+    height: 100svh;
+    max-width: none;
+  }
+
   .featured-projects .featured-project-card-inner {
     flex-direction: column;
+    min-height: calc(100svh - clamp(1.3rem, 5vw, 1.8rem));
+    height: calc(100svh - clamp(1.3rem, 5vw, 1.8rem));
+    padding: clamp(0.85rem, 3.5vw, 1.2rem);
+    gap: 0.85rem;
+    border-radius: 1.35rem;
   }
 
   .featured-projects .featured-project-card-content,
   .featured-projects .featured-project-card-img {
-    flex: 1;
+    flex: none;
+  }
+
+  .featured-projects .featured-project-card-content {
+    width: 100%;
+    min-height: auto;
+    justify-content: space-between;
+  }
+
+  .featured-projects .featured-project-card-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 1rem;
   }
 
   .featured-projects .featured-project-card-info {
-    width: 75%;
+    width: 100%;
     margin: 0 auto;
-    text-align: center;
+    padding: 0;
+    text-align: left;
   }
 
   .featured-projects .featured-project-card-title {
     width: 100%;
-    text-align: center;
+    text-align: left;
+  }
+
+  .featured-projects .featured-project-card-title h2 {
+    padding: 0.6rem 0;
+    font-size: clamp(2rem, 10vw, 3rem);
+    line-height: 0.98;
+  }
+
+  .featured-projects .featured-project-card-content-main {
+    padding: 0;
+    transform: translateY(-0.25rem);
   }
 
   .featured-projects .featured-project-card-description {
-    display: none;
+    display: block;
+  }
+
+  .featured-projects .featured-project-card-description p,
+  .featured-projects .featured-project-card-description .abt-container {
+    font-size: clamp(1.04rem, 4.15vw, 1.18rem);
+    line-height: 1.3;
+  }
+
+  .featured-projects .featured-project-card-description .feature-description-segment + .feature-description-segment {
+    margin-top: 0.42rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-projects {
+    gap: 0;
+    padding: 0.55rem;
+  }
+
+  .featured-projects .featured-project-card {
+    position: relative;
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+    perspective: 1000px;
+    background: #000;
+    transform-style: preserve-3d;
+    contain: paint;
+  }
+
+  .featured-projects .featured-project-card-inner {
+    height: calc(100svh - 1.1rem);
+    min-height: calc(100svh - 1.1rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.72rem;
+    padding: 0.78rem;
+    overflow: hidden;
+    will-change: transform;
+    transform-origin: 50% 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    contain: paint;
+    box-shadow:
+      0 10px 28px rgba(0, 0, 0, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .featured-projects .featured-project-card-content {
+    min-height: auto;
+    gap: 0.8rem;
+  }
+
+  .featured-projects .featured-project-card-info {
+    font-size: 0.78rem;
+    line-height: 1.2;
+    opacity: 0.9;
+  }
+
+  .featured-projects .featured-project-card-content-main {
+    transform: none;
+  }
+
+  .featured-projects .featured-project-card-title h2 {
+    padding: 0.25rem 0 0.35rem;
+    font-size: clamp(2.05rem, 10.8vw, 3.15rem);
+    line-height: 0.96;
+  }
+
+  .featured-projects .featured-project-card-description p,
+  .featured-projects .featured-project-card-description .abt-container {
+    font-size: clamp(0.95rem, 4vw, 1.08rem);
+    line-height: 1.25;
+  }
+
+  .featured-projects .featured-project-card-img {
+    width: 100%;
+    max-height: min(42svh, 340px);
+    aspect-ratio: 1 / 1;
+    border-radius: 1rem;
+    background:
+      radial-gradient(circle at 50% 44%, rgba(230, 242, 255, 0.75), transparent 42%),
+      #061B37;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .featured-projects .featured-project-card-img video,
+  .featured-projects .featured-project-card-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .featured-project-card-mobile-visual {
+    width: 100%;
+    height: 100%;
+    min-height: min(42svh, 340px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.88), transparent 20%),
+      linear-gradient(155deg, rgba(230, 242, 255, 0.96), rgba(138, 185, 235, 0.78) 46%, rgba(6, 27, 55, 0.92));
+  }
+
+  .feature-phone-shell {
+    width: min(58vw, 235px);
+    aspect-ratio: 9 / 16;
+    border-radius: 1.35rem;
+    padding: 0.85rem 0.7rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(242, 237, 230, 0.86)),
+      #f7f4ee;
+    box-shadow:
+      0 20px 44px rgba(0, 0, 0, 0.32),
+      inset 0 0 0 7px #050505;
+    transform: rotate(0.6deg) translateZ(0);
+  }
+
+  .feature-phone-top {
+    width: 36%;
+    height: 0.38rem;
+    margin: 0 auto 0.9rem;
+    border-radius: 999px;
+    background: rgba(5, 5, 5, 0.18);
+  }
+
+  .feature-chat-row,
+  .feature-chat-row-small {
+    height: 0.55rem;
+    border-radius: 999px;
+    margin-bottom: 0.55rem;
+    background: rgba(6, 27, 55, 0.1);
+  }
+
+  .feature-chat-row-small {
+    width: 62%;
+  }
+
+  .feature-chat-bubble {
+    width: max-content;
+    margin: 1.1rem 0 1.1rem auto;
+    padding: 0.48rem 0.78rem;
+    border-radius: 0.85rem 0.85rem 0.2rem 0.85rem;
+    background: #dcf8c6;
+    color: #1f2a1f;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
+  .feature-keyboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.32rem;
+    margin-top: auto;
+  }
+
+  .feature-keyboard span {
+    height: 1.15rem;
+    border-radius: 0.32rem;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
   }
 }
 .featured-projects .featured-project-card-inner:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.62);
+}
+
+.featured-projects-container {
+  position: relative;
+  width: 100vw;
+  padding: clamp(6rem, 9vw, 10rem) 0 clamp(0.5rem, 1.5vw, 1rem) 0;
+  color: var(--base-100);
+  overflow: hidden;
+  background: #000;
+}
+
+.featured-projects-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-image:
+    linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.98) 18%, rgba(0, 0, 0, 0.78) 36%, rgba(0, 0, 0, 0.24) 56%, rgba(0, 0, 0, 0) 72%),
+    linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.98) 18%, rgba(0, 0, 0, 0.78) 36%, rgba(0, 0, 0, 0.24) 56%, rgba(0, 0, 0, 0) 72%),
+    url('/images/features-bg2.webp');
+  background-size: cover, cover, cover;
+  background-position: top center, bottom center, center top;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  opacity: 0.88;
+  mask-image: none;
+  -webkit-mask-image: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.featured-projects-container > .container,
+.featured-projects-container .featured-projects,
+.featured-projects-container .features-tags,
+.featured-projects-container .testimonials-intro {
+  position: relative;
+  z-index: 2;
+}
+
+.featured-projects-container .testimonials-intro {
+  z-index: 90;
+  isolation: isolate;
+}
+
+.featured-projects-container .testimonials-intro::before {
+  content: "";
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  width: 100vw;
+  height: clamp(24rem, 52vh, 36rem);
+  transform: translate(-50%, -50%);
+  background-image:
+    radial-gradient(ellipse at 50% 48%, rgba(10, 15, 20, 0) 0%, rgba(0, 0, 0, 0.28) 64%, #000 100%),
+    linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.98) 13%, rgba(0, 0, 0, 0.72) 31%, rgba(0, 0, 0, 0.16) 50%, rgba(0, 0, 0, 0.74) 75%, #000 100%),
+    url('/images/features-bg2.webp');
+  background-size: cover, cover, cover;
+  background-position: center, center, center 48%;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  opacity: 0.72;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.featured-projects-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  background: linear-gradient(to top, #000 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+@media (max-width: 768px) {
+  .featured-projects-container {
+    width: 100%;
+    padding: clamp(4rem, 14vw, 6rem) 0 clamp(0.5rem, 2vw, 1rem) 0;
+  }
+
+  .featured-projects-container::before {
+    height: 100vh;
+  }
+
+  .featured-projects-container::after {
+    height: 30vh;
+  }
+
+  .featured-projects-container::before {
+    background-image:
+      linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.72) 38%, rgba(0, 0, 0, 0.2) 58%, rgba(0, 0, 0, 0) 74%),
+      linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.96) 18%, rgba(0, 0, 0, 0.72) 38%, rgba(0, 0, 0, 0.2) 58%, rgba(0, 0, 0, 0) 74%),
+      url('/images/features-bg2.webp');
+    background-position: top center, bottom center, center top;
+    opacity: 0.9;
+  }
+
+  .featured-projects-container .testimonials-intro::before {
+    top: 50%;
+    width: 130vw;
+    height: clamp(20rem, 50vh, 32rem);
+    background-image:
+      radial-gradient(ellipse at 50% 48%, rgba(10, 15, 20, 0) 0%, rgba(0, 0, 0, 0.28) 64%, #000 100%),
+      linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.98) 13%, rgba(0, 0, 0, 0.72) 31%, rgba(0, 0, 0, 0.16) 50%, rgba(0, 0, 0, 0.74) 75%, #000 100%),
+      url('/images/features-bg2.webp');
+    background-position: center, center, center 48%;
+    opacity: 0.82;
+  }
+}
+
+@media (max-width: 420px) {
+  .featured-projects .featured-project-card-title h2 {
+    font-size: clamp(1.95rem, 10vw, 2.7rem);
+  }
+
+  .featured-projects .featured-project-card-description p,
+  .featured-projects .featured-project-card-description .abt-container {
+    font-size: clamp(0.96rem, 4vw, 1.08rem);
+  }
+
+  .featured-projects .featured-project-card-img {
+    height: auto;
+  }
+}
+
+/* Final brand palette pass: intentionally varied, still restricted to Toriate blues/ice/navy. */
+.featured-projects .featured-project-card.feature-theme-1 .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.78);
+  --card-glow: rgba(230, 242, 255, 0.5);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(135deg, #E6F2FF 0%, #8AB9EB 48%, #34557D 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-2 .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.78);
+  --card-glow: rgba(18, 69, 118, 0.56);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(138,185,235,0.32), transparent 34%),
+    linear-gradient(135deg, #000 0%, #061B37 46%, #124576 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-3 .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.74);
+  --card-glow: rgba(138, 185, 235, 0.52);
+  background:
+    radial-gradient(circle at 22% 80%, rgba(255,255,255,0.58), transparent 32%),
+    linear-gradient(135deg, #8AB9EB 0%, #D7E8F8 50%, #E6F2FF 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-4 .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(176, 196, 222, 0.8);
+  --card-glow: rgba(52, 85, 125, 0.52);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(138,185,235,0.22), transparent 32%),
+    linear-gradient(135deg, #030912 0%, #34557D 54%, #061B37 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-5 .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.76);
+  --card-glow: rgba(176, 196, 222, 0.5);
+  background:
+    radial-gradient(circle at 80% 22%, rgba(255,255,255,0.56), transparent 30%),
+    linear-gradient(135deg, #B0C4DE 0%, #E6F2FF 48%, #8AB9EB 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-6 .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.75);
+  --card-glow: rgba(18, 69, 118, 0.6);
+  background:
+    radial-gradient(circle at 72% 74%, rgba(138,185,235,0.22), transparent 32%),
+    linear-gradient(135deg, #061B37 0%, #124576 46%, #000 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-7 .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.72);
+  --card-glow: rgba(230, 242, 255, 0.48);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.64), transparent 30%),
+    linear-gradient(135deg, #E6F2FF 0%, #D7E8F8 42%, #B0C4DE 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-8 .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(176, 196, 222, 0.82);
+  --card-glow: rgba(6, 27, 55, 0.58);
+  background:
+    radial-gradient(circle at 22% 78%, rgba(138,185,235,0.16), transparent 34%),
+    linear-gradient(135deg, #000 0%, #061B37 36%, #34557D 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-9 .featured-project-card-inner {
+  --card-text: #061B37;
+  --card-muted: rgba(6, 27, 55, 0.76);
+  --card-glow: rgba(138, 185, 235, 0.52);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255,255,255,0.5), transparent 32%),
+    linear-gradient(135deg, #8AB9EB 0%, #E6F2FF 46%, #34557D 100%) !important;
+}
+
+.featured-projects .featured-project-card.feature-theme-10 .featured-project-card-inner {
+  --card-text: #E6F2FF;
+  --card-muted: rgba(230, 242, 255, 0.76);
+  --card-glow: rgba(52, 85, 125, 0.52);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(230,242,255,0.18), transparent 30%),
+    linear-gradient(135deg, #124576 0%, #061B37 55%, #000 100%) !important;
 }

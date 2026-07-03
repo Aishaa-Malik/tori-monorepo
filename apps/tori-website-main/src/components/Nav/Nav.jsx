@@ -26,6 +26,7 @@ const Nav = () => {
   const [isNavigating, setIsNavigating] = useState(false);
   const menuRef = useRef(null);
   const isInitializedRef = useRef(false);
+  const hasMenuStateChangedRef = useRef(false);
   const splitTextRefs = useRef([]);
   const router = useRouter();
   const lenis = useLenis();
@@ -62,6 +63,11 @@ const Nav = () => {
       gsap.set(menu, {
         clipPath: "circle(0% at 50% 50%)",
       });
+
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        isInitializedRef.current = true;
+        return;
+      }
 
       const h2Elements = menu.querySelectorAll("h2");
       const pElements = menu.querySelectorAll("p");
@@ -108,8 +114,20 @@ const Nav = () => {
     }
 
     const menu = menuRef.current;
+    const cleanupClosedMenu = () => {
+      menu.style.pointerEvents = "none";
+
+      splitTextRefs.current.forEach((split) => {
+        gsap.set(split.lines, { y: "120%" });
+      });
+
+      document.body.classList.remove("menu-open");
+      setIsAnimating(false);
+      setIsNavigating(false);
+    };
 
     setIsAnimating(true);
+    gsap.killTweensOf(menu);
 
     if (open) {
       document.body.classList.add("menu-open");
@@ -120,8 +138,6 @@ const Nav = () => {
         duration: 2,
         onStart: () => {
           menu.style.pointerEvents = "all";
-        },
-        onStart: () => {
           splitTextRefs.current.forEach((split, index) => {
             gsap.to(split.lines, {
               y: "0%",
@@ -137,6 +153,16 @@ const Nav = () => {
         },
       });
     } else {
+      if (splitTextRefs.current.length === 0) {
+        gsap.to(menu, {
+          clipPath: "circle(0% at 50% 50%)",
+          ease: "power3.out",
+          duration: 0.55,
+          onComplete: cleanupClosedMenu,
+        });
+        return;
+      }
+
       const textTimeline = gsap.timeline({
         onStart: () => {
           gsap.to(menu, {
@@ -144,18 +170,7 @@ const Nav = () => {
             ease: "power3.out",
             duration: 1,
             delay: 0.75,
-            onComplete: () => {
-              menu.style.pointerEvents = "none";
-
-              splitTextRefs.current.forEach((split) => {
-                gsap.set(split.lines, { y: "120%" });
-              });
-
-              document.body.classList.remove("menu-open");
-
-              setIsAnimating(false);
-              setIsNavigating(false);
-            },
+            onComplete: cleanupClosedMenu,
           });
         },
       });
@@ -177,42 +192,56 @@ const Nav = () => {
   }, []);
 
   useEffect(() => {
-    if (isInitializedRef.current) {
+    if (isInitializedRef.current && hasMenuStateChangedRef.current) {
       animateMenu(isOpen);
     }
   }, [isOpen, animateMenu]);
 
   const toggleMenu = useCallback(() => {
-    if (!isAnimating && isInitializedRef.current && !isNavigating) {
-      setIsOpen((prevIsOpen) => {
-        return !prevIsOpen;
-      });
-    } else {
-    }
-  }, [isAnimating, isNavigating]);
+    if (!isInitializedRef.current || isNavigating) return;
+    if (isAnimating && !isOpen) return;
+
+    hasMenuStateChangedRef.current = true;
+    setIsOpen((prevIsOpen) => {
+      return !prevIsOpen;
+    });
+  }, [isAnimating, isNavigating, isOpen]);
 
   const handleLinkClick = useCallback(
     (e, href) => {
       e.preventDefault();
 
-      if (href.startsWith("#")) {
-        setIsOpen(false);
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-        return;
-      }
-
-      if (href === "/contact") {
-         setIsOpen(false);
-         router.push("/contact");
-         return;
-      }
-
       const currentPath = window.location.pathname;
+
+      // Handle anchor links
+      if (href.startsWith("#")) {
+        if (currentPath === "/") {
+            // Already on home, just scroll
+            if (lenis) {
+                lenis.scrollTo(href);
+            } else {
+                const element = document.querySelector(href);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                }
+            }
+            if (isOpen) {
+              hasMenuStateChangedRef.current = true;
+              setIsOpen(false);
+            }
+            return;
+        } else {
+            // Not on home, navigate to home with hash
+            // If navigating to home with hash, ensure the transition handles it or just use standard nav
+            setIsNavigating(true);
+            navigateWithTransition("/" + href);
+            return;
+        }
+      }
+
       if (currentPath === href) {
         if (isOpen) {
+          hasMenuStateChangedRef.current = true;
           setIsOpen(false);
         }
         return;
@@ -223,7 +252,7 @@ const Nav = () => {
       setIsNavigating(true);
       navigateWithTransition(href);
     },
-    [isNavigating, router, isOpen, setIsOpen]
+    [isNavigating, router, isOpen, setIsOpen, lenis, navigateWithTransition]
   );
 
   const splitTextIntoSpans = (text) => {
@@ -245,41 +274,9 @@ const Nav = () => {
         <div className="menu-wrapper">
           <div className="col col-1">
             <div className="links">
-              {/* <div className="link">
-                <a href="compet/" onClick={(e) => handleLinkClick(e, "/")}>
+              <div className="link">
+                <a href="/" onClick={(e) => handleLinkClick(e, "/")}>
                   <h2>Index</h2>
-                </a>
-              </div> */}
-              {/* <div className="link">
-                <a
-                  href="/studio"
-                  onClick={(e) => handleLinkClick(e, "/studio")}
-                >
-                  <h2>Studio</h2>
-                </a>
-              </div>
-              <div className="link">
-                <a
-                  href="/spaces"
-                  onClick={(e) => handleLinkClick(e, "/spaces")}
-                >
-                  <h2>Our Spaces</h2>
-                </a>
-              </div> */}
-              <div className="link">
-                <a
-                  href="#features"
-                  onClick={(e) => handleLinkClick(e, "#features")}
-                >
-                  <h2>Features</h2>
-                </a>
-              </div>
-              <div className="link">
-                <a
-                  href="/services"
-                  onClick={(e) => handleLinkClick(e, "/services")}
-                >
-                  <h2>Services</h2>
                 </a>
               </div>
               <div className="link">
@@ -292,28 +289,27 @@ const Nav = () => {
               </div>
               <div className="link">
                 <a
-                  href="/universal-tori-wallet"
-                  onClick={(e) =>
-                    handleLinkClick(e, "/universal-tori-wallet")
-                  }
+                  href="#features"
+                  onClick={(e) => handleLinkClick(e, "#features")}
                 >
-                  <h2>Universal Tori wallet</h2>
+                  <h2>Features</h2>
                 </a>
               </div>
-                   <div className="link">
-                <a
-                  href="#pricing-card"
-                  onClick={(e) => handleLinkClick(e, "#pricing-card")}
-                >
-                  <h2>Pricing</h2>
-                </a>
-              </div>
+
               <div className="link">
                 <a
                   href="#testimonials"
                   onClick={(e) => handleLinkClick(e, "#testimonials")}
                 >
                   <h2>Testimonials</h2>
+                </a>
+              </div>
+              <div className="link">
+                <a
+                  href="#pricing"
+                  onClick={(e) => handleLinkClick(e, "#pricing")}
+                >
+                  <h2>Pricing</h2>
                 </a>
               </div>
               <div className="link">
@@ -334,8 +330,8 @@ const Nav = () => {
               </div>
               <div className="link">
                 <a
-                  href="/contact"
-                  onClick={(e) => handleLinkClick(e, "/contact")}
+                  href="#contact-us"
+                  onClick={(e) => handleLinkClick(e, "#contact-us")}
                 >
                   <h2>Contact Us</h2>
                 </a>
@@ -346,21 +342,20 @@ const Nav = () => {
             <div className="socials">
               <div className="sub-col">
                 <div className="menu-meta menu-commissions">
-                  <p>Commissions</p>
-                  <p>build@terrene.studio</p>
-                  <p>+1 (872) 441‑2086</p>
+                  <p>Queries</p>
+                  <p>yushy@toriate.com</p>
+                  <p>+91 98280 44677</p>
                 </div>
                 <div className="menu-meta">
                   <p>Address</p>
-                   <p>BITS PILANI, Rajasthan</p>
-                    <p>Delware, The US</p>
+                  <p>8 The Green, Ste A</p>
+                  <p>Dover, Delaware, US</p>
                 </div>
               </div>
               <div className="sub-col">
                 <div className="menu-meta">
                   <p>Social</p>
                   <p>Instagram</p>
-                  <p>Are.na</p>
                   <p>LinkedIn</p>
                 </div>
               </div>

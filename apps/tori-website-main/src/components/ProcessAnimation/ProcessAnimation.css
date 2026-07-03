@@ -1,123 +1,333 @@
+/* Section layout - keep custom bg */
 .process-section {
   position: relative;
   width: 100vw;
-  min-height: 100vh;
-  padding: 2rem;
-  overflow: visible;
-  background-color: #141414;
-  z-index: 1;
-  margin-bottom: 0;
+  height: 100svh;
+  padding: 2em;
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(18, 69, 118, 0.36), transparent 34rem),
+    radial-gradient(circle at 84% 76%, rgba(138, 185, 235, 0.16), transparent 28rem),
+    url('/images/about-bg2.webp');
+  background-size: cover;
+  background-position: center;
+  z-index: 10;
 }
 
+.process-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+  background: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.process-section::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20vh;
+  background: linear-gradient(to top, #000 0%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Centered container - exact WASTE layout */
 .process-copy-wrapper {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   border-radius: 2rem;
-  border: 0.15rem dashed rgb(60, 60, 60);
-  padding: 2rem;
+  border: 0.15rem dashed rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 2;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(6, 27, 55, 0.2), transparent 32rem),
+    rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(1px);
 }
 
 .process-text-content {
-  width: 60%;
-  max-width: 1200px;
+  width: min(88%, 1180px);
 }
 
+/* Text - exact WASTE styles */
 .process-text-content p {
   color: #fff;
   text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  margin-bottom: 0.55rem;
+  font-size: clamp(2.05rem, 3.45vw, 3rem);
   font-weight: 900;
-  line-height: 1.3;
-  opacity: 1;
+  line-height: 1.18;
 }
 
+.process-text-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Word pill - exact WASTE styles */
 .process-text-content .word {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   position: relative;
-  margin-right: 0.3rem;
-  margin-bottom: 0.3rem;
-  padding: 0.15rem 0.3rem;
-  border-radius: 0.5rem;
+  margin-right: 0.28rem;
+  margin-bottom: 0.14rem;
+  height: 1.34em;
+  padding: 0 0.34rem;
+  border-radius: 2rem;
   will-change: background-color, opacity;
-  opacity: 1;
-  /* ✅ Removed transition — fights GSAP scrub, causes micro-stutters */
+  opacity: 0;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .process-text-content .word.keyword-wrapper {
-  margin: 0 0.5rem 0.3rem 0.3rem;
+  margin: 0 0.5rem 0.18rem 0.25rem;
+  padding: 0;
 }
 
+.process-text-content .word.phrase-wrapper {
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Word text span - exact WASTE styles */
 .process-text-content .word span {
   position: relative;
-  opacity: 1;
-  /* ✅ Removed transition */
+  opacity: 0;
+  line-height: 1;
 }
 
+.process-text-content .word .phrase-punctuation {
+  opacity: 0;
+}
+
+/* Keyword pill styles - exact WASTE */
 .process-text-content .word span.keyword {
-  border-radius: 0.5rem;
-  display: inline-block;
-  padding: 0.15rem 0.5rem;
+  border-radius: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.34em;
+  padding: 0 0.55em;
+  line-height: 1;
   color: #141414;
-  z-index: 1;
-  font-weight: 900;
 }
 
 .process-text-content .word span.keyword::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(100% + 1.2rem);
-  height: calc(100% + 0.6rem);
-  background-color: #fff;
-  border-radius: 0.5rem;
-  z-index: -1;
+  display: none;
 }
 
-.process-text-content .word span.keyword.clunky::before {
-  background-color: #fe6d38;
+/* Phrase highlight colors */
+.process-text-content .word span.keyword.phrase-whatsapp-layer::before {
+  background-color: transparent;
 }
 
-.process-text-content .word span.keyword.for::before {
-  background-color: #7a78ff;
+.process-text-content .word span.keyword.phrase-whatsapp-layer {
+  background-color: #34557D;
+  color: #ffffff;
+}
+
+.process-text-content .word span.keyword.phrase-calendar-slot::before {
+  background-color: transparent;
+}
+
+.process-text-content .word span.keyword.phrase-live,
+.process-text-content .word span.keyword.phrase-calendar-slot {
+  background-color: #E6F2FF;
+  color: #102033;
+}
+
+.process-text-content .word span.keyword.phrase-confirmed::before {
+  background-color: transparent;
+}
+
+.process-text-content .word span.keyword.phrase-confirmed {
+  background-color: #F2EDE6;
+  color: #141313;
+}
+
+/* Inline icons */
+.inline-icon {
+  width: 1.48em;
+  height: 1.48em;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  object-fit: contain;
+  display: inline-flex;
+  align-self: center;
+  transform: translateY(0);
+}
+
+.inline-icon.mascot-icon {
+  width: 1.36em;
+  height: 1.36em;
+}
+
+.inline-icon.phrase-leading-icon {
+  margin-left: 0;
+  margin-right: 0.38rem;
+  width: 1.48em;
+  height: 1.48em;
+  transform: translateY(0);
+}
+
+.inline-icon.money-icon {
+  transform: translateY(-0.08em);
 }
 
 @media (max-width: 1000px) {
   .process-section {
-    padding: 1.5rem;
-    min-height: 90vh;
+    width: 100%;
+    padding: clamp(0.75rem, 3vw, 1.25rem);
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(18, 69, 118, 0.32), transparent 28rem),
+      radial-gradient(circle at 84% 76%, rgba(138, 185, 235, 0.14), transparent 22rem),
+      url('/images/about-bg-mobile.webp');
   }
-  .process-text-content { width: 85%; }
+
+  .process-copy-wrapper {
+    border-radius: 1.4rem;
+  }
+
+  .process-text-content {
+    width: min(96%, 680px);
+  }
+
   .process-text-content p {
-    font-size: 1.5rem;
-    line-height: 1.4;
+    margin-bottom: 0.45rem;
+    font-size: clamp(1.35rem, 5.8vw, 2.2rem);
+    line-height: 1.18;
+  }
+
+  .process-text-content .word {
+    margin-right: 0.12rem;
+    margin-bottom: 0.15rem;
+    padding: 0 0.24rem;
+  }
+
+  .process-text-content .word.keyword-wrapper {
+    margin: 0 0.22rem 0.14rem 0.08rem;
+    padding: 0;
+  }
+
+  .process-text-content .word span.keyword {
+    padding: 0 0.5em;
+  }
+
+  .inline-icon,
+  .inline-icon.phrase-leading-icon {
+    width: 1.36em;
+    height: 1.36em;
   }
 }
 
 @media (max-width: 768px) {
   .process-section {
-    padding: 1rem;
-    min-height: 80vh;
+    height: 320svh;
+    min-height: 320svh;
+    overflow: visible;
+    background-image: none;
+    background-color: #000;
   }
+
   .process-copy-wrapper {
-    border-radius: 1rem;
-    padding: 1rem;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(18, 69, 118, 0.32), transparent 28rem),
+      radial-gradient(circle at 84% 76%, rgba(138, 185, 235, 0.14), transparent 22rem),
+      url('/images/about-bg-mobile.webp') center / cover no-repeat,
+      #061B37;
+    /* Full-viewport backdrop-filter is a continuous compositing cost while
+       this element is pinned and animating; the opaque bg above makes the
+       desktop blur(1px) invisible here anyway. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
-  .process-text-content { width: 95%; }
+}
+
+@media (max-width: 480px) {
+  .process-section {
+    height: 320svh;
+    min-height: 320svh;
+    padding: 0.85rem;
+  }
+
+  .process-copy-wrapper {
+    height: 100svh;
+    min-height: 100svh;
+    padding: clamp(1rem, 5vw, 1.5rem);
+    align-items: center;
+  }
+
+  .process-text-content {
+    width: min(100%, 410px);
+  }
+
   .process-text-content p {
-    font-size: 1.25rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    display: inline;
+    font-size: clamp(1.32rem, 6.05vw, 1.82rem);
+    line-height: 1.34;
+    margin-bottom: 0;
   }
+
+  .process-text-content p::after {
+    content: " ";
+  }
+
   .process-text-content .word {
-    margin-right: 0.2rem;
-    margin-bottom: 0.2rem;
-    padding: 0.1rem 0.2rem;
+    height: auto;
+    min-height: 1.22em;
+    margin-right: 0.12rem;
+    margin-bottom: 0.24rem;
+    padding: 0.02rem 0.14rem;
+    will-change: background-color, opacity;
+    white-space: nowrap;
+  }
+
+  .process-text-content .word.keyword-wrapper {
+    margin: 0 0.34rem 0.2rem 0.12rem;
+  }
+
+  .process-text-content .word.phrase-wrapper,
+  .process-text-content .word span.keyword {
+    white-space: nowrap;
+  }
+
+  .process-text-content .word span,
+  .process-text-content .word .phrase-punctuation,
+  .process-text-content .word img.inline-icon {
+    opacity: 1;
+  }
+
+  .process-text-content .word span.keyword {
+    min-height: 1.28em;
+    padding: 0.06em 0.42em;
+  }
+
+  .inline-icon,
+  .inline-icon.phrase-leading-icon {
+    width: 1.08em;
+    height: 1.08em;
+    margin-left: 0.16rem;
+  }
+
+  .inline-icon,
+  .inline-icon.phrase-leading-icon {
+    width: 1.28em;
+    height: 1.28em;
   }
 }

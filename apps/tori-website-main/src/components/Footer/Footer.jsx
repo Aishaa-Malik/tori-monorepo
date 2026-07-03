@@ -7,19 +7,17 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { useViewTransition } from "@/hooks/useViewTransition";
 import Copy from "../Copy/Copy";
 
 import { RiLinkedinBoxLine } from "react-icons/ri";
 import { RiInstagramLine } from "react-icons/ri";
-import { RiMailLine } from "react-icons/ri";
-import { RiMapPinLine } from "react-icons/ri";
+import { RiDribbbleLine } from "react-icons/ri";
 import { RiYoutubeLine } from "react-icons/ri";
+import { createRevealObserver, isMobileViewport } from "@/lib/mobile-animation";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
-  const { navigateWithTransition } = useViewTransition();
   const socialIconsRef = useRef(null);
 
   useGSAP(
@@ -28,6 +26,22 @@ const Footer = () => {
 
       const icons = socialIconsRef.current.querySelectorAll(".icon");
       gsap.set(icons, { opacity: 0, x: -40 });
+
+      if (isMobileViewport()) {
+        return createRevealObserver(
+          socialIconsRef.current,
+          () => {
+            gsap.to(icons, {
+              opacity: 1,
+              x: 0,
+              duration: 0.42,
+              stagger: -0.05,
+              ease: "power2.out",
+            });
+          },
+          { rootMargin: "0px 0px -8% 0px" }
+        );
+      }
 
       ScrollTrigger.create({
         trigger: socialIconsRef.current,
@@ -52,181 +66,83 @@ const Footer = () => {
           <div className="footer-meta-col">
             <div className="footer-meta-block">
               <div className="footer-meta-logo">
-                <Copy delay={0.1}>
-                  <h3 className="lg">Unshakeable Promise ❤️</h3>
-                </Copy>
+                <h3 className="lg">
+                  Unshakeable Promise <span className="footer-promise-emoji">❤️</span>
+                </h3>
               </div>
               <Copy delay={0.2}>
-                <h2 style={{fontSize: '1.5rem'}}>Technology is cold. We are not. <br />We build software, but we live for humanity.<br />
-
-Your subscription automatically funds & helps us fight to transform the lives of the forgotten—from feeding street animals 🐕 to transforming the life's of the poor to creating new forests 🌳. We’ve locked 5% of our revenue (not profit) to this mission forever. 
-
-This isn't a tax write-off. It is our unconditional duty. Rain or shine, profit or loss, we will never stop giving. Because kindness shouldn't wait for profitability.</h2>
+                <div className="footer-promise-panel">
+                  <p className="footer-promise-lead">
+                    Technology is cold. We are not. Every subscription helps fund work for people, animals & the planet. Kindness should not wait for profitability, rain or shine.
+                  </p>
+                  <div className="footer-promise-grid">
+                    <div className="footer-promise-card">
+                      <span>5%</span>
+                      <p>of revenue is locked to this mission forever.</p>
+                    </div>
+                    <div className="footer-promise-card">
+                      <span>🐕</span>
+                      <p>Street animals, forgotten communities & real lives come first.</p>
+                    </div>
+                    <div className="footer-promise-card">
+                      <span>🌳</span>
+                      <p>From transforming lives to creating new forests.</p>
+                    </div>
+                  </div>
+                </div>
               </Copy>
             </div>
           </div>
           <div className="footer-meta-col">
             <div className="footer-nav-links">
               <Copy delay={0.1}>
-                <a
-                  href="/"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/");
-                  }}
-                >
-                  <h3>Index</h3>
+                <a href="/growth#roi-calculator">
+                  <h3>ROI Calculator</h3>
                 </a>
-                <a
-                  href="/studio"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/studio");
-                  }}
-                >
-                  <h3>Studio</h3>
+                <a href="/growth#why-switch">
+                  <h3>Why switch from your software?</h3>
                 </a>
-                <a
-                  href="/spaces"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/spaces");
-                  }}
-                >
-                  <h3>Our Spaces</h3>
-                </a>
-                <a
-                  href="/sample-space"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/sample-space");
-                  }}
-                >
-                  <h3>One Installation</h3>
-                </a>
-                <a
-                  href="/blueprints"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/blueprints");
-                  }}
-                >
-                  <h3>Blueprints</h3>
-                </a>
-                <a
-                  href="/connect"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/connect");
-                  }}
-                >
-                  <h3>Connect</h3>
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigateWithTransition("/connect");
-                  }}
-                >
+                <a href="/privacy-policy">
                   <h3>Privacy Policy</h3>
                 </a>
+                <a href="/terms-and-conditions">
+                  <h3>Terms & Conditions</h3>
+                </a>
               </Copy>
+              <div className="footer-socials-wrapper" ref={socialIconsRef}>
+                <a
+                  className="icon"
+                  href="https://www.linkedin.com/company/tori-ate/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <RiLinkedinBoxLine />
+                </a>
+                <a
+                  className="icon"
+                  href="https://www.instagram.com/toriatedubai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                >
+                  <RiInstagramLine />
+                </a>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="container footer-socials">
-          <div className="footer-meta-col">
-            <div className="footer-socials-wrapper" ref={socialIconsRef}>
-              <a
-                className="icon"
-                href="https://www.linkedin.com/company/tori-ate"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-              >
-                <RiLinkedinBoxLine />
-              </a>
-              <a
-                className="icon"
-                href="https://www.instagram.com/tori_ate._/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-              >
-                <RiInstagramLine />
-              </a>
-              <a
-                className="icon"
-                href="mailto:torieate@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Gmail"
-              >
-                <RiMailLine />
-              </a>
-              <a
-                className="icon"
-                href="https://www.youtube.com/@Tori-h5h6y"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-              >
-                <RiYoutubeLine />
-              </a>
-              <a
-                className="icon"
-                href="https://maps.app.goo.gl/35WxbDrxD6wrQ8jL8"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Google Maps"
-              >
-                <RiMapPinLine />
-              </a>
-            </div>
-          </div>
-          <div className="footer-meta-col">
-            <Copy delay={0.1}>
-              <p>
-                We believe design is not decoration but the quiet structure that
-                shapes experience.
-              </p>
-            </Copy>
           </div>
         </div>
       </div>
       <div className="footer-outro">
         <div className="container">
           <div className="footer-header">
-            <img src="/images/tori-footer-logo.svg" alt="" />
+            <img src="/logos/terrene-footer-logo.svg" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="footer-copyright">
-
-            {/* ///////////////////////////////// */}
-            {/* SAHI KRLO ISSE */}
-            <p>
-              {/* Developed with ❤️ by <a href="https://69kelvin.com" target="_blank" rel="noopener noreferrer">69 Kelvin</a> 
-              */}
-              <a>Developed with ❤️ by AISHA MALIK</a>
-            </p>
-            {/* <p>Incorporated in Delaware, US 🥰</p> */}
-            <p>A 123 RAM GALI 3 RAJAPARK, JAIPUR</p>
-            <p> &copy; 2025 Tori Ate Inc</p>
+            <p>Made with ❤️ by <a href="https://www.69kelvin.com" target="_blank" rel="noopener noreferrer">69 Kelvin</a></p>
+            <p>Incorp in Delaware, USA 🥰</p>
+            <p> &copy; 2026 Tori Ate Inc</p>
           </div>
-
-          <div className="footer-content" style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--base-400)', color: 'var(--base-400)' }}> 
-            {/* THIS PART FIXES THE LEGAL NAME ISSUE */} 
-            <p>© 2026 Aisha Malik | Tori ate</p> 
-            
-            <div className="footer-links" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', margin: '1rem 0' }}> 
-              <a href="/contact" style={{ color: 'var(--base-400)' }}>Contact Us</a> 
-              <a href="/privacy-policy" style={{ color: 'var(--base-400)' }}>Privacy Policy</a> 
-              <a href="/terms.html" style={{ color: 'var(--base-400)' }}>Terms & Conditions</a> 
-              <a href="/refund-policy" style={{ color: 'var(--base-400)' }}>Refund & Cancellation Policy</a> {/* Add this one! */} 
-            </div> 
-            
-            {/* <p>Registered Address: [Insert Address from your Udyam/PAN details]</p>  */}
-          </div> 
         </div>
       </div>
     </div>

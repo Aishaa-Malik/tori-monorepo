@@ -77,3 +77,23 @@
     font-size: 3rem;
   }
 }
+
+@media (max-width: 640px) {
+  .contact-hero {
+    width: 100%;
+    padding: 7rem 0 4rem;
+  }
+
+  .contact-hero .container {
+    gap: 3rem;
+  }
+
+  .contact-hero .contact-info {
+    gap: 1.35rem;
+    margin-bottom: 2rem;
+  }
+
+  .contact-hero .contact-img {
+    border-radius: 1.25rem;
+  }
+}

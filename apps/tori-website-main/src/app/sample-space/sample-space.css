@@ -139,3 +139,34 @@
     width: 100%;
   }
 }
+
+@media (max-width: 640px) {
+  .sample-space-hero {
+    width: 100%;
+    min-height: 115svh;
+  }
+
+  .sample-space-hero .container {
+    padding-top: 22svh;
+  }
+
+  .sample-space-hero .container .sample-space-content,
+  .sample-space-details.sample-space-details-1 .container,
+  .sample-space-details.sample-space-details-2 .container {
+    gap: 2rem;
+  }
+
+  .sample-space-hero .sample-space-content .sample-space-col:nth-child(2) {
+    gap: 2rem;
+  }
+
+  .sample-space-meta .sample-space-hero-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .sample-space-details-img {
+    border-radius: 1.25rem;
+    margin-top: 2rem;
+  }
+}

@@ -2,12 +2,12 @@
 import "./TopBar.css";
 
 import { useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-import { useViewTransition } from "@/hooks/useViewTransition";
 import AnimatedButton from "../AnimatedButton/AnimatedButton";
 import AnimatedButton2 from "../AnimatedButton2/AnimatedButton2";
 
@@ -17,10 +17,14 @@ const TopBar = () => {
   const topBarRef = useRef(null);
   const logoRef = useRef(null);
   const ctaRef = useRef(null);
-  const { navigateWithTransition } = useViewTransition();
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+  const sectionHref = (sectionId) => (isHomePage ? `#${sectionId}` : `/#${sectionId}`);
 
   // Scroll Progress Animation for Nav Links
   useGSAP(() => {
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+
     const links = gsap.utils.toArray(".nav-link");
     
     links.forEach((link) => {
@@ -39,7 +43,7 @@ const TopBar = () => {
         gsap.fromTo(
           link,
           {
-            backgroundPosition: "100.5% 0", // Start Transparent
+            backgroundPosition: "100% 0", // Start Transparent
           },
           {
             backgroundPosition: "0% 0",   // End White
@@ -59,7 +63,7 @@ const TopBar = () => {
           gsap.fromTo(
             navText,
             {
-              backgroundPosition: "100.5% 0", // Start White text
+              backgroundPosition: "100% 0", // Start White text
             },
             {
               backgroundPosition: "0% 0",   // End Black text
@@ -76,7 +80,7 @@ const TopBar = () => {
         }
       }
     });
-  }, { scope: topBarRef, dependencies: [] });
+  }, { scope: topBarRef, dependencies: [pathname] });
 
   
   // Restore scroll animation for Logo and CTA sections
@@ -87,6 +91,10 @@ const TopBar = () => {
     const topBar = topBarRef.current; // Use this for height reference if needed
     
     if (!logo || !cta || !topBar) return;
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      gsap.set([logo, cta], { y: 0, clearProps: "transform" });
+      return;
+    }
     
     // Initial state
     gsap.set([logo, cta], { y: 0 });
@@ -139,44 +147,32 @@ const TopBar = () => {
         <a
           href="/"
           onClick={(e) => {
+            if (window.location.pathname !== "/") {
+              return;
+            }
+
             e.preventDefault();
-            navigateWithTransition("/");
           }}
         >
-          <img src="/images/logo.png" alt="" />
+          <img src="/images/logo.webp" alt="" />
         </a>
-      </div>
-
-      <div className="top-bar-status">
-        <div className="top-bar-status-avatars">
-          <div className="top-bar-status-avatar">
-            <img src="/images/aisha-1.png" alt="" />
-          </div>
-          <div className="top-bar-status-avatar">
-            <img src="/images/ayush-2.png" alt="" />
-          </div>
-        </div>
-        <span className="top-bar-status-text">
-          Founded by Engineers from BITS PILANI, Amazon & NIT Jaipur
-        </span>
       </div>
       
       <div className="top-bar-nav">
         <div className="nav-pill">
-          <a href="#features" className="nav-link"><span className="nav-text">Features</span></a>
-          <a href="#process" className="nav-link"><span className="nav-text">Process</span></a>
-          <a href="/services" className="nav-link"><span className="nav-text">Services</span></a>
-          <a href="#pricing-card" className="nav-link"><span className="nav-text">Pricing</span></a>
-          <a href="#testimonials" className="nav-link"><span className="nav-text">Testimonials</span></a>
-          <a href="#faq" className="nav-link"><span className="nav-text">FAQ</span></a>
-          <a href="/universal-tori-wallet" className="nav-link"><span className="nav-text">Universal Wallet</span></a>
-          <a href="#contact" className="nav-link"><span className="nav-text">Contact us</span></a>
+          <a href={sectionHref("process")} className="nav-link"><span className="nav-text">Process</span></a>
+          <a href={sectionHref("features")} className="nav-link"><span className="nav-text">Features</span></a>
+          <a href={sectionHref("testimonials")} className="nav-link"><span className="nav-text">Testimonials</span></a>
+          <a href={sectionHref("pricing")} className="nav-link"><span className="nav-text">Pricing</span></a>
+          <a href={sectionHref("faq")} className="nav-link"><span className="nav-text">FAQ</span></a>
+          <a href={sectionHref("about-us")} className="nav-link"><span className="nav-text">About us</span></a>
+
         </div>
       </div>
       
       <div className="top-bar-cta" ref={ctaRef}>
-        {/* <AnimatedButton2 label="Login" route="/connect" animate={false} bgColor="orange" className="login-btn" /> */}
-        {/* <AnimatedButton label="Book ANY SERVICE IN 10 SEC" route="/connect" animate={false} /> */}
+        <AnimatedButton2 label="Login" route="/connect" animate={false} bgColor="orange" className="login-btn" />
+        <AnimatedButton label="Get Started" route="/connect" animate={false} />
       </div>
     </div>
   );

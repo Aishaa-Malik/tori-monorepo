@@ -1,24 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-
-/* Main Container - Acts as the spacer in the document flow */
+/* Main Container */
 .testimonials-spacer {
   width: 100%;
-  height: 1400vh; /* Determines the duration of the scroll */
   position: relative;
-  background-color: #000;
+  background: #000;
   z-index: 10;
+  /* Height will be handled by ScrollTrigger pinning */
+  user-select: none; /* Prevent accidental selection */
 }
 
-/* Sticky Container - The viewport window */
+.testimonials-spacer::before {
+  display: none;
+}
+
+.testimonials-spacer::after {
+  display: none;
+}
+
+/* Sticky Container */
 .testimonials-sticky-viewport {
-  width: 100%;
-  height: 150vh;
-  position: sticky;
-  top: 0;
-  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden; /* Critical to hide potential scrollbars */
   display: flex;
   flex-direction: column;
-  background-color: #000;
+  background: #000;
+  isolation: isolate;
 }
 
 /* Background Layers */
@@ -26,92 +33,96 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 0;
+  overflow: hidden;
 }
 
+.testimonials-bg picture,
 .testimonials-bg img {
   width: 100%;
   height: 100%;
+  display: block;
+}
+
+.testimonials-bg img {
   object-fit: cover;
   opacity: 0.4;
 }
 
-.testimonials-canvas {
+/* Canvas Layers */
+.testimonials-sticky-viewport canvas {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
+  overflow: hidden;
 }
 
-/* Header Content */
-.testimonials-header {
-  position: relative;
-  z-index: 5;
-  text-align: center;
-  padding-top: 4rem;
-  width: 100%;
+.testimonials-sticky-viewport canvas.outline-layer {
+  z-index: 1;
 }
 
-.testimonials-header h2 {
-  font-family: "FK Screamer", sans-serif;
-  font-size: clamp(3rem, 5vw, 5rem);
-  text-transform: uppercase;
-  color: #fff;
-  line-height: 1;
-  margin: 0;
+.testimonials-sticky-viewport canvas.fill-layer {
+  z-index: 3;
 }
 
-.testimonials-header h2 span {
-  color: #ff6b00;
-}
-
-/* Cards Rail - The moving part */
+/* Cards Rail - Mapped to .cards from reference */
 .testimonials-rail {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 0;
-  transform: translateY(-50%) translateX(0); /* Explicitly initialize translate */
-  display: flex;
-  gap: 4rem;
-  padding-left: 10vw; 
   width: max-content;
-  z-index: 10;
+  min-width: 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: clamp(6rem, 11vw, 12rem);
+  padding: 4vh 4vw 5vh;
+  z-index: 2;
   will-change: transform;
 }
 
 /* Individual Card */
 .t-card {
   position: relative;
-  width: 360px;
-  height: 600px;
+  width: clamp(320px, 27vw, 380px);
+  height: min(560px, 76vh);
   background-color: #f9f8f4;
   border-radius: 24px;
   display: flex;
   flex-direction: column;
   padding: 1.25rem;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 30px rgba(255,255,255,0.08);
   flex-shrink: 0;
 }
 
 .t-card-video-wrap {
   position: relative;
   width: 100%;
-  height: 70%;
+  height: 66%;
   border-radius: 20px;
   overflow: hidden;
   background: #000;
   margin-bottom: 1rem;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black); /* Force clipping on Safari */
+  mask-image: radial-gradient(white, black);
 }
 
 .t-card-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 20px;
+  display: block;
 }
 
 .t-card-play-btn {
@@ -121,17 +132,19 @@
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.9);
   border: none;
+  outline: none; /* Remove focus outline */
   border-radius: 20px;
   padding: 8px 16px;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-itc-garamond), sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #000;
   cursor: pointer;
   transition: all 0.2s ease;
+  z-index: 5; /* Ensure button is clickable */
 }
 
 .t-card-play-btn:hover {
@@ -153,61 +166,124 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-itc-garamond), sans-serif;
 }
 
 .t-card-quote {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: clamp(18px, 1.4vw, 21px);
+  line-height: 1.35;
   color: #333;
   margin-bottom: 0.5rem;
 }
 
 .t-card-author h3 {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: #000;
   margin: 0;
 }
 
 .t-card-author p {
-  font-size: 13px;
+  font-size: 15px;
   color: #666;
   text-decoration: underline;
   margin: 0;
 }
 
 /* Responsive */
-/* Responsive Fix for Mobile */
 @media (max-width: 768px) {
+  .testimonials-spacer {
+    /* Explicit tall wrapper (matches the proven native-sticky pattern used
+       elsewhere on this site) instead of relying on GSAP ScrollTrigger's
+       pin:true to create the scroll space - that mechanism was found to
+       permanently freeze page scroll on real mobile browsers. overflow
+       MUST stay a single unified "visible" value: splitting overflow-x/
+       overflow-y with one of them non-visible can make the browser force
+       the visible axis to compute as auto, which breaks position:sticky
+       on the child and can end (or fail to hold) the pin. */
+    height: 280svh;
+    min-height: 280svh;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .testimonials-sticky-viewport {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 100svh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .testimonials-sticky-viewport canvas {
+    display: block;
+  }
+
+  .testimonials-bg {
+    height: 100svh;
+    opacity: 0.48;
+  }
+
+  .testimonials-rail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: max-content;
+    min-width: 100vw;
+    height: 100%;
+    align-items: center;
+    gap: clamp(4.5rem, 18vw, 8rem);
+    padding: 4vh 10vw 5vh;
+    overflow: visible;
+    scroll-snap-type: none;
+    will-change: transform;
+  }
+
   .t-card {
-    /* Define a strict width so text wraps correctly */
-    width: 85vw; 
-    height: 650px; /* Reduced height for better mobile fit */
-    padding: 1rem;
-    overflow: hidden; /* Prevents internal elements from leaking out */
+    width: min(84vw, 340px);
+    height: min(74svh, 540px);
+    min-height: auto;
+    padding: 0.9rem;
+    border-radius: 20px;
+  }
+
+  .t-card-video-wrap,
+  .t-card-video {
+    border-radius: 16px;
   }
 
   .t-card-video-wrap {
-    height: 65%; /* Limits the image area to half the card */
-    width: 100%;
+    height: 56%;
+    aspect-ratio: auto;
     margin-bottom: 0.75rem;
   }
 
-  .t-card-video {
-    /* object-fit: cover is fine now that the width is controlled */
-    object-fit: cover; 
-    width: 100%;
-    height: 60%;
+  .t-card-divider {
+    margin-bottom: 0.75rem;
   }
 
   .t-card-quote {
-    font-size: 14px; /* Smaller text for mobile */
-    line-height: 1.4;
-    /* Limits the quote height so it doesn't push the author off-card */
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: clamp(1rem, 4.25vw, 1.2rem);
+    line-height: 1.28;
+  }
+
+  .t-card-author h3 {
+    font-size: 0.95rem;
+  }
+
+  .t-card-author p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .testimonials-rail {
+    padding: 4vh 10vw 5vh;
+  }
+
+  .t-card {
+    width: min(86vw, 305px);
+    height: min(70svh, 500px);
   }
 }

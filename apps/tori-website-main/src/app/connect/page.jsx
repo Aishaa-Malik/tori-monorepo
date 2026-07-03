@@ -26,31 +26,25 @@ const page = () => {
             </div>
             <div className="contact-col">
               <div className="contact-info">
-                <div className="contact-info-block">
-                  <Copy delay={0.85}>
-                    <p>General</p>
-                    <p>desk@terrene.studio</p>
-                  </Copy>
-                </div>
+                
                 <div className="contact-info-block">
                   <Copy delay={1}>
-                    <p>New Commissions</p>
-                    <p>build@terrene.studio</p>
-                    <p>+1 (872) 441‑2086</p>
+                    <p>Queries</p>
+                    <p>yushy@toriate.com</p>
+                    <p>+91 98280 44677</p>
                   </Copy>
                 </div>
                 <div className="contact-info-block">
                   <Copy delay={1.15}>
                     <p>Address</p>
-                    <p>BITS PILANI, Rajasthan</p>
-                    <p>Delware, The US</p>
+                    <p>8 The Green, Ste A</p>
+                    <p>Dover, Delaware, US</p>
                   </Copy>
                 </div>
                 <div className="contact-info-block">
                   <Copy delay={1.3}>
                     <p>Social</p>
                     <p>Instagram</p>
-                    <p>Are.na</p>
                     <a href="https://www.linkedin.com/company/tori-ate/">LinkedIn</a>
                   </Copy>
                 </div>

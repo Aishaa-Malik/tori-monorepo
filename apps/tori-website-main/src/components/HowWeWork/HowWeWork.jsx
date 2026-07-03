@@ -1,11 +1,16 @@
 "use client";
 import "./HowWeWork.css";
+
 import { useEffect, useRef, useState } from "react";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+
 import Copy from "../Copy/Copy";
 import AnimatedBodyText from "../AnimatedBodyText/AnimatedBodyText";
+import SectionPill from "../SectionPill/SectionPill";
+import { createRafScrollListener, isMobileViewport } from "@/lib/mobile-animation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,27 +23,83 @@ const HowWeWork = () => {
   const [isMobile, setIsMobile] = useState(false);
   const scrollTriggersRef = useRef([]);
 
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth <= 900);
+  };
+
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 1000);
     checkMobile();
+
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    const videos = Array.from(
+      containerRef.current?.querySelectorAll(".how-we-work-card-img video") || []
+    );
+
+    if (!videos.length) return;
+
+    const shouldSaveData =
+      window.matchMedia?.("(prefers-reduced-data: reduce)").matches ||
+      navigator.connection?.saveData;
+    const isMobileDevice = isMobileViewport();
+
+    const playVideo = (video) => {
+      if (shouldSaveData) return;
+      if (video.preload !== "auto") {
+        video.preload = "auto";
+        video.load();
+      }
+      video.play().catch(() => {});
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      videos.forEach(playVideo);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+
+          if (entry.isIntersecting) {
+            playVideo(video);
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { rootMargin: `${isMobileDevice ? 360 : 560}px 0px`, threshold: 0.05 }
+    );
+
+    videos.forEach((video) => {
+      video.pause();
+      observer.observe(video);
+    });
+
+    return () => {
+      observer.disconnect();
+      videos.forEach((video) => video.pause());
+    };
   }, []);
 
   useGSAP(
     () => {
       if (!stepsRef.current) return;
+
       const steps = stepsRef.current.querySelectorAll(".how-we-work-step");
       gsap.set(steps, { opacity: 0, x: -40 });
 
-      ScrollTrigger.getById("how-we-work-steps")?.kill();
-
       ScrollTrigger.create({
-        id: "how-we-work-steps",
         trigger: stepsRef.current,
         start: "top 75%",
         once: true,
-        invalidateOnRefresh: true,
         animation: gsap.to(steps, {
           opacity: 1,
           x: 0,
@@ -58,92 +119,103 @@ const HowWeWork = () => {
 
     if (!container || !header || !cards) return;
 
-    // Kill all previous triggers before rebuilding
-    scrollTriggersRef.current.forEach((t) => t.kill());
-    scrollTriggersRef.current = [];
-
     if (!isMobile) {
-      const setupTriggers = () => {
-        // Kill again before re-setup (called after image load too)
-        scrollTriggersRef.current.forEach((t) => t.kill());
-        scrollTriggersRef.current = [];
-
-        const mainTrigger = ScrollTrigger.create({
-          id: "how-we-work-main",
-          trigger: container,
-          start: "top top",
-          endTrigger: cards,
-          end: "bottom bottom",
-          pin: header,
-          pinSpacing: false,
-          invalidateOnRefresh: true,
-        });
-        scrollTriggersRef.current.push(mainTrigger);
-
-        const cardElements = cards.querySelectorAll(".how-we-work-card");
-        cardElements.forEach((card, index) => {
-          const cardTrigger = ScrollTrigger.create({
-            id: `how-we-work-card-${index}`,
-            trigger: card,
-            start: "top center",
-            end: "bottom center",
-            invalidateOnRefresh: true,
-            onEnter: () => setActiveStep(index),
-            onEnterBack: () => setActiveStep(index),
-            onLeave: () => {
-              if (index < cardElements.length - 1) setActiveStep(index + 1);
-            },
-            onLeaveBack: () => {
-              if (index > 0) setActiveStep(index - 1);
-            },
-          });
-          scrollTriggersRef.current.push(cardTrigger);
-        });
-
-        ScrollTrigger.refresh();
+      const resetHeaderPin = () => {
+        header.classList.remove("is-fixed", "is-ended");
+        header.style.removeProperty("--hww-pin-left");
+        header.style.removeProperty("--hww-pin-width");
+        header.style.removeProperty("--hww-pin-offset-left");
       };
 
-      // ✅ Setup immediately
-      setupTriggers();
+      const measureHeader = () => {
+        resetHeaderPin();
 
-      // ✅ Re-setup after all images in this section load — fixes card position miscalculation
-      const images = cards.querySelectorAll("img");
-      let loaded = 0;
-      const total = images.length;
+        const headerRect = header.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const offsetLeft = headerRect.left - containerRect.left;
 
-      if (total === 0) return;
-
-      const onLoad = () => {
-        loaded++;
-        if (loaded === total) {
-          // Small delay to let layout settle after images paint
-          setTimeout(() => {
-            setupTriggers();
-          }, 100);
-        }
+        header.style.setProperty("--hww-pin-left", `${headerRect.left}px`);
+        header.style.setProperty("--hww-pin-width", `${headerRect.width}px`);
+        header.style.setProperty("--hww-pin-offset-left", `${offsetLeft}px`);
       };
 
-      images.forEach((img) => {
-        if (img.complete) {
-          onLoad();
-        } else {
-          img.addEventListener("load", onLoad);
-          img.addEventListener("error", onLoad);
-        }
+      const updateHeaderPin = () => {
+        const rect = container.getBoundingClientRect();
+        const shouldPin = rect.top <= 0 && rect.bottom > window.innerHeight;
+        const shouldEnd = rect.bottom <= window.innerHeight;
+
+        header.classList.toggle("is-fixed", shouldPin);
+        header.classList.toggle("is-ended", shouldEnd);
+      };
+
+      measureHeader();
+      updateHeaderPin();
+
+      const handleResize = () => {
+        measureHeader();
+        updateHeaderPin();
+      };
+
+      window.addEventListener("scroll", updateHeaderPin, { passive: true });
+      window.addEventListener("resize", handleResize);
+
+      const cardElements = cards.querySelectorAll(".how-we-work-card");
+
+      cardElements.forEach((card, index) => {
+        gsap.set(card, { transformOrigin: "center center", force3D: true });
+
+        const cardTrigger = ScrollTrigger.create({
+          trigger: card,
+          start: "top center",
+          end: "bottom center",
+          onEnter: () => setActiveStep(index),
+          onEnterBack: () => setActiveStep(index),
+          onLeave: () => {
+            if (index < cardElements.length - 1) {
+              setActiveStep(index + 1);
+            }
+          },
+          onLeaveBack: () => {
+            if (index > 0) {
+              setActiveStep(index - 1);
+            }
+          },
+        });
+        scrollTriggersRef.current.push(cardTrigger);
       });
 
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+
       return () => {
-        images.forEach((img) => {
-          img.removeEventListener("load", onLoad);
-          img.removeEventListener("error", onLoad);
-        });
+        window.removeEventListener("scroll", updateHeaderPin);
+        window.removeEventListener("resize", handleResize);
+        resetHeaderPin();
+        scrollTriggersRef.current.forEach((trigger) => trigger.kill());
+        scrollTriggersRef.current = [];
       };
     }
 
-    return () => {
-      scrollTriggersRef.current.forEach((t) => t.kill());
-      scrollTriggersRef.current = [];
+    const cardElements = Array.from(cards.querySelectorAll(".how-we-work-card"));
+    const updateActiveStep = () => {
+      const viewportCenter = window.innerHeight * 0.5;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      cardElements.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height * 0.5;
+        const distance = Math.abs(cardCenter - viewportCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      setActiveStep(closestIndex);
     };
+
+    return createRafScrollListener(updateActiveStep);
   }, [isMobile]);
 
   return (
@@ -152,79 +224,143 @@ const HowWeWork = () => {
         <div className="container">
           <div className="how-we-work-header-content">
             <div className="how-we-work-header-callout">
-              <Copy delay={0.1}><p>Process</p></Copy>
+              <Copy delay={0.1}>
+                <SectionPill label="Process" />
+                <div className="speed-badge-header">
+                  <span className="speed-badge-icon">⚡</span>
+                  <span className="speed-badge-divider"></span>
+                  <span className="speed-badge-text-header">20x faster than traditional booking</span>
+                </div>
+              </Copy>
             </div>
             <Copy delay={0.15}>
-              <h3>From "Hi" to "Booked" in 10 seconds ONLY.</h3>
+              <h3 style={{ color: "#E6F2FF" }}>
+                <span className="process-title-line">From “Hi” to “Booked”</span>
+                <span className="process-title-line">in 20 seconds.</span>
+              </h3>
               <h4 className="subheading">
-                Forget clunky apps and endless forms. Let your customers book appointments,
-                choose slots, and pay directly inside WhatsApp. It's natural, instant, and
-                10x faster than your competitors.
+                Forget clunky apps, endless forms &  “please call to confirm” chaos. Tori Ate turns a WhatsApp message into a confirmed appointment with payment, reminders &  calendar sync built in.
               </h4>
             </Copy>
             <div className="how-we-work-steps" ref={stepsRef}>
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`how-we-work-step ${activeStep === i ? "active" : ""}`}>
-                  <p className="how-we-work-label">Step</p>
-                  <p className="how-we-work-step-index">{i + 1}</p>
-                </div>
-              ))}
+              <div
+                className={`how-we-work-step ${
+                  activeStep === 0 ? "active" : ""
+                }`}
+              >
+                <p className="how-we-work-step-label">Step</p>
+                <p className="how-we-work-step-index">1</p>
+              </div>
+              <div
+                className={`how-we-work-step ${
+                  activeStep === 1 ? "active" : ""
+                }`}
+              >
+                <p className="how-we-work-step-label">Step</p>
+                <p className="how-we-work-step-index">2</p>
+              </div>
+              <div
+                className={`how-we-work-step ${
+                  activeStep === 2 ? "active" : ""
+                }`}
+              >
+                <p className="how-we-work-step-label">Step</p>
+                <p className="how-we-work-step-index">3</p>
+              </div>
+              {/* <div
+                className={`how-we-work-step ${
+                  activeStep === 3 ? "active" : ""
+                }`}
+              >
+                <p className="how-we-work-step-label">Step</p>
+                <p className="how-we-work-step-index">4</p>
+              </div> */}
             </div>
           </div>
         </div>
       </div>
-
       <div className="how-we-work-col how-we-work-cards" ref={cardsRef}>
         <div className="how-we-work-card">
-          <div className="how-we-work-card-img"><img src="/images/demo-1.png" alt="" /></div>
+          <div className="how-we-work-card-img">
+            <video
+              src="https://res.cloudinary.com/dbpdaigyn/video/upload/f_auto,q_auto/v1781455377/VID1-FINAL_twwfeh.mp4"
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            />
+          </div>
           <div className="how-we-work-card-copy">
-            <div className="how-we-work-card-index-label"><h3>Say "Hi" to Start</h3></div>
-            <AnimatedBodyText className="md">
-              Your customer doesn't need to download an app, create an account, or remember a password.
-              They simply send a "Hi" to Tori's WhatsApp - the app they already use daily. No downloads.
-              No passwords. No "create an account" nonsense. Just like messaging a friend.
-              Tori instantly wakes up, ready to serve.
+            <div className="how-we-work-card-index-label">
+              <h3>Say “Hi” to start</h3>
+            </div>
+            <AnimatedBodyText className="md" start="top 88%" end="top 48%">
+Your customer simply messages your Tori Ate WhatsApp number.
+They do not need to download an app, create an account, remember a password, or open your website.
+Just like messaging a friend - but it books revenue for your business.
             </AnimatedBodyText>
           </div>
         </div>
         <div className="how-we-work-card">
-          <div className="how-we-work-card-img"><img src="/images/demo-2.png" alt="" /></div>
-          <div className="how-we-work-card-copy">
-            <div className="how-we-work-card-index-label"><h3>AI shows available slots in seconds</h3></div>
-            <p className="md">
-              Tori instantly presents your services & your real-time available time slots in a clean,
-              interactive list. We sync deeply with your Google Calendar in real-time, so double-bookings
-              are mathematically impossible. The customer picks their preferred date, time, & service in
-              a natural conversation. Feels effortless. Takes 10 seconds.
-            </p>
+          <div className="how-we-work-card-img">
+            <video
+              src="https://res.cloudinary.com/dbpdaigyn/video/upload/f_auto,q_auto/v1781455361/VID2-FINAL_l02rr8.mp4"
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            />
           </div>
-        </div>
-        <div className="how-we-work-card">
-          <div className="how-we-work-card-img"><img src="/images/demo-3.png" alt="" /></div>
           <div className="how-we-work-card-copy">
             <div className="how-we-work-card-index-label">
-              <h3>Pay & Confirm Instantly</h3>
-              <div className="speed-badge">
-                <span className="speed-badge-dot"></span>
-                <span className="speed-badge-text">⚡ 10X Faster Than Traditional Booking</span>
-              </div>
+              <h3>Pick a service and live slot</h3>
             </div>
-            <p className="md">
-              The moment a slot is picked, Toriate generates a secure payment link right in the chat.
-              Once paid, the appointment is confirmed, added to both calendars, and a reminder is set.
-              The whole process is done before they can even lock their phone.
-            </p>
+            <AnimatedBodyText className="md" start="top 88%" end="top 48%">
+Tori Ate shows your services and only displays available time slots from your connected Google Calendar.
+If a slot is already booked, it does not show up.
+No double-booking. No manual checking. No “wait, let me confirm and call you back.”
+            </AnimatedBodyText>
           </div>
         </div>
         <div className="how-we-work-card">
-          <div className="how-we-work-card-img"><img src="/images/demo-4-reminder.png" alt="" /></div>
+          <div className="how-we-work-card-img">
+            <video
+              src="https://res.cloudinary.com/dbpdaigyn/video/upload/f_auto,q_auto/v1781455371/VID3-FINAL_qv4klz.mp4"
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            />
+          </div>
           <div className="how-we-work-card-copy">
-            <div className="how-we-work-card-index-label"><h3>Zero No-Shows, Zero Stress</h3></div>
-            <AnimatedBodyText className="md">
-              Email reminders get buried in spam; WhatsApp reminders get read instantly.
-              Tori automatically nudges your customers before their slot (e.g., 24h & 1h prior).
-              If life happens, they can reschedule with a single tap — keeping your calendar
-              optimized without you lifting a finger.
+            <div className="how-we-work-card-index-label">
+              <h3>Pay & confirm instantly</h3>
+            </div>
+            <AnimatedBodyText className="md" start="top 88%" end="top 48%">
+Once the customer selects a slot, Tori Ate sends the payment link inside WhatsApp.
+After payment, the appointment is confirmed and added to the calendar.
+The customer gets clarity. You get commitment. Your staff gets one less thing to chase.
+            </AnimatedBodyText>
+          </div>
+        </div>
+        <div className="how-we-work-card">
+          <div className="how-we-work-card-img">
+            <video
+              src="https://res.cloudinary.com/dbpdaigyn/video/upload/f_auto,q_auto/v1781455373/VID4-FINAL_sqr5zg.mp4"
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            />
+          </div>
+          <div className="how-we-work-card-copy">
+            <div className="how-we-work-card-index-label">
+              <h3>Reminders reduce no-shows</h3>
+            </div>
+            <AnimatedBodyText className="md" start="top 88%" end="top 48%">
+Before the appointment, Tori Ate sends WhatsApp reminders so customers do not forget.
+If someone needs to reschedule, they can do it through the same flow instead of disappearing.
+Less ghosting. Fewer empty slots. More predictable revenue.
             </AnimatedBodyText>
           </div>
         </div>

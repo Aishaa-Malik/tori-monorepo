@@ -19,8 +19,8 @@ const page = () => {
               <Copy delay={0.85}>
                 <p>
                   We see design as more than construction. It is an ongoing
-                  dialogue between people, material, and place, shaped with
-                  care, and built to endure.
+                  dialogue between people, material& place, shaped with
+                  care& built to endure.
                 </p>
               </Copy>
             </div>
@@ -83,7 +83,7 @@ const page = () => {
           img="/images/studio-about-cta-window.jpg"
           header="The Archive"
           callout="Designs that speak through form"
-          description="Each project tells a story of light, material, and rhythm. Explore how ideas take shape and grow into lasting environments."
+          description="Each project tells a story of light, material& rhythm. Explore how ideas take shape and grow into lasting environments."
         />
         <Spotlight />
       </div>

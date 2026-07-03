@@ -2,73 +2,103 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
+import { useLenis } from 'lenis/react';
 import './TextAnimation.css';
 
 const TextAnimation = () => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
+  const scrollTriggerRef = useRef(null);
+  const lenis = useLenis();
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // 1. Initialize Lenis for smooth scrolling
-    const lenis = new Lenis();
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-
-    // 2. Constants and Word Processing
     const wordHighlightBgColor = "60, 60, 60";
     const keywords = [
-      "Stripe", "clunky", "clarity", "expression",
-      "shape", "intuitive", "storytelling", "interactive", "vision"
+      "vibrant",
+      "living",
+      "clarity",
+      "expression",
+      "shape",
+      "intuitive",
+      "storytelling",
+      "interactive",
+      "vision",
     ];
+    const keywordSet = new Set(keywords);
 
-    const paragraphs = textRef.current.querySelectorAll("p");
-    paragraphs.forEach((paragraph) => {
-      const text = paragraph.textContent;
-      const words = text.split(/\s+/);
+    const wrapParagraph = (paragraph) => {
+      const nodes = Array.from(paragraph.childNodes);
       paragraph.innerHTML = "";
 
-      words.forEach((word) => {
-        if (word.trim()) {
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const parts = (node.textContent || "").split(/\s+/);
+          parts.forEach((word) => {
+            if (word.trim()) {
+              const wordContainer = document.createElement("div");
+              wordContainer.className = "word";
+
+              const wordText = document.createElement("span");
+              wordText.textContent = word;
+
+              const normalizedWord = word
+                .toLowerCase()
+                .replace(/[.,!?;:"]/g, "");
+
+              if (keywordSet.has(normalizedWord)) {
+                wordContainer.classList.add("keyword-wrapper");
+                wordText.classList.add("keyword", normalizedWord);
+              }
+
+              wordContainer.appendChild(wordText);
+              paragraph.appendChild(wordContainer);
+            }
+          });
+
+          return;
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node;
+          if (el.tagName === "BR") return;
+
           const wordContainer = document.createElement("div");
           wordContainer.className = "word";
 
-          const wordText = document.createElement("span");
-          wordText.textContent = word;
+          const wordContent = document.createElement("span");
+          wordContent.appendChild(el);
 
-          const normalizedWord = word.toLowerCase().replace(/[.,!?;:"]/g, "");
-          if (keywords.includes(normalizedWord)) {
-            wordContainer.classList.add("keyword-wrapper");
-            wordText.classList.add("keyword", normalizedWord);
-          }
-
-          wordContainer.appendChild(wordText);
+          wordContainer.appendChild(wordContent);
           paragraph.appendChild(wordContainer);
         }
       });
-    });
+    };
 
-    // 3. Exact Animation Logic from original script.js
+    const textRoot = textRef.current;
     const container = containerRef.current;
+    if (!textRoot || !container) return;
+
+    const paragraphs = textRoot.querySelectorAll("p");
+    paragraphs.forEach(wrapParagraph);
+
     const words = Array.from(container.querySelectorAll(".word"));
     const totalWords = words.length;
 
-    ScrollTrigger.create({
+    scrollTriggerRef.current?.kill();
+    scrollTriggerRef.current = ScrollTrigger.create({
       trigger: container,
       pin: container,
       start: "top top",
       end: `+=${window.innerHeight * 4}`,
-      pinSpacing: false,
+      pinSpacing: true,
       onUpdate: (self) => {
         const progress = self.progress;
 
         words.forEach((word, index) => {
           const wordText = word.querySelector("span");
+          if (!wordText) return;
 
           if (progress <= 0.7) {
             const progressTarget = 0.7;
@@ -81,26 +111,36 @@ const TextAnimation = () => {
             const wordEnd = wordStart + overlapWords / totalWords;
 
             const timelineScale =
-              1 / Math.min(totalAnimationLength, 1 + (totalWords - 1) / totalWords + overlapWords / totalWords);
+              1 /
+              Math.min(
+                totalAnimationLength,
+                1 + (totalWords - 1) / totalWords + overlapWords / totalWords
+              );
 
             const adjustedStart = wordStart * timelineScale;
             const adjustedEnd = wordEnd * timelineScale;
             const duration = adjustedEnd - adjustedStart;
 
             const wordProgress =
-              revealProgress <= adjustedStart ? 0 :
-              revealProgress >= adjustedEnd ? 1 :
-              (revealProgress - adjustedStart) / duration;
+              revealProgress <= adjustedStart
+                ? 0
+                : revealProgress >= adjustedEnd
+                ? 1
+                : (revealProgress - adjustedStart) / duration;
 
             word.style.opacity = wordProgress;
 
-            const backgroundFadeStart = wordProgress >= 0.9 ? (wordProgress - 0.9) / 0.1 : 0;
+            const backgroundFadeStart =
+              wordProgress >= 0.9 ? (wordProgress - 0.9) / 0.1 : 0;
             const backgroundOpacity = Math.max(0, 1 - backgroundFadeStart);
             word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`;
 
             const textRevealThreshold = 0.9;
             const textRevealProgress =
-              wordProgress >= textRevealThreshold ? (wordProgress - textRevealThreshold) / (1 - textRevealThreshold) : 0;
+              wordProgress >= textRevealThreshold
+                ? (wordProgress - textRevealThreshold) /
+                  (1 - textRevealThreshold)
+                : 0;
             wordText.style.opacity = Math.pow(textRevealProgress, 0.5);
           } else {
             const reverseProgress = (progress - 0.7) / 0.3;
@@ -109,22 +149,31 @@ const TextAnimation = () => {
 
             const reverseOverlapWords = 5;
             const reverseWordStart = index / totalWords;
-            const reverseWordEnd = reverseWordStart + reverseOverlapWords / totalWords;
+            const reverseWordEnd =
+              reverseWordStart + reverseOverlapWords / totalWords;
 
             const reverseTimelineScale =
-              1 / Math.max(1, (totalWords - 1) / totalWords + reverseOverlapWords / totalWords);
+              1 /
+              Math.max(
+                1,
+                (totalWords - 1) / totalWords +
+                  reverseOverlapWords / totalWords
+              );
 
             const reverseAdjustedStart = reverseWordStart * reverseTimelineScale;
             const reverseAdjustedEnd = reverseWordEnd * reverseTimelineScale;
             const reverseDuration = reverseAdjustedEnd - reverseAdjustedStart;
 
             const reverseWordProgress =
-              reverseProgress <= reverseAdjustedStart ? 0 :
-              reverseProgress >= reverseAdjustedEnd ? 1 :
-              (reverseProgress - reverseAdjustedStart) / reverseDuration;
+              reverseProgress <= reverseAdjustedStart
+                ? 0
+                : reverseProgress >= reverseAdjustedEnd
+                ? 1
+                : (reverseProgress - reverseAdjustedStart) / reverseDuration;
 
             if (reverseWordProgress > 0) {
-              wordText.style.opacity = targetTextOpacity * (1 - reverseWordProgress);
+              wordText.style.opacity =
+                targetTextOpacity * (1 - reverseWordProgress);
               word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${reverseWordProgress})`;
             } else {
               wordText.style.opacity = targetTextOpacity;
@@ -136,26 +185,35 @@ const TextAnimation = () => {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-      lenis.destroy();
+      scrollTriggerRef.current?.kill();
+      scrollTriggerRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (!lenis) return;
+    const onScroll = () => ScrollTrigger.update();
+    lenis.on("scroll", onScroll);
+    return () => {
+      lenis.off("scroll", onScroll);
+    };
+  }, [lenis]);
 
   return (
     <section className="about about-animation anime-text-container" ref={containerRef}>
       <div className="about-copy-container">
         <div className="about-animated-text" ref={textRef}>
           <p>
-            Tori is 'YOUR 24/7 RECEPTIONIST'—an AI WHATSAPP SESSION BOOKING &
-             front-desk AUTOMATION platform that replaces Clunky Forms with an Instant 
-             Chat Experience, allowing businesses to lock in Bookings in 10 seconds flat.
+            Tori is the 'Stripe for Scheduling'—an AI WhatsApp appointment scheduling &
+             front-desk automation platform that replaces clunky forms with an instant 
+             chat experience, allowing high-volume businesses to lock in bookings in 20 seconds flat.
           </p>
           {/* <p>
             We believe great design starts with clarity and expression ends.
             That's why Huebase is built to simplify your workflow while
             amplifying your creative reach. From the first concept to the final
             handoff, it's a space where your ideas take shape and more, your
-            palette comes to life, and your interface begins.
+            palette comes to life& your interface begins.
           </p> */}
         </div>
       </div>

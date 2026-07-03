@@ -11,7 +11,14 @@
   transition: width 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   transform-origin: right;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 2147483647;
+  pointer-events: auto;
+  touch-action: manipulation;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .menu-copy {
@@ -26,7 +33,7 @@
 
 .menu-copy p {
   color: var(--base-500);
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-itc-garamond), sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 0.9;
@@ -86,4 +93,27 @@
 
 .menu-toggle.opened .menu-bar[data-position="bottom"] {
   transform: translateY(0) rotate(-45deg) scaleX(1.05);
+}
+
+@media (min-width: 1001px) {
+  .menu-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-toggle {
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    width: 112px;
+    height: 48px;
+  }
+
+  .menu-toggle-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .menu-copy {
+    right: 19px;
+  }
 }

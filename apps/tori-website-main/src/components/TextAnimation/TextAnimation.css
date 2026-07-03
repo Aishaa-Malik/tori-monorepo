@@ -2,7 +2,7 @@
 .anime-text-container {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   padding: 2em;
   overflow: hidden;
   background-color: #141414;

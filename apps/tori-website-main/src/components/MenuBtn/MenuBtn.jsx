@@ -3,9 +3,15 @@ import "./MenuBtn.css";
 
 const MenuBtn = ({ isOpen, toggleMenu }) => {
   return (
-    <div
+    <button
+      type="button"
       className={`menu-toggle ${isOpen ? "opened" : "closed"}`}
-      onClick={toggleMenu}
+      onClick={(event) => {
+        event.preventDefault();
+        toggleMenu();
+      }}
+      aria-label={isOpen ? "Close menu" : "Open menu"}
+      aria-expanded={isOpen}
     >
       <div className="menu-toggle-icon">
         <div className="hamburger">
@@ -16,7 +22,7 @@ const MenuBtn = ({ isOpen, toggleMenu }) => {
       <div className="menu-copy">
         <p>Menu</p>
       </div>
-    </div>
+    </button>
   );
 };
 

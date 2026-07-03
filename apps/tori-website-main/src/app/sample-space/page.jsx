@@ -13,7 +13,7 @@ const page = () => {
       <div className="page sample-space">
         <section className="sample-space-hero">
           <div className="sample-space-hero-img">
-            <img src="/images/sample-space-hero.jpg" alt="Arcade Residence Lisbon" />
+            <img src="/images/sample-space-hero.png" alt="Arcade Residence Lisbon" />
           </div>
           <div className="sample-space-hero-overlay"></div>
           <div className="container">
@@ -106,7 +106,7 @@ const page = () => {
 
                 <h3>
                   Materials were chosen for their quiet permanence: pale stone,
-                  lime plaster, and timber accents. These textures invite touch
+                  lime plaster& timber accents. These textures invite touch
                   and age gracefully, ensuring the house evolves in character
                   with time.
                 </h3>
@@ -175,7 +175,7 @@ const page = () => {
                 <h3>
                   Every choice within the residence was guided by sensory
                   experience. The aim was not only to frame views but to shape
-                  how sound, touch, and temperature are felt as one moves
+                  how sound, touch& temperature are felt as one moves
                   through the home.
                 </h3>
               </Copy>
@@ -186,7 +186,7 @@ const page = () => {
           img="/images/sample-space-next-project.jpg"
           header="Next Project"
           callout="Built for stillness and clarity"
-          description="A study in restraint and resonance, this space invites quietude. Materials, light, and layout come together."
+          description="A study in restraint and resonance, this space invites quietude. Materials, light& layout come together."
         />
       </div>
       <ConditionalFooter />
