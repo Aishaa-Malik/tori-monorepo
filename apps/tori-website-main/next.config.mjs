@@ -1,24 +1,38 @@
 /** @type {import('next').NextConfig} */
 
-//const DASHBOARD_URL = 'http://localhost:3001/';
-//'https://tori-dashboard.vercel.app' ||
-// Use local port for development, Vercel URL for production
-//const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://tori-dashboard.vercel.app';
-//const DASHBOARD_URL = 'http://localhost:3001/';
 const DASHBOARD_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3000'
     : 'https://tori-dashboard.vercel.app';
 
-//export { DASHBOARD_URL };
-
-
 const nextConfig = {
-    reactStrictMode: false, // ← disable during development
-
+  compress: true,
+  allowedDevOrigins: [
+    '192.168.1.68',
+    '192.168.1.68:3000',
+    '192.168.1.68:3001',
+    '192.168.1.68:3002',
+  ],
+  experimental: {
+    optimizePackageImports: ['react-icons'],
+  },
+  async headers() {
+    return [
+      {
+        source:
+          '/:path*.:ext(png|jpg|jpeg|gif|webp|avif|svg|ico|mp4|webm|woff2|ttf|otf)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     return [
-      // 1. Pages
+      // Dashboard pages (website keeps its own routes, e.g. /privacy-policy)
       { source: '/login', destination: `${DASHBOARD_URL}/login` },
       { source: '/dashboard/:path*', destination: `${DASHBOARD_URL}/dashboard/:path*` },
       { source: '/services/:path*', destination: `${DASHBOARD_URL}/services/:path*` },
@@ -28,7 +42,6 @@ const nextConfig = {
       { source: '/payment-callback', destination: `${DASHBOARD_URL}/payment-callback` },
       { source: '/unauthorized', destination: `${DASHBOARD_URL}/unauthorized` },
       { source: '/update-password', destination: `${DASHBOARD_URL}/update-password` },
-      { source: '/privacy-policy', destination: `${DASHBOARD_URL}/privacy-policy` },
       { source: '/delete-account', destination: `${DASHBOARD_URL}/delete-account` },
       { source: '/terms.html', destination: `${DASHBOARD_URL}/terms.html` },
       { source: '/refund-policy', destination: `${DASHBOARD_URL}/refund-policy` },
@@ -37,21 +50,17 @@ const nextConfig = {
       { source: '/employees/:path*', destination: `${DASHBOARD_URL}/employees/:path*` },
       { source: '/fitness-sports-dashboard/:path*', destination: `${DASHBOARD_URL}/fitness-sports-dashboard/:path*` },
       { source: '/tori-employee/:path*', destination: `${DASHBOARD_URL}/tori-employee/:path*` },
-      
-      // 2. Folder Mappings (Assets)
+
+      // Dashboard static assets only — do NOT rewrite /images (website uses public/images)
       { source: '/js/:path*', destination: `${DASHBOARD_URL}/js/:path*` },
       { source: '/css/:path*', destination: `${DASHBOARD_URL}/css/:path*` },
-      { source: '/images/:path*', destination: `${DASHBOARD_URL}/images/:path*` },
       { source: '/static/:path*', destination: `${DASHBOARD_URL}/static/:path*` },
-
-      // 3. Root File Mappings (Scripts & Images)
       { source: '/features.js', destination: `${DASHBOARD_URL}/features.js` },
       { source: '/hero.js', destination: `${DASHBOARD_URL}/hero.js` },
       { source: '/hero-intro.js', destination: `${DASHBOARD_URL}/hero-intro.js` },
       { source: '/hero-intro-text.js', destination: `${DASHBOARD_URL}/hero-intro-text.js` },
-      // { source: '/images/parkyoga.png', destination: `${DASHBOARD_URL}/images/parkyoga.png` },
       { source: '/COMINGSOON.png', destination: `${DASHBOARD_URL}/COMINGSOON.png` },
-    ]
+    ];
   },
 };
 

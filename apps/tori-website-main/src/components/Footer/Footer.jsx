@@ -136,7 +136,7 @@ const Footer = () => {
       <div className="footer-outro">
         <div className="container">
           <div className="footer-header">
-            <img src="/logos/terrene-footer-logo.svg" alt="" loading="lazy" decoding="async" />
+            <img src="/logos/tori-footer-logo.svg" alt="Tori Ate" loading="lazy" decoding="async" />
           </div>
           <div className="footer-copyright">
             <p>Made with ❤️ by <a href="https://www.69kelvin.com" target="_blank" rel="noopener noreferrer">69 Kelvin</a></p>

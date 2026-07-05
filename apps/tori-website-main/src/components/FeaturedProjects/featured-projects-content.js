@@ -39,14 +39,14 @@ const featuredProjectsContent = [
     title: "Admin dashboard for bookings, revenue & staff",
     description:
       "The problem: Owners do not just want bookings. They want to know what is happening in the business.\n\nThe Tori Ate solution: Track appointments, daily revenue, weekly revenue, staff performance, customer bookings& key operational metrics from one dashboard.\n\nThe result: You see what is working, what is leaking& where your business needs attention.",
-    image: "/images/feature-dashboard.png",
+    image: "/images/1.png",
   },
   {
     info: "CONTROL",
     title: "Change your WhatsApp booking flow without calling a developer",
     description:
       "The problem: Most tools become painful when you need to update services, pricing, timings, staff, or business details.\n\nThe Tori Ate solution: Your admin dashboard lets you update the details customers see on WhatsApp.\n\nThe result: You stay in control of your booking experience without waiting on tech support for every small change.",
-    image: "/images/feature-control.png",
+    image: "/images/2.png",
   },
   {
     info: "REPEAT BOOKINGS",

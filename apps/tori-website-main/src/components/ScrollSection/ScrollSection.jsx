@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 const testimonials = [
   {
     id: 1,
-    image: "/images/testimonials/aimfit.png",
+    image: "/images/aimfit.avif",
     quote: "Most of our customer conversations already happen on WhatsApp, but managing enquiries, timings, and follow-ups manually gets messy very quickly. Toriate gave us a cleaner way to think about bookings — customers can interact through WhatsApp, and the business gets better visibility instead of depending only on scattered chats",
     name: "Bengaluru",
     studio: "Aimfit Gym"
@@ -36,7 +36,7 @@ const testimonials = [
   },
   {
     id: 4,
-    image: "/images/testimonials/asf.png",
+    image: "/images/asf.png",
     quote: "In yoga and fitness, customers often ask about batches, timings, and availability through WhatsApp. Toriate makes that experience more structured. Instead of manually replying to every booking-related message, the customer journey can happen inside WhatsApp while the business gets a cleaner dashboard to track appointments.",
     name: "Bengaluru",
     studio: "Ashish Yoga Fitness"
