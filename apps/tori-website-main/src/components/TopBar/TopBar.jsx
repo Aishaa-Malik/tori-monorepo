@@ -172,7 +172,7 @@ const TopBar = () => {
       
       <div className="top-bar-cta" ref={ctaRef}>
         <AnimatedButton2 label="Login" route="/connect" animate={false} bgColor="orange" className="login-btn" />
-        <AnimatedButton label="Get Started" route="/connect" animate={false} />
+        <AnimatedButton label="Get Started" route="/login" animate={false} />
       </div>
     </div>
   );
