@@ -3,6 +3,7 @@ const cors = require('cors');
 const config = require('./config');
 const paymentRoutes = require('./routes/payment');
 const onboardingRoutes = require('./routes/onboarding');
+const adminRoutes = require('./routes/admin');
 const publicListingsRoutes = require('./routes/publicListings');
 
 const app = express();
@@ -42,6 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api', paymentRoutes);
 app.use('/api', onboardingRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api', publicListingsRoutes);
 
 // Basic route for testing
