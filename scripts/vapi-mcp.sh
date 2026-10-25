@@ -4,7 +4,7 @@
 # It also keeps one marked section at the end of the assistant's system prompt ("Tori integration": who is calling,
 # {{tori_caller}}, and how to work with Tori's tools). Only that section and the toolIds change; the rest of the
 # prompt, the voice and the model settings stay as they are in the Vapi dashboard.
-# scripts/board-tunnel.sh runs this after every new tunnel address. Safe to run again.
+# scripts/bot-webhook.sh runs this too. Safe to run again.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 set -a; . ./.env; set +a
