@@ -41,7 +41,7 @@ x-n8n-env: &n8n-env
   # workflow 06 hands Google requests to the ToriGoogle stack (../ToriGoogle); empty URL = off
   TORI_GOOGLE_URL: ${TORI_GOOGLE_URL:-}
   TORI_GOOGLE_SECRET: ${TORI_GOOGLE_SECRET:-}
-  # partner board's public address (scripts/board-tunnel.sh); the bot links to it when set
+  # partner board's public address (https://<host>); the bot links to it when set
   BOARD_PUBLIC_URL: ${BOARD_PUBLIC_URL:-}
   # the bot's own WhatsApp number (digits): invite links ("invite") open a chat with it
   BOARD_WHATSAPP_NUMBER: ${BOARD_WHATSAPP_NUMBER:-}
@@ -191,7 +191,7 @@ services:
     networks:
       default:
       # shared only with the ToriGoogle n8n (../ToriGoogle docker-compose.whatsapp.yml), so its service
-      # name "n8n" never shadows this one for the tunnel
+      # name "n8n" never shadows this one for nginx
       google:
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
@@ -303,15 +303,21 @@ services:
       timeout: 3s
       retries: 5
 
-  # Public entry point on port 80 (nginx/default.conf): web at /, n8n at /n8n/, voice-bridge at /voice-bridge/.
-  # Open port 80 in the EC2 security group; the other services stay on 127.0.0.1.
+  # Public entry point, https://bot.toriate.com (nginx/default.conf): web at /, n8n at /n8n/, voice-bridge at
+  # /voice-bridge/. Open ports 80 and 443 in the EC2 security group; the other services stay on 127.0.0.1.
+  # First start: scripts/https-init.sh (gets the certificate nginx needs).
   nginx:
     image: nginx:1.28-alpine
     restart: unless-stopped
+    # reload now and then to pick up the certificates certbot renews
+    command: ["/bin/sh", "-c", "while :; do sleep 12h; nginx -s reload; done & exec nginx -g 'daemon off;'"]
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro,z
+      - letsencrypt:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       web:
         condition: service_started
@@ -320,30 +326,20 @@ services:
       voice-bridge:
         condition: service_started
 
-  # Public HTTPS address for n8n, so Meta can deliver WhatsApp messages to this laptop.
-  # Started by scripts/bot-tunnel.sh, which also puts the address into WEBHOOK_URL.
-  tunnel:
-    image: cloudflare/cloudflared:2026.9.3
-    profiles: ["tunnel"]
+  # Renews the Let's Encrypt certificate (checked twice a day; renewed 30 days before it expires)
+  certbot:
+    image: certbot/certbot:v5.0.0
     restart: unless-stopped
-    command: ["tunnel", "--no-autoupdate", "--url", "http://n8n:5678"]
-    depends_on:
-      n8n:
-        condition: service_healthy
-
-  # Public HTTPS address for the partner board, for demos (scripts/board-tunnel.sh). Anyone with the
-  # address sees the board: first names, places and times.
-  board-tunnel:
-    image: cloudflare/cloudflared:2026.9.3
-    profiles: ["tunnel"]
-    restart: unless-stopped
-    command: ["tunnel", "--no-autoupdate", "--url", "http://web:3000"]
-    depends_on:
-      - web
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
 
 volumes:
   pgdata:
   n8ndata:
+  letsencrypt:
+  certbot-www:
 
 networks:
   google:
