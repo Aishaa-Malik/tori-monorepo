@@ -254,7 +254,7 @@ services:
       # where the bot's WhatsApp sends (/api/graph) are passed on to
       WHATSAPP_GRAPH_UPSTREAM: ${BOT_WHATSAPP_GRAPH_URL:-https://graph.facebook.com/v19.0}
     ports:
-      - "127.0.0.1:${BOARD_PORT:-3001}:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       db-migrate:
         condition: service_completed_successfully
