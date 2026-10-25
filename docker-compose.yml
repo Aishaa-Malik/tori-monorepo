@@ -1,0 +1,329 @@
+name: tori
+
+x-n8n-env: &n8n-env
+  TZ: ${TZ}
+  GENERIC_TIMEZONE: ${TZ}
+  DB_TYPE: postgresdb
+  DB_POSTGRESDB_HOST: postgres
+  DB_POSTGRESDB_DATABASE: n8n
+  DB_POSTGRESDB_USER: n8n
+  DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD}
+  N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+  N8N_HOST: ${N8N_HOST}
+  N8N_WEBHOOK_URL: ${WEBHOOK_URL}
+  N8N_SECURE_COOKIE: "false"
+  N8N_DIAGNOSTICS_ENABLED: "false"
+  N8N_PERSONALIZATION_ENABLED: "false"
+  N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+  NODE_FUNCTION_ALLOW_BUILTIN: crypto
+  EXECUTIONS_DATA_PRUNE: "true"
+  EXECUTIONS_DATA_MAX_AGE: "336"
+  LLM_BASE_URL: ${LLM_BASE_URL}
+  LLM_MODEL: ${LLM_MODEL}
+  GOOGLE_TOKEN_URI: ${GOOGLE_TOKEN_URI}
+  GCAL_BASE_URL: ${GCAL_BASE_URL}
+  WHATSAPP_BASE_URL: ${WHATSAPP_BASE_URL}
+  WHATSAPP_PHONE_NUMBER_ID: ${WHATSAPP_PHONE_NUMBER_ID}
+  WHATSAPP_MODE: ${WHATSAPP_MODE}
+  WHATSAPP_TEMPLATE_LANG: ${WHATSAPP_TEMPLATE_LANG}
+  # workflow 06 (WhatsApp bot) reads these with $env
+  BOT_WHATSAPP_PHONE_NUMBER_ID: ${BOT_WHATSAPP_PHONE_NUMBER_ID:-}
+  BOT_WHATSAPP_TOKEN: ${BOT_WHATSAPP_TOKEN:-}
+  BOT_SUPABASE_SERVICE_KEY: ${BOT_SUPABASE_SERVICE_KEY:-}
+  # every WhatsApp send goes through the web app (/api/graph), which passes it on to the Graph API unchanged and
+  # logs it, so the voice agent can say the bot's replies on a call; .env's BOT_WHATSAPP_GRAPH_URL is where it goes
+  BOT_WHATSAPP_GRAPH_URL: http://web:3000/api/graph
+  BOT_WHATSAPP_GRAPH_UPSTREAM: ${BOT_WHATSAPP_GRAPH_URL:-https://graph.facebook.com/v19.0}
+  # workflow 06 hands Google requests to the ToriGoogle stack (../ToriGoogle); empty URL = off
+  TORI_GOOGLE_URL: ${TORI_GOOGLE_URL:-}
+  TORI_GOOGLE_SECRET: ${TORI_GOOGLE_SECRET:-}
+  # partner board's public address (scripts/board-tunnel.sh); the bot links to it when set
+  BOARD_PUBLIC_URL: ${BOARD_PUBLIC_URL:-}
+  # the bot's own WhatsApp number (digits): invite links ("invite") open a chat with it
+  BOARD_WHATSAPP_NUMBER: ${BOARD_WHATSAPP_NUMBER:-}
+  # approved template for match offers outside the 24-hour window; empty = keep them until the user writes
+  PARTNER_MATCH_TEMPLATE: ${PARTNER_MATCH_TEMPLATE:-}
+  # voice notes ("about you"): Whisper endpoint and model; empty = Groq whisper-large-v3-turbo with the LLM key
+  TRANSCRIBE_BASE_URL: ${TRANSCRIBE_BASE_URL:-}
+  TRANSCRIBE_MODEL: ${TRANSCRIBE_MODEL:-}
+  # where voice notes are relayed as text (workflow 06 itself); empty = this n8n's WhatsApp Trigger
+  BOT_RELAY_URL: ${BOT_RELAY_URL:-}
+  # Tori Wallet (workflow 06): key for /webhook/wallet/charge and /notify; WALLET_DEMO=1 enables "test booking 300"
+  WALLET_API_KEY: ${WALLET_API_KEY:-}
+  WALLET_DEMO: ${WALLET_DEMO:-0}
+  # ToriPay (workflow 06): the web app that sends payouts after "tori pay gym 500"
+  TORI_WEB_URL: ${TORI_WEB_URL:-http://web:3000}
+  # travel partner matching (workflows 07–12); empty = the default in public.travel_cfg()
+  TRAVEL_MAX_SOURCE_DISTANCE_KM: ${TRAVEL_MAX_SOURCE_DISTANCE_KM:-}
+  TRAVEL_MAX_DESTINATION_DISTANCE_KM: ${TRAVEL_MAX_DESTINATION_DISTANCE_KM:-}
+  TRAVEL_MAX_TIME_DIFFERENCE_MINUTES: ${TRAVEL_MAX_TIME_DIFFERENCE_MINUTES:-}
+  TRAVEL_MAX_MATCH_CANDIDATES: ${TRAVEL_MAX_MATCH_CANDIDATES:-}
+  TRAVEL_SCORE_WEIGHT_SOURCE: ${TRAVEL_SCORE_WEIGHT_SOURCE:-}
+  TRAVEL_SCORE_WEIGHT_DESTINATION: ${TRAVEL_SCORE_WEIGHT_DESTINATION:-}
+  TRAVEL_SCORE_WEIGHT_TIME: ${TRAVEL_SCORE_WEIGHT_TIME:-}
+  TRAVEL_CONSENT_TIMEOUT_MINUTES: ${TRAVEL_CONSENT_TIMEOUT_MINUTES:-}
+  TRAVEL_INTENT_GRACE_MINUTES: ${TRAVEL_INTENT_GRACE_MINUTES:-}
+  TRAVEL_DRAFT_TTL_MINUTES: ${TRAVEL_DRAFT_TTL_MINUTES:-}
+  TRAVEL_MAX_DAYS_AHEAD: ${TRAVEL_MAX_DAYS_AHEAD:-}
+  TRAVEL_MAX_REQUEST_CHANGES_PER_HOUR: ${TRAVEL_MAX_REQUEST_CHANGES_PER_HOUR:-}
+  TRAVEL_MAX_REQUEST_CHANGES_PER_DAY: ${TRAVEL_MAX_REQUEST_CHANGES_PER_DAY:-}
+  TRAVEL_DECLINE_COOLDOWN_DAYS: ${TRAVEL_DECLINE_COOLDOWN_DAYS:-}
+  TRAVEL_GEOCODE_CACHE_DAYS: ${TRAVEL_GEOCODE_CACHE_DAYS:-}
+  TRAVEL_GEOCODE_AMBIGUITY_KM: ${TRAVEL_GEOCODE_AMBIGUITY_KM:-}
+  TRAVEL_GEOCODER: ${TRAVEL_GEOCODER:-}
+  TRAVEL_GEOCODER_URL: ${TRAVEL_GEOCODER_URL:-}
+  TRAVEL_GEOCODER_KEY: ${TRAVEL_GEOCODER_KEY:-}
+  TRAVEL_GEOCODER_COUNTRY: ${TRAVEL_GEOCODER_COUNTRY:-}
+  TRAVEL_GEOCODER_USER_AGENT: ${TRAVEL_GEOCODER_USER_AGENT:-}
+  TRAVEL_MATCH_TEMPLATE: ${TRAVEL_MATCH_TEMPLATE:-}
+  TRAVEL_TEMPLATE_LANG: ${TRAVEL_TEMPLATE_LANG:-}
+  TRAVEL_TRIP_FLOW_ID: ${TRAVEL_TRIP_FLOW_ID:-}
+  TRAVEL_TRIP_FLOW_MODE: ${TRAVEL_TRIP_FLOW_MODE:-}
+  # Harsh AI voice calls (workflow 13): where WhatsApp call webhooks go, and the secrets n8n checks
+  VOICE_BRIDGE_URL: ${VOICE_BRIDGE_URL:-http://voice-bridge:8099}
+  VOICE_BRIDGE_SECRET: ${VOICE_BRIDGE_SECRET:-}
+  VAPI_SERVER_SECRET: ${VAPI_SERVER_SECRET:-}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TORI_DB_PASSWORD: ${TORI_DB_PASSWORD}
+      N8N_DB_PASSWORD: ${N8N_DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro,z
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'pg_isready -U postgres && psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname=''n8n''" | grep -q 1',
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  db-migrate:
+    image: postgres:17-alpine
+    environment:
+      TORI_DB_PASSWORD: ${TORI_DB_PASSWORD}
+      SEED_DEV: ${SEED_DEV:-0}
+    volumes:
+      - ./db/migrate.sh:/migrate.sh:ro,z
+      - ./db/migrations:/migrations:ro,z
+      - ./db/seed:/seed:ro,z
+    entrypoint: ["/bin/sh", "/migrate.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mock-apis:
+    image: node:22-alpine
+    profiles: ["mock"]
+    restart: unless-stopped
+    working_dir: /app
+    command: ["node", "server.js"]
+    environment:
+      TZ: ${TZ}
+      PORT: "8090"
+    volumes:
+      - ./mock-apis:/app:ro,z
+    ports:
+      - "127.0.0.1:8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  n8n-bootstrap:
+    image: n8nio/n8n:2.41.3
+    environment:
+      <<: *n8n-env
+      TORI_DB_PASSWORD: ${TORI_DB_PASSWORD}
+      INBOUND_WEBHOOK_USER: ${INBOUND_WEBHOOK_USER}
+      INBOUND_WEBHOOK_PASSWORD: ${INBOUND_WEBHOOK_PASSWORD}
+      ADMIN_API_KEY: ${ADMIN_API_KEY}
+      LLM_API_KEY: ${LLM_API_KEY}
+      WHATSAPP_TOKEN: ${WHATSAPP_TOKEN}
+      BOT_ENABLED: ${BOT_ENABLED:-0}
+      BOT_META_APP_ID: ${BOT_META_APP_ID:-}
+      BOT_META_APP_SECRET: ${BOT_META_APP_SECRET:-}
+      BOT_SUPABASE_URL: ${BOT_SUPABASE_URL:-}
+      BOT_PG_HOST: ${BOT_PG_HOST:-}
+      BOT_PG_PORT: ${BOT_PG_PORT:-}
+      BOT_PG_DATABASE: ${BOT_PG_DATABASE:-}
+      BOT_PG_USER: ${BOT_PG_USER:-}
+      BOT_PG_PASSWORD: ${BOT_PG_PASSWORD:-}
+      BOT_PG_SSL: ${BOT_PG_SSL:-}
+    volumes:
+      - n8ndata:/home/node/.n8n
+      - ./n8n:/opt/tori/n8n:ro,z
+    entrypoint: ["/bin/sh", "/opt/tori/n8n/bootstrap/bootstrap.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+
+  n8n:
+    image: n8nio/n8n:2.41.3
+    restart: unless-stopped
+    environment:
+      <<: *n8n-env
+      GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${GOOGLE_SERVICE_ACCOUNT_JSON_B64}
+      # workflow 06 signs relayed voice notes with it (the WhatsApp Trigger checks Meta's signature)
+      BOT_META_APP_SECRET: ${BOT_META_APP_SECRET:-}
+    volumes:
+      - n8ndata:/home/node/.n8n
+      - ./n8n:/opt/tori/n8n:ro,z
+    ports:
+      - "127.0.0.1:5678:5678"
+    networks:
+      default:
+      # shared only with the ToriGoogle n8n (../ToriGoogle docker-compose.whatsapp.yml), so its service
+      # name "n8n" never shadows this one for the tunnel
+      google:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      n8n-bootstrap:
+        condition: service_completed_successfully
+      web:
+        condition: service_started
+
+  n8n-owner:
+    image: n8nio/n8n:2.41.3
+    environment:
+      N8N_OWNER_EMAIL: ${N8N_OWNER_EMAIL}
+      N8N_OWNER_PASSWORD: ${N8N_OWNER_PASSWORD}
+      N8N_OWNER_FIRST_NAME: ${N8N_OWNER_FIRST_NAME}
+      N8N_OWNER_LAST_NAME: ${N8N_OWNER_LAST_NAME}
+    volumes:
+      - ./n8n/bootstrap/setup-owner.js:/setup-owner.js:ro,z
+    entrypoint: ["node", "/setup-owner.js"]
+    depends_on:
+      n8n:
+        condition: service_healthy
+
+  # Partner board (web/): every hobby / sports partner request sent on WhatsApp, with filters.
+  # Reads the bot's database (this Postgres, or BOT_PG_* when the bot uses another one), read-only.
+  web:
+    build: ./web
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      PGHOST: ${BOT_PG_HOST:-postgres}
+      PGPORT: ${BOT_PG_PORT:-5432}
+      PGDATABASE: ${BOT_PG_DATABASE:-tori}
+      PGUSER: ${BOT_PG_USER:-tori_app}
+      PGPASSWORD: ${BOT_PG_PASSWORD:-${TORI_DB_PASSWORD}}
+      DATABASE_SSL: ${BOT_PG_SSL:-}
+      BOARD_WHATSAPP_NUMBER: ${BOARD_WHATSAPP_NUMBER:-}
+      # Tori Wallet: Razorpay keys (test mode) stay in this container only
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+      # tests point these at mock-apis; empty = the real Razorpay API and IFSC directory
+      RAZORPAY_API_URL: ${RAZORPAY_API_URL:-}
+      IFSC_API_URL: ${IFSC_API_URL:-}
+      WALLET_API_KEY: ${WALLET_API_KEY:-}
+      # ToriPay: RazorpayX payouts to gyms (empty account number = payments stay owed for the team) and the
+      # team's key for /api/admin/payees
+      RAZORPAYX_ACCOUNT_NUMBER: ${RAZORPAYX_ACCOUNT_NUMBER:-}
+      RAZORPAYX_WEBHOOK_SECRET: ${RAZORPAYX_WEBHOOK_SECRET:-}
+      TORI_ADMIN_KEY: ${TORI_ADMIN_KEY:-}
+      TORI_BOT_URL: http://n8n:5678
+      # Harsh AI voice page (/voice): a Vapi *public* key, restricted to this site's origins in the Vapi dashboard
+      NEXT_PUBLIC_VAPI_PUBLIC_KEY: ${NEXT_PUBLIC_VAPI_PUBLIC_KEY:-}
+      VAPI_ASSISTANT_ID: ${VAPI_ASSISTANT_ID:-afd96ebf-40a7-40d2-bc0b-b6b94367e588}
+      # Tori MCP server (/api/mcp) for the voice agent: Vapi sends TORI_MCP_KEY; actions are handed to workflow 06
+      # as messages from the caller, signed with the Meta app secret (TORI_BOT_INBOUND_URL = its WhatsApp Trigger)
+      TORI_MCP_KEY: ${TORI_MCP_KEY:-}
+      BOT_META_APP_SECRET: ${BOT_META_APP_SECRET:-}
+      BOT_WHATSAPP_PHONE_NUMBER_ID: ${BOT_WHATSAPP_PHONE_NUMBER_ID:-}
+      TORI_BOT_INBOUND_URL: ${TORI_BOT_INBOUND_URL:-http://n8n:5678/webhook/e3c3d145-ffbd-454f-92ca-11a5e388a3ea/webhook}
+      # where the bot's WhatsApp sends (/api/graph) are passed on to
+      WHATSAPP_GRAPH_UPSTREAM: ${BOT_WHATSAPP_GRAPH_URL:-https://graph.facebook.com/v19.0}
+    ports:
+      - "127.0.0.1:${BOARD_PORT:-3001}:3000"
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+
+  # Harsh AI on WhatsApp calls (voice-bridge/): WebRTC audio from Meta's Calling API ↔ Vapi's WebSocket
+  # transport, one isolated session per call. n8n (workflow 13) forwards the call webhooks here; audio
+  # never goes through n8n. Media is UDP to/from Meta's servers (ICE through NAT, no ports to open).
+  voice-bridge:
+    build: ./voice-bridge
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      VOICE_BRIDGE_SECRET: ${VOICE_BRIDGE_SECRET:-}
+      BOT_WHATSAPP_TOKEN: ${BOT_WHATSAPP_TOKEN:-}
+      BOT_WHATSAPP_PHONE_NUMBER_ID: ${BOT_WHATSAPP_PHONE_NUMBER_ID:-}
+      BOT_META_APP_SECRET: ${BOT_META_APP_SECRET:-}
+      META_VERIFY_TOKEN: ${META_VERIFY_TOKEN:-}
+      VOICE_GRAPH_URL: ${VOICE_GRAPH_URL:-}
+      VAPI_PRIVATE_API_KEY: ${VAPI_PRIVATE_API_KEY:-}
+      VAPI_ASSISTANT_ID: ${VAPI_ASSISTANT_ID:-afd96ebf-40a7-40d2-bc0b-b6b94367e588}
+      VAPI_SERVER_URL: ${VAPI_SERVER_URL:-}
+      VAPI_SERVER_SECRET: ${VAPI_SERVER_SECRET:-}
+      VOICE_EVENTS_URL: ${VOICE_EVENTS_URL:-http://n8n:5678/webhook/voice/events}
+      # who is calling (web /api/agent/context), for the assistant's prompt
+      TORI_MCP_KEY: ${TORI_MCP_KEY:-}
+      VOICE_MAX_CALLS: ${VOICE_MAX_CALLS:-5}
+      VOICE_MAX_CALL_SECONDS: ${VOICE_MAX_CALL_SECONDS:-900}
+      VOICE_STUN_URLS: ${VOICE_STUN_URLS:-}
+      LOG_LEVEL: ${VOICE_LOG_LEVEL:-info}
+    ports:
+      - "127.0.0.1:8099:8099"
+    healthcheck:
+      # 503 = running but not configured yet (see /health → missing)
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:8099/health').then(r=>process.exit(r.status===200||r.status===503?0:1),()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Public HTTPS address for n8n, so Meta can deliver WhatsApp messages to this laptop.
+  # Started by scripts/bot-tunnel.sh, which also puts the address into WEBHOOK_URL.
+  tunnel:
+    image: cloudflare/cloudflared:2026.9.3
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "--url", "http://n8n:5678"]
+    depends_on:
+      n8n:
+        condition: service_healthy
+
+  # Public HTTPS address for the partner board, for demos (scripts/board-tunnel.sh). Anyone with the
+  # address sees the board: first names, places and times.
+  board-tunnel:
+    image: cloudflare/cloudflared:2026.9.3
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "--url", "http://web:3000"]
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+  n8ndata:
+
+networks:
+  google:
+    name: tori_google_link
