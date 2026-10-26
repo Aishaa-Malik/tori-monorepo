@@ -1,0 +1,122 @@
+# CI for the WhatsApp automation stack (docker-compose.yml): web, voice-bridge, the Postgres migrations
+# and their SQL tests, and the compose / nginx / n8n config. Runs on every push and pull request.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Partner board (web/): typecheck, unit tests, production build
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # tests import .ts directly, which needs Node 22.18+
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  # WhatsApp calls bridge (voice-bridge/): unit tests and the real-WebRTC end-to-end test
+  voice-bridge:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: voice-bridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: voice-bridge/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  # Migrations through the same db-migrate service the server runs, twice (the second run must be a no-op),
+  # then every db/tests/*.sql (each rolls itself back)
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write .env
+        run: cp .env.example .env
+      - name: Migrate
+        run: docker compose run --rm db-migrate
+      - name: Migrate again (idempotent)
+        run: docker compose run --rm db-migrate
+      - name: SQL tests
+        run: |
+          for t in db/tests/*.sql; do
+            echo "::group::$t"
+            docker compose exec -T postgres psql -U tori_app -d tori -q -v ON_ERROR_STOP=1 -f - < "$t"
+            echo "::endgroup::"
+          done
+      - name: Postgres logs
+        if: failure()
+        run: docker compose logs postgres
+      - if: always()
+        run: docker compose down -v
+
+  # docker-compose.yml, nginx/default.conf and the n8n workflow exports
+  config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker-compose.yml
+        run: docker compose --env-file .env.example config -q
+      - name: n8n workflow JSON
+        run: |
+          for f in n8n/workflows/*.json n8n/whatsapp-flows/*.json; do
+            jq empty "$f" || { echo "::error file=$f::invalid JSON"; exit 1; }
+          done
+      - name: nginx -t
+        # a throwaway certificate where Let's Encrypt's would be, and the upstream names resolvable
+        run: |
+          live=$RUNNER_TEMP/letsencrypt/live/bot.toriate.com
+          mkdir -p "$live"
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj /CN=bot.toriate.com \
+            -keyout "$live/privkey.pem" -out "$live/fullchain.pem"
+          docker run --rm \
+            --add-host n8n:127.0.0.1 --add-host web:127.0.0.1 --add-host voice-bridge:127.0.0.1 \
+            -v "$PWD/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$RUNNER_TEMP/letsencrypt:/etc/letsencrypt:ro" \
+            nginx:1.28-alpine nginx -t
+      - name: shellcheck
+        run: shellcheck --severity=error scripts/*.sh db/*.sh db/init/*.sh n8n/bootstrap/*.sh
+
+  # The images docker compose builds on the server
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [web, voice-bridge]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}

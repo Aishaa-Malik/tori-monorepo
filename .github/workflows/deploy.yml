@@ -1,0 +1,65 @@
+# Deploys main to the EC2 server (bot.toriate.com) once CI has passed on it, or by hand from the Actions tab.
+# The server keeps its own .env; this only pulls the code and restarts the stack with docker compose.
+#
+# Settings → Secrets and variables → Actions:
+#   secrets  EC2_SSH_KEY   private key allowed on the server
+#            EC2_HOST      e.g. bot.toriate.com
+#            EC2_USER      e.g. ubuntu
+#   vars     EC2_APP_DIR   the repo checkout on the server (optional, default /home/ubuntu/tori-monorepo)
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://bot.toriate.com
+    env:
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - name: SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Pull and restart
+        run: |
+          ssh -i ~/.ssh/id_deploy "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
+            APP_DIR="${{ vars.EC2_APP_DIR || '/home/ubuntu/tori-monorepo' }}" SHA="$SHA" bash -s <<'EOF'
+          set -euo pipefail
+          cd "$APP_DIR"
+          git fetch --prune origin main
+          git checkout --quiet main
+          git merge --ff-only "$SHA"
+          docker compose up -d --build --remove-orphans
+          docker image prune -f
+          docker compose ps
+          EOF
+
+      - name: Health check
+        run: |
+          for _ in $(seq 1 30); do
+            if curl -fsS -o /dev/null https://bot.toriate.com/; then echo "up"; exit 0; fi
+            sleep 10
+          done
+          echo "::error::https://bot.toriate.com did not come up"
+          exit 1
